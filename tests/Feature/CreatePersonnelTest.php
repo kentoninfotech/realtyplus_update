@@ -28,7 +28,7 @@ class CreatePersonnelTest extends TestCase
 
         $payload = [
             'firstname' => 'John',
-            'surname' => 'Doe',
+            'lastname' => 'Doe',
             'othername' => 'Middle',
             'email' => 'john.doe@example.com',
             'designation' => 'Manager',

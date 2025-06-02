@@ -23,19 +23,19 @@ class UserPermissionController extends Controller
     public function index() {
         $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
         $users = User::with('roles', 'permissions')->paginate(10);
-        return view('users.index', compact('users', 'roles'));
+        return view('roles.index', compact('users', 'roles'));
     }
 
     public function edit(User $user) {
         $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
         $users = User::with('roles', 'permissions')->paginate(10);
         $groupPermissions = $this->groupPermissions->permission();
-        return view('users.user-roles', compact('user', 'users', 'roles', 'groupPermissions'));
+        return view('roles.user-roles', compact('user', 'users', 'roles', 'groupPermissions'));
     }
 
     public function update(Request $request, User $user) {
         $user->syncRoles($request->roles);
         $user->syncPermissions($request->permissions);
-        return redirect()->route('users.index');
+        return redirect()->route('users.role');
     }
 }

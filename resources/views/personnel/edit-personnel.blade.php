@@ -6,12 +6,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">New Personnel</h1>
+                    <h1 class="m-0">Edit {{ $user->name ?? 'Personnel' }}'s Records</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="/home">Home</a></li>
-                        <li class="breadcrumb-item active">New Personnel</li>
+                        <li class="breadcrumb-item active">Edit Personnel</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -21,10 +21,12 @@
         <div class="card-heading">
         </div>
         <div class="card-body">
+            <a href="{{ url()->previous() }}" class="btn btn-md btn-primary" style="float: right;">Back</a>
+            <br>
 
-
-            <form method="POST" action="{{ route('create.personnel') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('update.personnel', $user->id) }}" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
                 @if ($errors->any())
                     <div class="alert alert-danger">
                     <ul>
@@ -35,18 +37,15 @@
                     </div>
                 @endif
 
-                <input type="hidden" name="business_id">
-                <input type="hidden" name="user_id">
-                <input type="hidden" name="category" value="staff">
 
                 <div class="row form-group">
                     <div class="col-lg-4">
-                        <label class="control-label col-lg-12" for="content">Firstname:</label>
-                        <input name="firstname" type="text" class="form-control" id="firstname" maxlength="50" placeholder="Firstname" value="{{ old('firstname', $user->personnel->firstname ?? '') }}">
+                        <label class="control-label col-lg-12" for="content">First Name:</label>
+                        <input name="firstname" type="text" class="form-control" id="firstname" maxlength="50" placeholder="First Name" value="{{ old('firstname', $user->personnel->firstname ?? '') }}">
                     </div>
                     <div class="col-lg-4">
-                        <label class="control-label col-lg-12" for="content">Surname: </label>
-                        <input name="surname" type="text" class="form-control" placeholder="Surname" value="{{ old('surname', $user->personnel->surname ?? '') }}" maxlength="50">
+                        <label class="control-label col-lg-12" for="content">Last Name: </label>
+                        <input name="lastname" type="text" class="form-control" placeholder="Last Name" value="{{ old('lastname', $user->personnel->lastname ?? '') }}" maxlength="50">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Othernames: </label>
@@ -121,11 +120,11 @@
                     <div class="row form-group">
                         <div class="col-lg-4">
                             <label class="control-label col-lg-12" for="content">Phone No: </label>
-                            <input name="phone_number" type="text" class="form-control" placeholder="Phone Number" maxlength="50" value="{{ old('phone_number', $user->personnel->phone_number ?? '') }}">
+                            <input name="phone_number" type="text" class="form-control" placeholder="Phone Number" maxlength="50" value="{{ old('phone_number', $user->phone_number ?? '') }}">
                         </div>
                         <div class="col-lg-4">
                             <label class="control-label col-lg-12" for="content">E-mail:</label>
-                            <input name="email" type="email" class="form-control" id="titLe" maxlength="100" placeholder="E-mail" value="{{ old('email', $user->personnel->email ?? '') }}">
+                            <input name="email" type="email" class="form-control" id="titLe" maxlength="100" placeholder="E-mail" value="{{ old('email', $user->email ?? '') }}">
                         </div>
                         <div class="col-lg-4">
                             <label class="control-label col-lg-12" for="content">Address: </label>
@@ -159,7 +158,7 @@
                                     $userRoles = $user->getRoleNames();
                                 @endphp
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role }}" {{ (collect(old('role', $userRoles))->contains($role->name)) ? 'selected' : '' }}>{{ $role->name }}</option>
+                                    <option value="{{ $role->name }}" {{ (collect(old('role', $userRoles))->contains($role->name)) ? 'selected' : '' }}>{{ $role->name }}</option>
                                 @endforeach
                             </select>
 
@@ -173,14 +172,14 @@
                             <input name="employment_date" type="date" class="form-control date" placeholder="Date Employed" id="datepicker2" maxlength="50" value="{{ old('employment_date', $user->personnel->employment_date ?? '') }}">
                         </div>
                         <div class="col-lg-3">
-                            <label for="department" class="form-label">Department</label>
-                            <select class="form-select" id="department" name="department" data-selected="{{ old('department', $user->personnel->department ?? '') }}">
+                            <label for="department" class="control-label col-lg-12">Department</label>
+                            <select class="form-control" id="department" name="department" data-selected="{{ old('department', $user->personnel->department ?? '') }}">
                                 <option selected disabled>Choose Department</option>
                             </select>
                         </div>
                         <div class="col-lg-3">
-                            <label for="designation" class="form-label">Designation</label>
-                            <select class="form-select" id="designation" name="designation" data-selected="{{ old('designation', $user->personnel->designation ?? '') }}" disabled>
+                            <label for="designation" class="control-label col-lg-12">Designation</label>
+                            <select class="form-control" id="designation" name="designation" data-selected="{{ old('designation', $user->personnel->designation ?? '') }}" disabled>
                                 <option selected disabled>Choose Designation</option>
                             </select>
                         </div>
@@ -191,23 +190,36 @@
                     </div>
 
                     <div class="row form-group">
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Passport: </label>
                             <input name="picture" type="file" class="form-conrol" value="{{ old('picture') }}">
                             @if (old('picture'))
                                 <div class="text-success">Previously selected: {{ old('picture') }}</div>
                             @endif
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Upload CV: </label>
                             <input name="cv" type="file" class="form-conrol" value="{{ old('cv') }}">
                             @if (old('cv'))
                                 <div class="text-success">Previously selected: {{ old('cv') }}</div>
                             @endif
                         </div>
-                        <div class="col-lg-4">
-                            <label class="control-label col-lg-12" for="content">Password: </label>
-                            <input name="password" type="password" class="form-control" placeholder="Password">
+                        <div class="col-lg-3">
+                            <label class="control-label col-lg-12" for="content">Personnel Type: </label>
+                            <select name="category" class="form-control">
+                                <option disabled {{ old('category', $user->category ?? null) ? '' : 'selected' }}>Personnel Type</option>
+                                <option value="staff" {{ old('category', $user->category ?? null) == 'staff' ? 'selected' : '' }}>Staff</option>
+                                <option value="worker" {{ old('category', $user->category ?? null) == 'worker' ? 'selected' : '' }}>Worker</option>
+                                <option value="contractor" {{ old('category', $user->category ?? null) == 'contractor' ? 'selected' : '' }}>Contractor</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
+                            <label class="control-label col-lg-12" for="content">Status: </label>
+                            <select name="status" class="form-control">
+                                <option disabled {{ old('category', $user->status ?? null) ? '' : 'selected' }}>Status</option>
+                                <option value="Active" {{ old('category', $user->status ?? null) == 'Active' ? 'selected' : '' }}>Active</option>
+
+                            </select>
                         </div>
                     </div>
 
@@ -217,7 +229,7 @@
                     </div>
                     <div class="col-lg-6">
                         <label class="control-label col-lg-12" for="content">.</label>
-                        <input name="save1" type="submit" value="Save Personnel Record" class="btn btn-primary" />
+                        <input type="submit" value="Save Personnel Record" class="btn btn-primary" />
                     </div>
                     </div>
 

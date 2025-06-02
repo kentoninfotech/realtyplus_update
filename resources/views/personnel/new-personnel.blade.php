@@ -21,7 +21,8 @@
         <div class="card-heading">
         </div>
         <div class="card-body">
-
+            <a href="{{ url()->previous() }}" class="btn btn-md btn-primary" style="float: right;">Back</a>
+            <br>
 
             <form method="POST" action="{{ route('create.personnel') }}" enctype="multipart/form-data">
                 @csrf
@@ -37,16 +38,15 @@
 
                 <input type="hidden" name="business_id">
                 <input type="hidden" name="user_id">
-                <input type="hidden" name="category" value="staff">
 
                 <div class="row form-group">
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Firstname:</label>
-                        <input name="firstname" type="text" class="form-control" id="firstname" maxlength="50" placeholder="Firstname" value="{{ old('firstname') }}">
+                        <input name="firstname" type="text" class="form-control" id="first Name" maxlength="50" placeholder="First Name" value="{{ old('firstname') }}">
                     </div>
                     <div class="col-lg-4">
-                        <label class="control-label col-lg-12" for="content">Surname: </label>
-                        <input name="surname" type="text" class="form-control" placeholder="Surname" value="{{ old('surname') }}" maxlength="50">
+                        <label class="control-label col-lg-12" for="content">Lastname: </label>
+                        <input name="lastname" type="text" class="form-control" placeholder="Last Name" value="{{ old('lastname') }}" maxlength="50">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Othernames: </label>
@@ -155,8 +155,10 @@
                             <div class="row center"><h4>System Role</h4><hr></div>
                             <label class="control-label col-lg-12" for="content">Role: <i class="fas fa-help"></i></label>
                             <select name="role" class="form-control">
+                                <option value="other" {{ old('other') == 'other' ? 'selected' : '' }}>Others(No role)</option>
                                 @foreach ($roles as $role)
-                                    <option value="{{ $role }}" {{ old('role', $role->name === $role->name) || $role->name === 'Staff' ? 'selected' : '' }}>{{ $role->name }}</option>
+                                    <!-- <option value="{{ $role }}" {{ old('role', $role->name === $role->name) || $role->name === 'Staff' ? 'selected' : '' }}>{{ $role->name }}</option> -->
+                                    <option value="{{ $role }}" {{ old('role') == $role->name ? 'selected' : ''}}>{{ $role->name }}</option>
                                 @endforeach
                             </select>
 
@@ -171,13 +173,13 @@
                         </div>
                         <div class="col-lg-3">
                             <label for="department" class="form-label">Department</label>
-                            <select class="form-select" id="department" name="department">
+                            <select class="form-control" id="department" name="department">
                                  <option selected disabled>Choose Department</option>
                             </select>
                         </div>
                         <div class="col-lg-3">
                             <label for="designation" class="form-label">Designation</label>
-                            <select class="form-select" id="designation" name="designation" disabled>
+                            <select class="form-control" id="designation" name="designation" disabled>
                                 <option selected disabled>Choose Designation</option>
                             </select>
                         </div>
@@ -188,21 +190,30 @@
                     </div>
 
                     <div class="row form-group">
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Passport: </label>
                             <input name="picture" type="file" class="form-conrol" value="{{ old('picture') }}">
                             @if (old('picture'))
                                 <div class="text-success">Previously selected: {{ old('picture') }}</div>
                             @endif
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Upload CV: </label>
                             <input name="cv" type="file" class="form-conrol" value="{{ old('cv') }}">
                             @if (old('cv'))
                                 <div class="text-success">Previously selected: {{ old('cv') }}</div>
                             @endif
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
+                            <label class="control-label col-lg-12" for="content">Personnel Type: </label>
+                            <select name="category" class="form-control">
+                                <option disabled {{ old('category') ? '' : 'selected' }}>Personnel Type</option>
+                                <option value="staff" {{ old('category') == 'staff' ? 'selected' : '' }}>Staff</option>
+                                <option value="worker" {{ old('category') == 'worker' ? 'selected' : '' }}>Worker</option>
+                                <option value="contractor" {{ old('category') == 'contractor' ? 'selected' : '' }}>Contractor</option>
+                            </select>
+                        </div>
+                        <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Password: </label>
                             <input name="password" type="password" class="form-control" placeholder="Password">
                         </div>
@@ -214,7 +225,7 @@
                     </div>
                     <div class="col-lg-6">
                         <label class="control-label col-lg-12" for="content">.</label>
-                        <input name="save1" type="submit" value="Save Personnel Record" class="btn btn-primary" />
+                        <input type="submit" value="Save Personnel Record" class="btn btn-primary" />
                     </div>
                     </div>
 

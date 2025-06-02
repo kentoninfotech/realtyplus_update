@@ -13,7 +13,7 @@ class Personnel extends Model
 
     protected $fillable = [
         'firstname',
-        'surname',
+        'lastname',
         'othername',
         'email',
         'designation',
@@ -33,6 +33,12 @@ class Personnel extends Model
         'staff_id',
         'dob',
         'nationality',
+    ];
+
+    protected $casts = [
+        'dob' => 'datetime',
+        'employment_date' => 'datetime',
+        'salary' => 'decimal:2',
     ];
 
 

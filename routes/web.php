@@ -29,17 +29,21 @@ Route::get('edit-client/{cid}', [App\Http\Controllers\HomeController::class, 'ed
 // PERSONNELS
 Route::get('personnel', [App\Http\Controllers\PersonnelController::class, 'index'])->name('personnel');
 Route::get('new-personnel', [App\Http\Controllers\PersonnelController::class, 'newPersonnel'])->name('new.personnel');
+Route::get('personnel/staffs', [App\Http\Controllers\PersonnelController::class, 'allStaffs'])->name('staffs');
+Route::get('personnel/workers', [App\Http\Controllers\PersonnelController::class, 'allWorkers'])->name('workers');
+Route::get('personnel/contractors', [App\Http\Controllers\PersonnelController::class, 'allContractors'])->name('contractors');
 Route::get('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'showPersonnel'])->name('show.personnel');
 Route::post('new-personnel', [App\Http\Controllers\PersonnelController::class, 'createPersonnel'])->name('create.personnel');
 Route::get('edit-personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'editPersonnel'])->name('edit.personnel');
-Route::post('edit-personnel', [App\Http\Controllers\PersonnelController::class, 'updatePersonnel']);
+Route::put('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'updatePersonnel'])->name('update.personnel');
+Route::post('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'deletePersonnel'])->name('delete.personnel');
 
 
 // ROLES & PERMISSIONS
-Route::resource('roles', App\Http\Controllers\RoleController::class);
-Route::get('/users', [App\Http\Controllers\UserPermissionController::class, 'index'])->name('users.index');
-Route::get('/users/{user}/edit', [App\Http\Controllers\UserPermissionController::class, 'edit'])->name('users.edit');
-Route::post('/users/{user}/update', [App\Http\Controllers\UserPermissionController::class, 'update'])->name('users.update');
+Route::resource('role', App\Http\Controllers\RoleController::class);
+Route::get('/roles', [App\Http\Controllers\UserPermissionController::class, 'index'])->name('users.role');
+Route::get('/roles/{user}/edit', [App\Http\Controllers\UserPermissionController::class, 'edit'])->name('user.role.edit');
+Route::post('/roles/{user}/update', [App\Http\Controllers\UserPermissionController::class, 'update'])->name('user.role.update');
 
 // PROJECTS
 Route::get('projects', [App\Http\Controllers\ProjectsController::class, 'index'])->name('projects');
@@ -80,8 +84,8 @@ Route::post('change_task_status', [App\Http\Controllers\TasksController::class, 
 Route::get('del-task/{tid}', [App\Http\Controllers\TasksController::class, 'destroy'])->name('del-task');
 Route::get('new-task', [App\Http\Controllers\TasksController::class, 'newTask'])->name('new-task');
 Route::post('saveTask', [App\Http\Controllers\TasksController::class, 'saveTask'])->name('saveTask');
-Route::get('/completetask/{id}', [App\Http\Controllers\TasksController::class, 'completetask'])->name('completetask')->middleware('role:Worker,Admin,Followup,Pastor,Super');
-Route::get('/inprogresstask/{id}', [App\Http\Controllers\TasksController::class, 'inprogresstask'])->name('inprogresstask')->middleware('role:Worker,Admin,Followup,Pastor,Super');
+Route::get('/completetask/{id}', [App\Http\Controllers\TasksController::class, 'completetask'])->name('completetask');
+Route::get('/inprogresstask/{id}', [App\Http\Controllers\TasksController::class, 'inprogresstask'])->name('inprogresstask');
 
 
 //REPORT
@@ -100,46 +104,46 @@ Route::post('save-file', [App\Http\Controllers\ProjectFilesController::class, 's
 Route::get('/file/{fid}', [App\Http\Controllers\ProjectFilesController::class, 'file'])->name('file');
 
 // MATERIALS
-Route::get('/materials', [App\Http\Controllers\MaterialsController::class, 'index'])->name('materials')->middleware('role:Admin,Super,Staff');
-Route::post('/addmaterial', [App\Http\Controllers\MaterialsController::class, 'store'])->name('addmaterial')->middleware('role:Admin,Super,Staff');
+Route::get('/materials', [App\Http\Controllers\MaterialsController::class, 'index'])->name('materials');
+Route::post('/addmaterial', [App\Http\Controllers\MaterialsController::class, 'store'])->name('addmaterial');
 Route::get('/material/{id}', [App\Http\Controllers\MaterialsController::class, 'material'])->name('material');
-Route::get('/delete-mat/{id}', [App\Http\Controllers\MaterialsController::class, 'destroy'])->name('delete-mat')->middleware('role:Admin,Super,Staff');
+Route::get('/delete-mat/{id}', [App\Http\Controllers\MaterialsController::class, 'destroy'])->name('delete-mat');
 
 // SUPPLIERS
-Route::get('/suppliers', [App\Http\Controllers\SuppliersController::class, 'index'])->name('suppliers')->middleware('role:Admin,Super,Staff');
-Route::post('/addsupplier', [App\Http\Controllers\SuppliersController::class, 'store'])->name('addsupplier')->middleware('role:Admin,Super,Staff');
+Route::get('/suppliers', [App\Http\Controllers\SuppliersController::class, 'index'])->name('suppliers');
+Route::post('/addsupplier', [App\Http\Controllers\SuppliersController::class, 'store'])->name('addsupplier');
 Route::get('/supplier/{id}', [App\Http\Controllers\SuppliersController::class, 'supplier'])->name('supplier');
-Route::get('/delete-sup/{id}', [App\Http\Controllers\SuppliersController::class, 'destroy'])->name('delete-sup')->middleware('role:Admin,Super,Staff');
+Route::get('/delete-sup/{id}', [App\Http\Controllers\SuppliersController::class, 'destroy'])->name('delete-sup');
 
 // SUPPLIES
-Route::get('/supplies', [App\Http\Controllers\MaterialSuppliesController::class, 'index'])->name('supplies')->middleware('role:Admin,Super,Staff');
-Route::post('/addsupply', [App\Http\Controllers\MaterialSuppliesController::class, 'store'])->name('addsupply')->middleware('role:Admin,Super,Staff');
+Route::get('/supplies', [App\Http\Controllers\MaterialSuppliesController::class, 'index'])->name('supplies');
+Route::post('/addsupply', [App\Http\Controllers\MaterialSuppliesController::class, 'store'])->name('addsupply');
 Route::get('/supply/{id}', [App\Http\Controllers\MaterialSuppliesController::class, 'supply'])->name('supply');
-Route::get('/delete-sp/{id}', [App\Http\Controllers\MaterialSuppliesController::class, 'destroy'])->name('delete-sp')->middleware('role:Admin,Super,Staff');
+Route::get('/delete-sp/{id}', [App\Http\Controllers\MaterialSuppliesController::class, 'destroy'])->name('delete-sp');
 
 
 // MATERIAL CHECKOUTS
-Route::get('/mcheckouts', [App\Http\Controllers\MaterialCheckoutsController::class, 'index'])->name('mcheckouts')->middleware('role:Admin,Super,Staff');
-Route::post('/addmcheckout', [App\Http\Controllers\MaterialCheckoutsController::class, 'store'])->name('addmcheckout')->middleware('role:Admin,Super,Staff');
-Route::get('/delete-mtc/{id}/{mid}/{qty}', [App\Http\Controllers\MaterialCheckoutsController::class, 'destroy'])->name('delete-mtc')->middleware('role:Super');
-Route::post('addMaterialsUsed', [App\Http\Controllers\MaterialCheckoutsController::class, 'addMaterialsUsed'])->name('addMaterialsUsed')->middleware('role:Admin,Super,Staff');
+Route::get('/mcheckouts', [App\Http\Controllers\MaterialCheckoutsController::class, 'index'])->name('mcheckouts');
+Route::post('/addmcheckout', [App\Http\Controllers\MaterialCheckoutsController::class, 'store'])->name('addmcheckout');
+Route::get('/delete-mtc/{id}/{mid}/{qty}', [App\Http\Controllers\MaterialCheckoutsController::class, 'destroy'])->name('delete-mtc');
+Route::post('addMaterialsUsed', [App\Http\Controllers\MaterialCheckoutsController::class, 'addMaterialsUsed'])->name('addMaterialsUsed');
 
 // ACCOUNT HEADS
-Route::get('/account-heads', [App\Http\Controllers\AccountheadsController::class, 'index'])->name('account-heads')->middleware('role:Finance,Admin,Super');
-Route::post('/addaccounthead', [App\Http\Controllers\AccountheadsController::class, 'store'])->name('addaccounthead')->middleware('role:Finance,Admin,Super');
-Route::get('/delete-acch/{id}', [App\Http\Controllers\AccountheadsController::class, 'destroy'])->name('delete-acch')->middleware('role:Super');
+Route::get('/account-heads', [App\Http\Controllers\AccountheadsController::class, 'index'])->name('account-heads');
+Route::post('/addaccounthead', [App\Http\Controllers\AccountheadsController::class, 'store'])->name('addaccounthead');
+Route::get('/delete-acch/{id}', [App\Http\Controllers\AccountheadsController::class, 'destroy'])->name('delete-acch');
 
 // ACCOUNT HEADS
-Route::get('/categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('categories')->middleware('role:Finance,Admin,Super');
-Route::post('/addcategory', [App\Http\Controllers\CategoriesController::class, 'store'])->name('addcategory')->middleware('role:Finance,Admin,Super');
-Route::get('/delete-cat/{id}', [App\Http\Controllers\CategoriesController::class, 'destroy'])->name('delete-cat')->middleware('role:Super');
+Route::get('/categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('categories');
+Route::post('/addcategory', [App\Http\Controllers\CategoriesController::class, 'store'])->name('addcategory');
+Route::get('/delete-cat/{id}', [App\Http\Controllers\CategoriesController::class, 'destroy'])->name('delete-cat');
 
 // TRANSACTIONS
-Route::get('/transactions', [App\Http\Controllers\TransactionsController::class, 'index'])->name('transactions')->middleware('role:Finance,Admin,Super');
-Route::post('/addtransaction', [App\Http\Controllers\TransactionsController::class, 'store'])->name('addtransaction')->middleware('role:Finance,Admin,Super');
-Route::get('/delete-trans/{id}', [App\Http\Controllers\TransactionsController::class, 'delTrans'])->name('delete-trans')->middleware('role:Finance,Super');
+Route::get('/transactions', [App\Http\Controllers\TransactionsController::class, 'index'])->name('transactions');
+Route::post('/addtransaction', [App\Http\Controllers\TransactionsController::class, 'store'])->name('addtransaction');
+Route::get('/delete-trans/{id}', [App\Http\Controllers\TransactionsController::class, 'delTrans'])->name('delete-trans');
 
-Route::post('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings')->middleware('role:Super');
+Route::post('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
 
 //LOGOUT
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class,'logout']);

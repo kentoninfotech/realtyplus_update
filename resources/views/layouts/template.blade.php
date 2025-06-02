@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Realty Plus | Dashboard</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
 
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
@@ -367,20 +367,25 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('workers') }}" class="nav-link">
+                                    <a href="{{ route('personnel') }}" class="nav-link">
+                                        <i class="far fa-user nav-icon"></i>
+                                        <p>All Personnel</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('staffs') }}" class="nav-link">
+                                        <i class="far fa-user nav-icon"></i>
+                                        <p>Staffs</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('workers') }}" class="nav-link">
                                         <i class="far fa-user nav-icon"></i>
                                         <p>Workers</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('staff') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
-                                        <p>Staff</p>
-                                    </a>
-                                </li>
-
-                                <li class="nav-item">
-                                    <a href="{{ url('contractors') }}" class="nav-link">
+                                    <a href="{{ route('contractors') }}" class="nav-link">
                                         <i class="far fa-user-plus nav-icon"></i>
                                         <p>Contractors</p>
                                     </a>
@@ -407,9 +412,9 @@
 
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ route('users.index') }}" class="nav-link">
+                                    <a href="{{ route('users.role') }}" class="nav-link">
                                         <i class="far fa-user nav-icon"></i>
-                                        <p>Manage Staff</p>
+                                        <p>Manage Role & Perm..</p>
                                     </a>
 
                                 </li>
@@ -617,6 +622,9 @@
     <!-- Bootstrap 4 -->
     <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
+    <!-- User role permission select  -->
+    <script src="{{ asset('plugins/js/permissions-select.js') }}" defer></script>
+
     @if (isset($pagetype) && $pagetype == 'Dashboard')
         <!-- ChartJS -->
         <script src="{{ asset('plugins/chart.js/Chart.min.js') }}"></script>
@@ -624,6 +632,7 @@
         <script src="{{ asset('plugins/jquery-knob/jquery.knob.min.js') }}"></script>
         <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
         <script src="{{ asset('dist/js/pages/dashboard.js') }}"></script>
+        
     @endif
 
     <!-- daterangepicker -->
@@ -910,6 +919,7 @@
     @endif
 
     @yield('script')
+    
 
 </body>
 

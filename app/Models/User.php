@@ -54,7 +54,7 @@ class User extends Authenticatable
 
     public function personnel()
     {
-        return $this->hasOne(Personnel::class, 'user_id', 'id');
+        return $this->hasOne(\App\Models\Personnel::class, 'user_id', 'id');
     }
 
     public function projects()

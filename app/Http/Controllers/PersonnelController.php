@@ -7,24 +7,71 @@ use Spatie\Permission\Models\Role;
 use App\Models\User;
 use App\Models\Personnel;
 use App\Http\Requests\CreatePersonnelRequest;
+use App\Http\Requests\UpdatePersonnelRequest;
 use Illuminate\Support\Facades\DB;
 
 class PersonnelController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Show all Personnel (Staff,Workers,Contractors).
      **
      */
     public function index()
     {
-        $users = User::where('business_id', auth()->user()->business_id)->paginate(2);
+        $users = User::where('business_id', auth()->user()->business_id)->paginate(10);
         return view('personnel.index', compact('users'));
     }
 
+    /**
+     * Show add new Personnel (Staff,Workers,Contractors) form.
+     **
+     */
     public function newPersonnel()
     {
         $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
         return view('personnel.new-personnel', compact('roles'));
+    }
+
+    /**
+     * Show Personnel (Staff,Workers,Contractors) form.
+     **
+     */
+    public function showPersonnel($id)
+    {
+        $user = User::findOrFail($id);
+        return view('personnel.personnel', compact('user'));
+    }
+
+    /**
+     * Show All Staffs.
+     **
+     */
+    public function allStaffs()
+    {
+        $staffs = User::where('category', 'staff')->paginate(20);
+        return view('personnel.staffs', compact('staffs'));
+    }
+    /**
+     * Show All Workers.
+     **
+     */
+    public function allWorkers()
+    {
+        $workers = User::where('category', 'worker')->paginate(20);
+        return view('personnel.workers', compact('workers'));
+    }
+    /**
+     * Show All Contractors.
+     **
+     */
+    public function allContractors()
+    {
+        $contractors = User::where('category', 'contractor')->paginate(20);
+        return view('personnel.contractors', compact('contractors'));
     }
 
     /**
@@ -37,7 +84,7 @@ class PersonnelController extends Controller
             $validateData = $request->all();
 
             $user = User::create([
-                'name' => $validateData['firstname'] . ' ' . $validateData['surname'],
+                'name' => $validateData['firstname'] . ' ' . $validateData['lastname'],
                 'email' => $validateData['email'],
                 'password' => bcrypt($validateData['password']),
                 'phone_number' => $validateData['phone_number'] ?? null,
@@ -62,22 +109,24 @@ class PersonnelController extends Controller
                 $file = $request->file('picture');
                 $datePrefix = date('d-m-Y');
                 $filename = $datePrefix . '_' . $file->getClientOriginalName();
-                $validateData['picture'] = $file->storeAs('personnel/pictures', $filename, 'public');
+                $file->move(public_path('personnel/pictures'), $filename);
+                $validateData['picture'] = $filename;
             }
             if ($request->hasFile('cv')) {
                 $file = $request->file('cv');
                 $datePrefix = date('d-m-Y');
                 $filename = $datePrefix . '_' . $file->getClientOriginalName();
-                $validateData['cv'] = $file->storeAs('personnel/cv', $filename, 'public');
+                $file->move(public_path('personnel/cv'), $filename);
+                $validateData['cv'] = $filename;
             }
 
             // Remove fields not needed for Personnel
-            unset($validateData['password'], $validateData['role'], $validateData['category'], $validateData['save1']);
+            unset($validateData['password'], $validateData['role'], $validateData['category'],);
             // Create personnel record
             Personnel::create($validateData);
         });
 
-        return redirect()->route('home')->with('success', 'Personnel created successfully.');
+        return redirect()->route('personnel')->with('message', 'Personnel created successfully.');
         
     }
 
@@ -85,11 +134,115 @@ class PersonnelController extends Controller
      * Show Edit Personnel (Staff,Workers,Contractors).
      **
      */
-    public function editPersonnel($user)
+    public function editPersonnel($id)
     {
-        $user = User::findOrFail($user);
+        $user = User::findOrFail($id);
         $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
         return view('personnel.edit-personnel', compact('user', 'roles'));
+    }
+    /**
+     * update Personnel (Staff,Workers,Contractors).
+     **
+     */
+    public function updatePersonnel(UpdatePersonnelRequest $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+        // Check if the authenticated user has permission to update this personnel
+        // if (auth()->user()->cannot('update', $user)) {
+        //     return redirect()->route('home')->with('error', 'You do not have permission to update this personnel.');
+        // }
+
+        DB::transaction(function () use ($request, $user) {
+            $validateData = $request->all();
+
+            $user->update([
+                'name' => $validateData['firstname'] . ' ' . $validateData['lastname'],
+                'email' => $validateData['email'],
+                'phone_number' => $validateData['phone_number'] ?? null,
+                'status' => $validateData['status'],
+                'category' => $validateData['category'] ?? 'staff',
+            ]);
+
+            // Assign role
+            if ($validateData['role']) {
+                $user->syncRoles($validateData['role']);
+            }
+
+            // file uploads if they exist
+            if ($request->hasFile('picture')) {
+                // Remove old picture if exists
+                if ($user->personnel && $user->personnel->picture) {
+                    $oldPicturePath = public_path('personnel/pictures/' . $user->personnel->picture);
+                    if (file_exists($oldPicturePath)) {
+                        @unlink($oldPicturePath);
+                    }
+                }
+                $file = $request->file('picture');
+                $datePrefix = date('d-m-Y');
+                $filename = $datePrefix . '_' . $file->getClientOriginalName();
+                $file->move(public_path('personnel/pictures'), $filename);
+                $validateData['picture'] =  $filename;
+            }
+            if ($request->hasFile('cv')) {
+                // Remove old CV if exists
+                if ($user->personnel && $user->personnel->cv) {
+                    $oldCvPath = public_path('personnel/cv/' . $user->personnel->cv);
+                    if (file_exists($oldCvPath)) {
+                        @unlink($oldCvPath);
+                    }
+                }
+                $file = $request->file('cv');
+                $datePrefix = date('d-m-Y');
+                $filename = $datePrefix . '_' . $file->getClientOriginalName();
+                $file->move(public_path('personnel/cv'), $filename);
+                $validateData['cv'] = $filename;
+            }
+
+            // Remove fields not needed for Personnel
+            unset($validateData['role'], $validateData['category']);
+            // Update or create personnel record
+            
+            if ($user->personnel && $user->personnel->id) {
+                $user->personnel->update($validateData);
+            } else {
+                $validateData['business_id'] = auth()->user()->business_id;
+                $validateData['user_id'] = $user->id;
+                Personnel::create($validateData);
+            }
+        });
+
+        return redirect()->route('personnel')->with('message', 'Personnel Updated successfully.');
+    }
+
+    /**
+     * Delete Personnel (Staff,Workers,Contractors).
+     **
+     */
+    public function deletePersonnel($id)
+    {
+        $user = User::findOrFail($id);
+
+        // delete the user picture & cv from Storage
+        if ($user->personnel && $user->personnel->cv) {
+            $oldCvPath = public_path('/personnel/cv/' . $user->personnel->cv);
+            if (file_exists($oldCvPath)) {
+                @unlink($oldCvPath);
+            }
+        }
+        if ($user->personnel && $user->personnel->picture) {
+            $oldPicturePath = public_path('/personnel/pictures/' . $user->personnel->picture);
+            if (file_exists($oldPicturePath)) {
+                @unlink($oldPicturePath);
+            }
+        }
+        // Delete personnel & user record
+        if($user->personnel){
+            $user->personnel->delete();
+        }
+        $user->delete();
+        
+        return redirect()->route('personnel')->with('message', 'Personnel Deleted successfully.');
     }
 
 

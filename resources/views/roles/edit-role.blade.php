@@ -26,19 +26,20 @@
                 <table class="table responsive-table" id="products">
                     <thead>
                         <tr>
-                            <th>Name</th>
+                            <th>Role</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($roleData as $roles)
-                            <tr @if ($role->name === 'Admin') style="background-color: azure !important;" @endif>
+                            <tr @if ($roles->name === 'Admin') style="background-color: azure !important;" @endif>
                                 <td>{{ $roles->name }}</td>
                                 <td width="90">
                                     <div class="btn-group">
-                                        <a href="{{ route('roles.edit', $roles) }}" class="btn btn-sm btn-warning">Edit</a>
-                                        <form action="{{ route('roles.destroy', $roles) }}" method="POST" class="d-inline">
-                                            @csrf @method('DELETE')
+                                        <a href="{{ route('role.edit', $roles) }}" class="btn btn-sm btn-warning">Edit</a>
+                                        <form action="{{ route('role.destroy', $roles) }}" method="POST" class="d-inline">
+                                            @csrf 
+                                            @method('DELETE')
                                             <button class="btn btn-sm btn-danger">Delete</button>
                                         </form>
                                     </div>
@@ -56,10 +57,10 @@
         <div class="col-lg-8">
             <div class="card shadow mb-4">
             <div class="card-body">
-                <a href="{{ route('users.index') }}" class="btn btn-md btn-primary" style="float: right;">Back</a>
+                <a href="{{ url()->previous() }}" class="btn btn-md btn-primary" style="float: right;">Back</a>
                 <br>
                 <h2>Edit Role</h2>
-                <form method="POST" action="{{ route('roles.update', $role) }}">
+                <form method="POST" action="{{ route('role.update', $role) }}">
                     @csrf
                     @method('PUT')
                 

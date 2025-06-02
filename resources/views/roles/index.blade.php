@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Manage Staff</h1>
+                    <h1 class="m-0">Manage Roles & Permission</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -37,7 +37,7 @@
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                <tr @if ($user->status == 'Active') style="background-color: azure !important;" @endif>
+                                <tr>
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->name }} <br>
                                     <small>{{ $user->email }}</small>
@@ -48,7 +48,7 @@
 
                                     <td width="90">
                                         <div class="btn-group">
-                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-primary">Manage</a>
+                                            <a href="{{ route('user.role.edit', $user) }}" class="btn btn-sm btn-primary">Manage</a>
                                         </div>
                                     </td>
 
@@ -65,23 +65,23 @@
         <div class="col-lg-4">
           <div class="card">
                 <div class="card-body" style="overflow: auto;">
-                    <a href="{{ route('roles.create') }}" class="btn btn-primary" style="float: right;">New Role</a>
+                    <a href="{{ route('role.create') }}" class="btn btn-primary" style="float: right;">New Role</a>
                     <br>
                     <table class="table responsive-table" id="products">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($roles as $role)
-                                <tr @if ($role->name === 'Admin') style="background-color: azure !important;" @endif>
+                                <tr @if ($role->name === 'System Admin') style="background-color: azure !important;" @endif>
                                     <td>{{ $role->name }}</td>
                                     <td width="90">
                                         <div class="btn-group">
-                                            <a href="{{ route('roles.edit', $role) }}" class="btn btn-sm btn-warning">Edit</a>
-                                            <form action="{{ route('roles.destroy', $role) }}" method="POST" class="d-inline">
+                                            <a href="{{ route('role.edit', $role) }}" class="btn btn-sm btn-warning">Edit</a>
+                                            <form action="{{ route('role.destroy', $role) }}" method="POST" class="d-inline">
                                                 @csrf @method('DELETE')
                                                 <button class="btn btn-sm btn-danger">Delete</button>
                                             </form>

@@ -1,18 +1,16 @@
 @extends('layouts.template')
-@php
-    //$pagetype = 'Table';
-@endphp
+
 @section('content')
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Manage Roles & Permissions</h1>
+                    <h1 class="m-0">Roles & Permissions</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Role & Permission</li>
+                        <li class="breadcrumb-item active">Roles & Permissions</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -22,72 +20,66 @@
 
     <div class="row">
         <div class="col-lg-4">
-            <div class="card">
-                <div class="card-body" style="overflow: auto;">
+          <div class="card">
+                <div class="card-body" style="overflow: auto;"> 
                     <table class="table responsive-table" id="products">
                         <thead>
                             <tr>
-                                <th>Name</th>
                                 <th>Role</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($users as $user)
-                                <tr @if ($user->status == 'Active') style="background-color: azure !important;" @endif>
-                                    <td>{{ $user->name }} <br>
-                                    <small>{{ $user->email }}</small>
-                                    </td>
-                                    <td>{{ implode(', ', $user->getRoleNames()->toArray()) }}</td>
-
+                            @foreach ($roles as $role)
+                                <tr @if ($role->name === 'System Admin') style="background-color: azure !important;" @endif>
+                                    <td>{{ $role->name }}</td>
                                     <td width="90">
                                         <div class="btn-group">
-                                            <a href="{{ route('users.edit', $user) }}" class="btn btn-sm btn-primary">Manage</a>
+                                            <a href="{{ route('role.edit', $role) }}" class="btn btn-sm btn-warning">Edit</a>
+                                            <form action="{{ route('role.destroy', $role) }}" method="POST" class="d-inline">
+                                                @csrf 
+                                                @method('DELETE')
+                                                <button class="btn btn-sm btn-danger">Delete</button>
+                                            </form>
                                         </div>
                                     </td>
 
                                 </tr>
                             @endforeach
+
+
                         </tbody>
                     </table>
-                    <div style="text-align: right">
-                        {{ $users->links("pagination::bootstrap-4") }}
-                    </div>
                 </div>
-            </div>
+          </div>
         </div>
         <div class="col-lg-8">
             <div class="card shadow mb-4">
                 <div class="card-body">
-                    <a href="{{ route('users.index') }}" class="btn btn-md btn-primary" style="float: right;">Back</a>
+                    <a href="{{ url()->previous() }}" class="btn btn-md btn-primary" style="float: right;">Back</a>
                     <br>
-                    <h2>{{ $user->name }}'s Role/Permissions</h2>
-                    <form method="POST" action="{{ route('users.update', $user) }}">
+                    <h2>Add New Role</h2>
+                    <form method="POST" action="{{ route('role.store') }}">
                         @csrf
-                        <div class="mb-3">
-                            <label>Roles</label><br>
-                            @foreach($roles as $role)
-                                <div class="form-check form-switch form-check-inline mb-3">
-                                    <input type="checkbox" name="roles[]" value="{{ $role->name }}" class="form-check-input"
-                                        {{ $user->hasRole($role->name) ? 'checked' : '' }}>
-                                    <label class="form-check-label">{{ $role->name }}</label>
-                                </div>
-                            @endforeach
-                        </div>
+                    
                         <div class="row">
                             <div class="col-lg-12 mb-3">
+                                <div class="mb-3">
+                                    <label>Name</label>
+                                    <input type="text" name="name" class="form-control" required>
+                                </div>
                                 <button type="button" class="btn shadow btn-light mb-3" id="selectAllPermissions">
                                     Select All
                                 </button>
                                 <button type="button" class="btn shadow btn-light mb-3" id="deselectAllPermissions">
                                     Deselect All
                                 </button>
-                                
                                 <br>
+                            
                                 <table class="table table-bordered table-striped">
                                     <thead>
                                     <tr>
-                                        <th>Permissions</th>
+                                        <th></th>
                                         <th>View</th>
                                         <th>Create</th>
                                         <th>Edit</th>
@@ -101,8 +93,7 @@
                                         @foreach($permissions as $permission)
                                         <td class="text-center">
                                             <div class="form-check form-switch ">
-                                                <input type="checkbox" name="permissions[]" value="{{ $permission }}" class="form-check-input permission-checkbox"
-                                                {{ $user->hasPermissionTo($permission) ? 'checked' : '' }}>
+                                                <input type="checkbox" name="permissions[]" value="{{ $permission }}" class="form-check-input permission-checkbox">
                                             </div> 
                                         </td>
                                         @endforeach
@@ -112,10 +103,12 @@
                                 </table>
                             </div>
                         </div>
-                        <button class="btn btn-primary">Save</button>
+                        <button class="btn btn-primary">Add Role</button>
                     </form>
-                </div>
-            </div>
+                </div>  
+           </div>
         </div>
     </div>
+
 @endsection
+

@@ -22,7 +22,7 @@ class UserPermissionController extends Controller
      */
     public function index() {
         $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
-        $users = User::with('roles', 'permissions')->paginate(10);
+        $users = User::with('roles', 'permissions')->where('category', '!=', 'client')->paginate(10);
         return view('roles.index', compact('users', 'roles'));
     }
 

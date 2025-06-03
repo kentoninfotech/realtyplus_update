@@ -42,7 +42,7 @@
                     @foreach ($allclients as $cl)
                         <tr @if ($cl->status == 'Active') style="background-color: azure !important;" @endif>
                             <td>{{ $cl->id }}</td>
-                            <td>{{ $cl->company_name }}</td>
+                            <td>{{ $cl->client->company_name }}</td>
                             <td>{{ $cl->category }}</td>
                             <td>{{ $cl->name }}</td>
                             <td>{{ $cl->phone_number }}</td>
@@ -52,7 +52,7 @@
                             </td>
                             <td width="90">
                                 <div class="btn-group">
-                                    <a href="/edit-client/{{ $cl->id }}" class="btn btn-default btn-xs">Edit</a>
+                                    <a href="{{ route('edit-client', $cl->id) }}" class="btn btn-default btn-xs">Edit</a>
 
                                     <a href="/client-projects/{{ $cl->id }}"
                                         class="btn btn-success btn-xs">Projects</a>

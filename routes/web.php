@@ -23,7 +23,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // CLIENTS
 Route::get('clients', [App\Http\Controllers\HomeController::class, 'clients'])->name('clients');
 Route::get('new-client', [App\Http\Controllers\HomeController::class, 'newClient'])->name('new-client');
-Route::post('saveClient', [App\Http\Controllers\HomeController::class, 'saveClient'])->name('saveClient');
+Route::post('new-client', [App\Http\Controllers\HomeController::class, 'saveClient'])->name('saveClient');
+Route::post('saveClient/{cid}', [App\Http\Controllers\HomeController::class, 'updateClient'])->name('update.client');
 Route::get('edit-client/{cid}', [App\Http\Controllers\HomeController::class, 'editClient'])->name('edit-client');
 
 // PERSONNELS

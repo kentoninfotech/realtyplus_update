@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Client;
 use App\Models\projects;
 
 // To be used for registration
@@ -34,7 +35,7 @@ class HomeController extends Controller
 
     public function clients()
     {
-        $allclients = User::where('category','Client')->get();
+        $allclients = User::where('category','client')->get();
         return view('clients')->with(['allclients'=>$allclients]);
     }
 
@@ -71,19 +72,29 @@ class HomeController extends Controller
             $outcome = "created";
         }
 
-        User::updateOrCreate(['id'=>$request->cid],[
-            'name'=>$request->name,
-            'email'=>$request->email,
-            'password'=>Hash::make($request->password),
-            'about'=>$request->about,
-            'phone_number'=>$request->phone_number,
-            'company_name'=>$request->company_name,
-            'category'=>$request->category,
-            'address'=>$request->address,
-            'role'=>$request->role,
-            'status'=>$request->status,
-            'business_id'=>Auth()->user()->business_id
+        $user = User::updateOrCreate(['id'=>$request->cid],[
+            'name'         =>$request->name,
+            'email'        =>$request->email,
+            'password'     =>Hash::make($request->password),
+            'phone_number' =>$request->phone_number,
+            'category'     => $request->category ?? 'client',
+            'address'      =>$request->address,
+            'status'       =>$request->status,
+            'business_id'  =>Auth()->user()->business_id
+        ]);
 
+        // Assign Client role to client
+        $user->assignRole('Client');
+
+        $client = Client::updateOrCreate([
+            'name'         =>$request->name,
+            'email'        =>$request->email,
+            'about'        =>$request->about,
+            'phone_number' =>$request->phone_number,
+            'company_name' =>$request->company_name,
+            'address'      =>$request->address,
+            'business_id'  => Auth()->user()->business_id,
+            'user_id'      => $user->id,
         ]);
 
         $message = 'The '.$request->object.' has been '.$outcome.' successfully';
@@ -94,7 +105,42 @@ class HomeController extends Controller
     public function editClient($cid)
     {
         $client = User::where('id',$cid)->first();
-        return view('new-client')->with(['client'=>$client]);
+        return view('edit-client')->with(['client'=>$client]);
+    }
+
+    public function updateClient(Request $request, $cid)
+    {
+        $user = User::findOrFail($cid);
+
+        if($request->password!=""){
+            $password = Hash::make($request->password);
+
+        }else{
+            $password =$request->oldpassword;
+        }
+
+        $user->update([
+            'name'         =>$request->name,
+            'email'        =>$request->email,
+            'password'     =>Hash::make($request->password),
+            'phone_number' =>$request->phone_number,
+            'category'     => $request->category ?? 'client',
+            'address'      =>$request->address,
+            'status'       =>$request->status,
+        ]);
+
+        $user->client->update([
+            'name'         =>$request->name,
+            'email'        =>$request->email,
+            'about'        =>$request->about,
+            'phone_number' =>$request->phone_number,
+            'company_name' =>$request->company_name,
+            'address'      =>$request->address,
+        ]);
+
+        $message = 'Client updated successfully';
+
+        return redirect()->route('clients')->with(['message'=>$message]);
     }
 
 

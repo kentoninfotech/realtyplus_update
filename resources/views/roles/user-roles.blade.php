@@ -19,7 +19,8 @@
         </div><!-- /.container-fluid -->
     </div>
 
-
+<div class="card">
+  <div class="card-body">
     <div class="row">
         <div class="col-lg-4">
             <div class="card">
@@ -118,4 +119,6 @@
             </div>
         </div>
     </div>
+  </div>
+</div>
 @endsection

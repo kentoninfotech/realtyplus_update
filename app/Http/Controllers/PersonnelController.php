@@ -22,7 +22,7 @@ class PersonnelController extends Controller
      */
     public function index()
     {
-        $users = User::where('business_id', auth()->user()->business_id)->paginate(10);
+        $users = User::where('business_id', auth()->user()->business_id)->where('category', '!=', 'client')->paginate(10);
         return view('personnel.index', compact('users'));
     }
 
@@ -152,6 +152,11 @@ class PersonnelController extends Controller
         // if (auth()->user()->cannot('update', $user)) {
         //     return redirect()->route('home')->with('error', 'You do not have permission to update this personnel.');
         // }
+        if($user->personnel){
+            dd('This user already has a personnel record. Please use the edit personnel form.');
+        }else{
+            dd('This user does not have a personnel record. Please use the create personnel form.');
+        }
 
         DB::transaction(function () use ($request, $user) {
             $validateData = $request->all();
@@ -159,7 +164,7 @@ class PersonnelController extends Controller
             $user->update([
                 'name' => $validateData['firstname'] . ' ' . $validateData['lastname'],
                 'email' => $validateData['email'],
-                'phone_number' => $validateData['phone_number'] ?? null,
+                'phone_number' => $validateData['phone_number'],
                 'status' => $validateData['status'],
                 'category' => $validateData['category'] ?? 'staff',
             ]);

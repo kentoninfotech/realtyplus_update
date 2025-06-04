@@ -23,7 +23,9 @@
     <div class="card">
 
         <div class="card-body" style="overflow: auto;">
+          @can('create client')
             <a href="{{ url('new-client') }}" class="btn btn-primary" style="float: right;">Add New</a>
+          @endcan
             <br>
             <table class="table responsive-table" id="products">
                 <thead>
@@ -52,12 +54,17 @@
                             </td>
                             <td width="90">
                                 <div class="btn-group">
+                                @can('edit client')
                                     <a href="{{ route('edit-client', $cl->id) }}" class="btn btn-default btn-xs">Edit</a>
-
+                                @endcan
+                                @can('view project')
                                     <a href="/client-projects/{{ $cl->id }}"
                                         class="btn btn-success btn-xs">Projects</a>
+                                @endcan
 
+                                @can('create project')
                                     <a href="/new-project/{{ $cl->id }}/" class="btn btn-primary btn-xs">New</a>
+                                @endcan
                                 </div>
                             </td>
 

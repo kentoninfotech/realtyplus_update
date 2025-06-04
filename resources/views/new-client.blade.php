@@ -102,7 +102,7 @@
                             <option value="{{ isset($client->category) ? $client->category : '' }}" selected>
                                 {{ isset($client->category) ? $client->category : 'Select Category' }}</option>
                             <option value="client">Client</option>
-                            <option value="suppliers">Suppliers</option>
+                            <option value="supplier">Supplier</option>
                             <option value="labourer">Labourer</option>
                         </select>
                     </div>

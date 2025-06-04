@@ -20,7 +20,7 @@ class RoleController extends Controller
     // }
 
     public function create() {
-        $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
+        $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
         $groupPermissions = $this->groupPermissions->permission();
         return view('roles.add-role', compact('groupPermissions', 'roles'));
     }
@@ -35,7 +35,7 @@ class RoleController extends Controller
         if($role->name === 'Super Admin'){
             return redirect()->back();
         }
-        $roleData = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
+        $roleData = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
         $groupPermissions = $this->groupPermissions->permission();
         return view('roles.edit-role', compact('role','roleData', 'groupPermissions'));
     }

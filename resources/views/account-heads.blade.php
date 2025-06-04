@@ -19,14 +19,15 @@
   </div><!-- /.container-fluid -->
 </div>
 <div class="row">
-  <div class="panel">
-      <div class="panel-heading">
-
-              <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#accounthead">Add New</a>
-
+  <div class="card">
+      <div class="card-heading">
+          
+           @can('create accounthead')
+              <a href="#" class="btn btn-primary float-right mt-3 mx-3" data-toggle="modal" data-target="#accounthead">Add New</a>
+           @endcan
 
       </div>
-      <div class="panel-body">
+      <div class="card-body">
           <table class="table  responsive-table" id="products">
               <thead>
                   <tr style="color: ">
@@ -50,9 +51,14 @@
                           <td>{{$account->category}}</td>
                           <td>{{$account->type}}</td>
                           <td>{{$account->description}}</td>
-                          <td><button class="label label-primary" id="ach{{$account->id}}" onclick="accountHead({{$account->id}})"  data-toggle="modal" data-target="#accounthead" data-title="{{$account->title}}" data-category="{{$account->category}}" data-type="{{$account->type}}" data-description="{{$account->description}}">Edit</button>
-                          <a href="/delete-acch/{{$account->id}}" class="label label-danger"  onclick="return confirm('Are you sure you want to delete {{$account->title}}\'s financial account head?')">Delete</a>
-                          </td>
+                          <td>
+                        @can('edit accounthead') 
+                          <button class="btn btn-primary btn-xs" id="ach{{$account->id}}" onclick="accountHead({{$account->id}})"  data-toggle="modal" data-target="#accounthead" data-title="{{$account->title}}" data-category="{{$account->category}}" data-type="{{$account->type}}" data-description="{{$account->description}}">Edit</button>
+                        @endcan
+                        @can('delete accounthead') 
+                          <a href="/delete-acch/{{$account->id}}" class="btn btn-danger btn-xs"  onclick="return confirm('Are you sure you want to delete {{$account->title}}\'s financial account head?')">Delete</a>
+                        @endcan  
+                        </td>
 
                       </tr>
                   @endforeach

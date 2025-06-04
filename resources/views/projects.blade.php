@@ -22,8 +22,9 @@
 
     <div class="card">
         <div class="card-body" style="overflow: auto;">
+          @can('create project')
             <a href="/addproject" class="btn btn-primary" style="float: right;">Add New</a>
-
+          @endcan
             <table class="table responsive-table" id="products">
                 <thead>
                     <tr>
@@ -49,11 +50,14 @@
 
 
                                 <div class="btn-group">
+                                  @can('edit project')
                                     <a href="/edit-project/{{ $pr->id }}" class="btn btn-default btn-xs">Edit
                                     </a>
-
+                                  @endcan
+                                  @can('view project')
                                     <a href="/project-dashboard/{{ $pr->id }}"
                                         class="btn btn-primary btn-sm">Dashboard</a>
+                                  @endcan
 
                                 </div>
                             </td>

@@ -21,9 +21,10 @@
     <div class="row">
         <div class="card">
             <div class="card-heading" style="text-align: center">
-
+               @canany(['create transaction', 'create payment'])
                 <a href="#" class="btn btn-primary float-right" style="margin: 10px;" data-toggle="modal"
                     data-target="#transaction"> <i class="fa fa-plus"></i> Add New</a>
+               @endcanany
 
 
             </div>
@@ -56,29 +57,34 @@
                                 <td>{{ $transact->date }}</td>
                                 <td>{{ $transact->reference_no }}</td>
                                 <td>{{ $transact->detail }}</td>
-                                <td>{{ is_numeric($transact->from) ? $users->where('id', $transact->from)->first()->name : $transact->from }}
+                                <td>{{ is_numeric($transact->from) && $users->where('id', $transact->from)->first() ? $users->where('id', $transact->from)->first()->name : $transact->from }}
                                 </td>
-                                <td>{{ is_numeric($transact->to) ? $users->where('id', $transact->to)->first()->name : $transact->to }}
+                                <td>{{ is_numeric($transact->to) && $users->where('id', $transact->to)->first() ? $users->where('id', $transact->to)->first()->name : $transact->to }}
                                 </td>
-                                <td>{{ is_numeric($transact->approved_by) ? $users->where('id', $transact->approved_by)->first()->name : $transact->approved_by }}
+                                <td>{{ is_numeric($transact->approved_by) && $users->where('id', $transact->approved_by)->first() ? $users->where('id', $transact->approved_by)->first()->name : $transact->approved_by }}
                                 </td>
-                                <td>{{ is_numeric($transact->recorded_by) ? $users->where('id', $transact->recorded_by)->first()->name : $transact->recorded_by }}
+                                <td>{{ is_numeric($transact->recorded_by) && $users->where('id', $transact->recorded_by)->first() ? $users->where('id', $transact->recorded_by)->first()->name : $transact->recorded_by }}
                                 </td>
                                 <td>
-
-                                    <button class="label label-primary" id="ach{{ $transact->id }}"
-                                        onclick="transaction({{ $transact->id }})" data-toggle="modal"
-                                        data-target="#transaction" data-title="{{ $transact->title }}"
-                                        data-amount="{{ $transact->amount }}"
-                                        data-account_head="{{ $transact->account_head }}"
-                                        data-date="{{ $transact->date }}" data-project="{{ $transact->project_id }}"
-                                        data-reference_no="{{ $transact->reference_no }}"
-                                        data-detail="{{ $transact->detail }}" data-from="{{ $transact->from }}"
-                                        data-to="{{ $transact->to }}" data-approved_by="{{ $transact->approved_by }}"
-                                        data-recorded_by="{{ $transact->recorded_by }}">Edit</button>
-                                    <a href="/delete-trans/{{ $transact->id }}" class="label label-danger"
-                                        onclick="return confirm('Are you sure you want to delete {{ $transact->detail }}\'s Financial Record?')">Delete</a>
-                                </td>
+                                   <div class="btn-group">
+                                        @canany(['edit transaction', 'edit payment'])
+                                        <button class="btn btn-primary btn-xs" id="ach{{ $transact->id }}"
+                                            onclick="transaction({{ $transact->id }})" data-toggle="modal"
+                                            data-target="#transaction" data-title="{{ $transact->title }}"
+                                            data-amount="{{ $transact->amount }}"
+                                            data-account_head="{{ $transact->account_head }}"
+                                            data-date="{{ $transact->date }}" data-project="{{ $transact->project_id }}"
+                                            data-reference_no="{{ $transact->reference_no }}"
+                                            data-detail="{{ $transact->detail }}" data-from="{{ $transact->from }}"
+                                            data-to="{{ $transact->to }}" data-approved_by="{{ $transact->approved_by }}"
+                                            data-recorded_by="{{ $transact->recorded_by }}">Edit</button>
+                                        @endcanany
+                                        @canany(['delete transaction', 'delete payment'])
+                                        <a href="/delete-trans/{{ $transact->id }}" class="btn btn-danger btn-xs"
+                                            onclick="return confirm('Are you sure you want to delete {{ $transact->detail }}\'s Financial Record?')">Delete</a>
+                                        @endcanany
+                                   </div>
+                                    </td>
 
                             </tr>
                         @endforeach

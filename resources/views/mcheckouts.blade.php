@@ -20,14 +20,14 @@
 
     <h3 class="page-title">Material Checkouts | <small style="color: green">for Building</small></h3>
     <div class="row">
-            <div class="panel">
-                <div class="panel-heading">
-
-                        <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#materialcheckout">Collect Materials</a>
-
+            <div class="card">
+                <div class="card-heading">
+                     @canany(['create material_supply', 'create material_checkout', 'create material_damage', 'create material_stock'])
+                        <a href="#" class="btn btn-primary float-right mt-3 mx-3" data-toggle="modal" data-target="#materialcheckout">Collect Materials</a>
+                     @endcanany
 
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <table class="table responsive-table" id="products">
                         <thead>
                             <tr>
@@ -57,9 +57,12 @@
                                     <td>{{$mtc->business->business_name ?? ''}}</td>
 
                                     <td class="btn-group">
-
+                                      @canany(['edit material_supply', 'edit material_checkout', 'edit material_damage', 'edit material_stock'])
                                         <button class="btn btn-primary btn-xs" id="ach{{$mtc->id}}" onclick="materialcheckout({{$mtc->id}})"  data-toggle="modal" data-target="#materialcheckout"  data-material_name="{{$mtc->material->name}}" data-material_id="{{$mtc->material_id}}" data-task_id="{{$mtc->task_id}}" data-quantity="{{$mtc->quantity}}" data-details="{{$mtc->details}}"  data-checkout_by="{{$mtc->checkout_by}}"  data-approved_by="{{$mtc->approved_by}}" data-dated="{{$mtc->dated}}" data-setting_id="{{$mtc->setting_id}}">Edit</button>
+                                      @endcanany
+                                      @canany(['delete material_supply', 'delete material_checkout', 'delete material_damage', 'delete material_stock'])
                                         <a href="/delete-mtc/{{$mtc->id}}/{{$mtc->material_id}}/{{$mtc->quantity}}" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure you want to delete the material checkout record, this will return the {{$mtc->material->name}} with quantity {{$mtc->quantity}} back to stock?')">Delete</a>
+                                      @endcanany
                                     </td>
 
                                 </tr>

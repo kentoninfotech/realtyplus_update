@@ -13,6 +13,7 @@ class UserPermissionController extends Controller
 
     public function __construct(GroupPermissions $groupPermissions) {
         $this->groupPermissions = $groupPermissions;
+        $this->middleware('auth');
     }
 
     /**
@@ -21,14 +22,14 @@ class UserPermissionController extends Controller
      * @return \Illuminate\View\View
      */
     public function index() {
-        $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
-        $users = User::with('roles', 'permissions')->where('category', '!=', 'client')->paginate(10);
+        $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
+        $users = User::with('roles', 'permissions')->where('business_id', auth()->user()->business_id)->whereNotIn('category', ['client', 'supplier', 'labourer'])->paginate(10);
         return view('roles.index', compact('users', 'roles'));
     }
 
     public function edit(User $user) {
-        $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
-        $users = User::with('roles', 'permissions')->paginate(10);
+        $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
+        $users = User::with('roles', 'permissions')->where('business_id', auth()->user()->business_id)->whereNotIn('category', ['client', 'supplier', 'labourer'])->paginate(10);
         $groupPermissions = $this->groupPermissions->permission();
         return view('roles.user-roles', compact('user', 'users', 'roles', 'groupPermissions'));
     }

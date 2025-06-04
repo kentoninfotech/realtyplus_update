@@ -31,7 +31,9 @@
                         <small class="text-muted font-weight-bold" style="font-weight: 600;">{{ $user->email ?? '' }}</small>
                     </div>
                 </div>
+              @can('edit user')
                 <a href="{{ route('edit.personnel', $user->id) }}" class="btn btn-outline-secondary btn-sm mt-3 mt-md-0 ml-auto">Edit</a>
+              @endcan
             </div>
         </div>
 
@@ -39,15 +41,15 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong>Personal Information</strong>
-                <a href="{{ route('edit.personnel', $user->id) }}" class="btn btn-link btn-sm ml-auto">Edit</a>
+                <!-- <a href="{{-- route('edit.personnel', $user->id) --}}" class="btn btn-link btn-sm ml-auto">Edit</a> -->
             </div>
             <div class="card-body row">
-                <div class="col-md-6 mb-2">First Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->firstname }}</span></div>
-                <div class="col-md-6 mb-2">Last Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->lastname }}</span></div>
-                <div class="col-md-12 mb-2">Other Names: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->othername }}</span></div>
+                <div class="col-md-6 mb-2">First Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->firstname ?? '' }}</span></div>
+                <div class="col-md-6 mb-2">Last Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->lastname ?? '' }}</span></div>
+                <div class="col-md-12 mb-2">Other Names: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->othername ?? '' }}</span></div>
                 <div class="col-md-6 mb-2">State: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->state_of_origin ?? '' }}</span></div>
                 <div class="col-md-6 mb-2">Nationality: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->nationality ?? '' }}</span></div>
-                <div class="col-md-6 mb-2">Date of Birth: <span class="font-weight-bold" style="font-weight: 700;">{{ optional($user->personnel->dob)->format('d-M-Y') ?? '' }}</span></div>
+                <div class="col-md-6 mb-2">Date of Birth: <span class="font-weight-bold" style="font-weight: 700;">{{ isset($user->personnel->dob) ? $user->personnel->dob->format('d-M-Y') : '' }}</span></div>
                 <div class="col-md-6 mb-2">Marital Status: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->marital_status ?? '' }}</span></div>
             </div>
         </div>
@@ -56,7 +58,7 @@
         <div class="card mb-4">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong>Contact Information</strong>
-                <a href="{{ route('edit.personnel', $user->id) }}" class="btn btn-link btn-sm ml-auto">Edit</a>
+                <a href="#{{-- route('edit.personnel', $user->id) --}}" class="btn btn-link btn-sm ml-auto">Change Password</a>
             </div>
             <div class="card-body row">
                 <div class="col-md-6 mb-2">Email: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->email }}</span></div>
@@ -69,7 +71,7 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong>Official Information</strong>
-                @if($user->personnel->id && $user->personnel->cv)
+                @if(isset($user->personnel->id) && $user->personnel->cv)
                 <a href="{{ asset('personnel/cv/'. $user->personnel->cv) }}" class="btn btn-link btn-sm ml-auto" target="_blank" rel="noopener">View CV</a>
                 @endif
             </div>
@@ -77,11 +79,12 @@
                 <div class="col-md-6 mb-2">Department: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->department ?? 'N/A' }}</span></div>
                 <div class="col-md-6 mb-2">Designation: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->designation ?? 'N/A' }}</span></div>
                 <div class="col-md-6 mb-2">Basic Salary: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->salary ?? 'N/A' }}</span></div>
-                <div class="col-md-6 mb-2">Employment Date: <span class="font-weight-bold" style="font-weight: 700;">{{ optional($user->personnel->employment_date)->format('d-M-Y') ?? 'N/A' }}</span></div>
+                <div class="col-md-6 mb-2">Employment Date: <span class="font-weight-bold" style="font-weight: 700;">{{ isset($user->personnel->employment_date) ? $user->personnel->employment_date->format('d-M-Y') : 'N/A' }}</span></div>
             </div>
         </div>
 
         <!-- Roles and Permissions (Optional Section) -->
+    @hasrole('System Admin')
         @if($user->roles->isNotEmpty())
         <div class="card shadow-sm rounded-4">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -117,6 +120,7 @@
             </div>
         </div>
         @endif
+    @endhasrole
     </div>
 </div>
 </div>

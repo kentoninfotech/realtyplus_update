@@ -32,7 +32,7 @@ class PersonnelController extends Controller
      */
     public function newPersonnel()
     {
-        $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
+        $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
         return view('personnel.new-personnel', compact('roles'));
     }
 
@@ -52,7 +52,7 @@ class PersonnelController extends Controller
      */
     public function allStaffs()
     {
-        $staffs = User::where('category', 'staff')->paginate(20);
+        $staffs = User::where('business_id', auth()->user()->business_id)->where('category', 'staff')->paginate(20);
         return view('personnel.staffs', compact('staffs'));
     }
     /**
@@ -61,7 +61,7 @@ class PersonnelController extends Controller
      */
     public function allWorkers()
     {
-        $workers = User::where('category', 'worker')->paginate(20);
+        $workers = User::where('business_id', auth()->user()->business_id)->where('category', 'worker')->paginate(20);
         return view('personnel.workers', compact('workers'));
     }
     /**
@@ -70,7 +70,7 @@ class PersonnelController extends Controller
      */
     public function allContractors()
     {
-        $contractors = User::where('category', 'contractor')->paginate(20);
+        $contractors = User::where('business_id', auth()->user()->business_id)->where('category', 'contractor')->paginate(20);
         return view('personnel.contractors', compact('contractors'));
     }
 
@@ -137,7 +137,7 @@ class PersonnelController extends Controller
     public function editPersonnel($id)
     {
         $user = User::findOrFail($id);
-        $roles = Role::where('name', '!=', 'Super Admin')->where('name', '!=', 'Client')->get();
+        $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
         return view('personnel.edit-personnel', compact('user', 'roles'));
     }
     /**

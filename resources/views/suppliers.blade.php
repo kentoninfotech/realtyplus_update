@@ -19,11 +19,13 @@
       </div><!-- /.container-fluid -->
     </div>
     <div class="row">
-            <div class="panel">
-                <div class="panel-heading">
-                  <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#supplier">Add New</a>
-                </div>
-                <div class="panel-body">
+            <div class="card">
+                <div class="card-heading">
+                  @canany(['create material_supply', 'create material_checkout', 'create material_damage', 'create material_stock'])
+                     <a href="#" class="btn btn-primary float-right mt-3 mx-3" data-toggle="modal" data-target="#supplier">Add New</a>
+                  @endcanany
+                    </div>
+                <div class="card-body">
                   <table class="table responsive-table" id="products">
                       <thead>
                           <tr style="color: ">
@@ -51,10 +53,15 @@
                                   <td>{{$sup->address}}</td>
                                   <td>{{$sup->business->business_name}}</td>
                                   <td>
-
-                                      <button class="label label-primary" id="ach{{$sup->id}}" onclick="supplier({{$sup->id}})"  data-toggle="modal" data-target="#supplier" data-supplier_name="{{$sup->supplier_name}}" data-company_name="{{$sup->company_name}}" data-category="{{$sup->category}}" data-phone_number="{{$sup->phone_number}}"  data-details="{{$sup->details}}"  data-details="{{$sup->details}}"  data-address="{{$sup->address}}"  data-business_id="{{$sup->business_id}}">Edit</button>
-                                      <a href="/delete-sup/{{$sup->id}}" class="label label-danger"  onclick="return confirm('Are you sure you want to delete the supplier: {{$sup->supplier_name}}?')">Delete</a>
-                                  </td>
+                                    <div class="btn-group">
+                                      @canany(['edit material_supply', 'edit material_checkout', 'edit material_damage', 'edit material_stock'])
+                                         <button class="btn btn-primary btn-xs" id="ach{{$sup->id}}" onclick="supplier({{$sup->id}})"  data-toggle="modal" data-target="#supplier" data-supplier_name="{{$sup->supplier_name}}" data-company_name="{{$sup->company_name}}" data-category="{{$sup->category}}" data-phone_number="{{$sup->phone_number}}"  data-details="{{$sup->details}}"  data-details="{{$sup->details}}"  data-address="{{$sup->address}}"  data-business_id="{{$sup->business_id}}">Edit</button>
+                                      @endcanany
+                                      @canany(['delete material_supply', 'delete material_checkout', 'delete material_damage', 'delete material_stock'])
+                                         <a href="/delete-sup/{{$sup->id}}" class="btn btn-danger btn-xs"  onclick="return confirm('Are you sure you want to delete the supplier: {{$sup->supplier_name}}?')">Delete</a>
+                                      @endcanany
+                                    </div>
+                                    </td>
 
                               </tr>
                           @endforeach

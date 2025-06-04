@@ -52,6 +52,11 @@ class User extends Authenticatable
         return $this->hasOne(businesses::class);
     }
 
+    public function businesses()
+    {
+        return $this->belongsTo(businesses::class, 'business_id', 'id');
+    }
+
     public function personnel()
     {
         return $this->hasOne(Personnel::class);

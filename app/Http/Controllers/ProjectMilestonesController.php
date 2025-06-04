@@ -108,7 +108,7 @@ class ProjectMilestonesController extends Controller
             'details'=>$request->details,
             'assigned_to'=>$request->assigned_to,
             'estimated_cost'=>$request->estimated_cost,
-            'actual_cost'=>$request->actual_cost,
+            // 'actual_cost'=>$request->actual_cost,
             'status'=>$request->status,
             'business_id'=>Auth()->user()->business_id
         ]);

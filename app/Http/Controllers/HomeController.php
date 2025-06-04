@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\projects;
+use Illuminate\Support\Facades\Auth;
 
 // To be used for registration
 use Illuminate\Support\Facades\Hash;
@@ -35,7 +36,7 @@ class HomeController extends Controller
 
     public function clients()
     {
-        $allclients = User::where('category','client')->get();
+        $allclients = User::where('business_id', Auth::user()->business_id)->where('category','client')->get();
         return view('clients')->with(['allclients'=>$allclients]);
     }
 

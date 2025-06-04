@@ -20,9 +20,9 @@ class CreateProjectFilesTable extends Migration
             $table->unsignedBigInteger('milestone_id')->index();
             $table->foreign('milestone_id')->references('id')->on('project_milestones')->onDelete('cascade');
             $table->unsignedBigInteger('task_id')->index();
-            $table->foreign('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->foreign('task_id')->nullable()->references('id')->on('tasks')->onDelete('cascade');
             $table->string('file_name',150)->nullable();
-            $table->date('file_title')->nullable();
+            $table->string('file_title')->nullable();
             $table->string('details',255)->nullable();
             $table->string('featured',5)->nullable();
             $table->string('cloud_location',30)->nullable();

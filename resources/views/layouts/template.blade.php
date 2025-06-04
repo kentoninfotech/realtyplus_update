@@ -108,7 +108,7 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ asset('dist/img/user1-128x128.jpg') }}" alt="User Avatar"
+                                <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('public/personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" alt="User Avatar"
                                     class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
@@ -173,7 +173,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ asset('dist/img/passport.jpg') }}" class="img-circle elevation-2"
+                        <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('public/personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" class="img-circle elevation-2"
                             alt="User Image"> <span style="color: white">{{ auth()->user()->name }}</span>
                     </div>
                     <div class="info">
@@ -210,6 +210,8 @@
                                 </p>
                             </a>
                         </li>
+                
+                 @canany(['view client', 'create client', 'edit client', 'delete client'])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-users"></i>
@@ -225,16 +227,20 @@
                                         <p>All Clients</p>
                                     </a>
                                 </li>
+                             @can('create client')
                                 <li class="nav-item">
                                     <a href="{{ url('new-client') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                        <i class="fa fa-plus-square nav-icon"></i>
                                         <p>New Client</p>
                                     </a>
                                 </li>
+                             @endcan
 
                             </ul>
                         </li>
+                 @endcanany
 
+                 @canany(['view project', 'create project', 'edit project', 'delete project'])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-suitcase"></i>
@@ -246,20 +252,24 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ url('projects') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-briefcase nav-icon"></i>
                                         <p>View Projects</p>
                                     </a>
                                 </li>
+                            @can('create project')
                                 <li class="nav-item">
                                     <a href="{{ url('addproject') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                        <i class="fas fa-building nav-icon"></i>
                                         <p>Add New</p>
                                     </a>
                                 </li>
+                            @endcan
 
                             </ul>
                         </li>
+                  @endcanany
 
+                  @canany(['view task', 'create task', 'edit task', 'delete task'])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tasks"></i>
@@ -271,20 +281,27 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ url('tasks') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-tasks nav-icon"></i>
                                         <p>View Tasks</p>
                                     </a>
                                 </li>
+                             @can('create task')
                                 <li class="nav-item">
                                     <a href="{{ url('new-task') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                        <i class="fa fa-plus-square nav-icon"></i>
                                         <p>New Task</p>
                                     </a>
                                 </li>
+                             @endcan
 
                             </ul>
                         </li>
+                  @endcanany
 
+                  @canany(['view material_checkout', 'create material_checkout', 'edit material_checkout', 'delete material_checkout',
+                            'view material_damage', 'create material_damage', 'edit material_damage', 'delete material_damage',
+                            'view material_supply', 'create material_supply', 'edit material_supply', 'delete material_supply',
+                            'view material_stock', 'create material_stock', 'edit material_stock', 'delete material_stock'])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cubes"></i>
@@ -296,26 +313,26 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ url('materials') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fa fa-cube nav-icon"></i>
                                         <p>Manage Materials</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ url('mcheckouts') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                        <i class="fas fa-cart-arrow-down nav-icon"></i>
                                         <p>Material Checkout</p>
                                     </a>
                                 </li>
 
                                 <li class="nav-item">
                                     <a href="{{ url('suppliers') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-cubes nav-icon"></i>
                                         <p>Suppliers</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="{{ url('msupplies') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                    <a href="{{ url('supplies') }}" class="nav-link">
+                                        <i class="fa fa-cart-plus nav-icon"></i>
                                         <p>Material Supplies</p>
                                     </a>
                                 </li>
@@ -323,7 +340,10 @@
 
                             </ul>
                         </li>
+                 @endcanany
 
+                 @canany(['view accounthead', 'create accounthead', 'edit accounthead', 'delete accounthead', 
+                         'view transaction', 'create transaction', 'edit transaction', 'delete transaction'])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-credit-card"></i>
@@ -335,22 +355,23 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ url('transactions') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="far fa-credit-card nav-icon"></i>
                                         <p>Manage Transactions</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ url('account-heads') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                        <i class="fas fa-money-check nav-icon"></i>
                                         <p>Manage Account Heads</p>
                                     </a>
                                 </li>
 
                             </ul>
                         </li>
+                 @endcanany
 
 
-
+                 @canany(['view user', 'create user', 'edit user', 'delete user'])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-user"></i>
@@ -360,21 +381,23 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                              @can('create user')
                                 <li class="nav-item">
                                     <a href="{{ route('new.personnel') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-user-plus nav-icon"></i>
                                         <p>New Personnel</p>
                                     </a>
                                 </li>
+                              @endcan
                                 <li class="nav-item">
                                     <a href="{{ route('personnel') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-users nav-icon"></i>
                                         <p>All Personnel</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('staffs') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-user-tie nav-icon"></i>
                                         <p>Staffs</p>
                                     </a>
                                 </li>
@@ -386,7 +409,7 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('contractors') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                        <i class="far fa-user nav-icon"></i>
                                         <p>Contractors</p>
                                     </a>
                                 </li>
@@ -394,6 +417,9 @@
                             </ul>
                         </li>
 
+                @endcanany
+
+                @hasrole('System Admin')
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cog"></i>
@@ -406,21 +432,21 @@
                                 <li class="nav-item">
                                     <a href="{{ url('settings') }}" class="nav-link" data-toggle="modal"
                                         data-target="#settings">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-cog nav-icon"></i>
                                         <p>System Settings</p>
                                     </a>
 
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ route('users.role') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
+                                        <i class="fas fa-user-lock nav-icon"></i>
                                         <p>Manage Role & Perm..</p>
                                     </a>
 
                                 </li>
                                 <li class="nav-item">
                                     <a href="{{ url('categories') }}" class="nav-link">
-                                        <i class="far fa-user-plus nav-icon"></i>
+                                        <i class="far fa-file-alt nav-icon"></i>
                                         <p>Categories</p>
                                     </a>
                                 </li>
@@ -429,12 +455,13 @@
 
                             </ul>
                         </li>
+                @endhasanyrole
 
 
 
                         <li class="nav-item">
                             <a href="{{ url('logout') }}" class="nav-link">
-                                <i class="nav-icon far fa-user text-info"></i>
+                                <i class="fa fa-sign-out nav-icon text-info"></i>
                                 <p>Logout</p>
                             </a>
                         </li>
@@ -503,7 +530,7 @@
                     <div class="form-check">
                         <input type="checkbox" name="create_new_ministry" id="create_new_ministry"
                             class="form-check-input">
-                        <label class="form-check-label"><small style="color: {{ Auth::user()->business->primary_color }}"><i>Click Here to
+                        <label class="form-check-label"><small style="color: {{ Auth::user()->businesses->primary_color }}"><i>Click Here to
                                     Create New Business</i></small></label>
                     </div>
 
@@ -511,19 +538,19 @@
                         enctype="multipart/form-data">
                         @csrf
 
-                        <input type="hidden" name="id" value="{{ Auth::user()->business->id }}">
+                        <input type="hidden" name="id" value="{{ Auth::user()->businesses->id }}">
 
-                        <input type="hidden" name="oldlogo" value="{{ Auth::user()->business->logo }}">
+                        <input type="hidden" name="oldlogo" value="{{ Auth::user()->businesses->logo }}">
 
-                        <input type="hidden" name="oldbackground" value="{{ Auth::user()->business->background }}">
+                        <input type="hidden" name="oldbackground" value="{{ Auth::user()->businesses->background }}">
 
                         <input type="hidden" name="newministry" id="newministry" value="">
 
                         <div class="form-group">
                             <label for="ministrygroup_id" class="control-label ">Ministry Group/Headquarter</label>
                             <select class="form-control" name="ministrygroup_id" id="ministrygroup_id">
-                                <option value="{{ $business->businessgroup_id }}" selected>
-                                    <!-- {{-- $businessgroups->where('id', $business->businessgroup_id)->first()->businessgroup_name --}} -->
+                                <option value="{{ $businesses->businessgroup_id }}" selected>
+                                    <!-- {{-- $businessgroups->where('id', $businesses->businessgroup_id)->first()->businessgroup_name --}} -->
                                 </option>
                                 @foreach ($businessgroups as $mg)
                                     <option value="{{ $mg->id }}">{{ $mg->businessgroup_name }}</option>
@@ -535,19 +562,19 @@
                         <div class="form-group">
                             <label for="ministry_name">Ministry / Church Name</label>
                             <input type="text" name="ministry_name" id="ministry_name" class="form-control"
-                                value="{{ Auth::user()->business->business_name }}">
+                                value="{{ Auth::user()->businesses->business_name }}">
                         </div>
 
                         <div class="form-group">
                             <label for="motto">Motto</label>
                             <input type="text" name="motto" id="motto" class="form-control"
-                                value="{{ Auth::user()->business->motto }}">
+                                value="{{ Auth::user()->businesses->motto }}">
                         </div>
 
                         <div class="form-group">
                             <label for="address">Address</label>
                             <input type="text" name="address" id="address" class="form-control"
-                                value="{{ Auth::user()->business->address }}">
+                                value="{{ Auth::user()->businesses->address }}">
                         </div>
 
 
@@ -566,13 +593,13 @@
                         <div class="form-group">
                             <label for="color">Choose System Colour</label>
                             <input type="color" name="color" id="color" class="form-control"
-                                value="{{ Auth::user()->business->color }}">
+                                value="{{ Auth::user()->businesses->color }}">
                         </div>
 
                         <div class="form-group">
                             <label for="user_id" class="control-label ">Admin User</label>
                             <select class="form-control" name="user_id" id="user_id">
-                                <option value="{{ Auth::user()->business->user_id }}" selected>{{ Auth::user()->business->user->name }}
+                                <option value="{{ Auth::user()->businesses->user_id }}" selected>{{ Auth::user()->businesses->user->name }}
                                 </option>
                                 @foreach ($staff as $hm)
                                     <option value="{{ $hm->id }}">{{ $hm->name }}</option>
@@ -584,7 +611,7 @@
                         <div class="form-group">
                             <label for="mode">Mode</label>
                             <select class="form-control" name="mode" id="mode">
-                                <option value="{{ $business->mode }}">{{ Auth::user()->business->mode }}</option>
+                                <option value="{{ $businesses->mode }}">{{ Auth::user()->businesses->mode }}</option>
                                 <option value="Active" selected>Active</option>
                                 <option value="Maintenance">Maintenance</option>
                             </select>

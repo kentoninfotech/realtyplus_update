@@ -19,11 +19,13 @@
       </div><!-- /.container-fluid -->
     </div>
     <div class="row">
-            <div class="panel">
-                <div class="panel-heading">
-                  <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#material">Add New</a>
+            <div class="card">
+                <div class="card-heading">
+                  @canany(['create material_supply', 'create material_checkout', 'create material_damage', 'create material_stock'])
+                    <a href="#" class="btn btn-primary float-right mt-3 mx-3" data-toggle="modal" data-target="#material">Add New</a>
+                  @endcanany
                 </div>
-                <div class="panel-body">
+                <div class="card-body">
                     <table class="table responsive-table" id="products">
                         <thead>
                             <tr style="color: ">
@@ -53,9 +55,15 @@
                                     <td>{{$mat->stock->quantity}}</td>
                                     <td>
 
-                                        <button class="label label-primary" id="ach{{$mat->id}}" onclick="material({{$mat->id}})"  data-toggle="modal" data-target="#material" data-name="{{$mat->name}}" data-type="{{$mat->type}}" data-category="{{$mat->category}}" data-measurement_unit="{{$mat->measurement_unit}}"  data-picture="{{$mat->picture}}"  data-size="{{$mat->size}}"  data-cost_per="{{$mat->cost_per}}"  data-business_id="{{$mat->business_id}}">Edit</button>
-                                        <a href="/delete-mat/{{$mat->id}}" class="label label-danger"  onclick="return confirm('Are you sure you want to delete the material: {{$mat->name}}?')">Delete</a>
-                                    </td>
+                                  <div class="btn-group"></div>
+                                    @canany(['edit material_supply', 'edit material_checkout', 'edit material_damage', 'edit material_stock'])
+                                        <button class="btn btn-primary btn-xs" id="ach{{$mat->id}}" onclick="material({{$mat->id}})"  data-toggle="modal" data-target="#material" data-name="{{$mat->name}}" data-type="{{$mat->type}}" data-category="{{$mat->category}}" data-measurement_unit="{{$mat->measurement_unit}}"  data-picture="{{$mat->picture}}"  data-size="{{$mat->size}}"  data-cost_per="{{$mat->cost_per}}"  data-business_id="{{$mat->business_id}}">Edit</button>
+                                    @endcanany
+                                    @canany(['delete material_supply', 'delete material_checkout', 'delete material_damage', 'delete material_stock'])
+                                        <a href="/delete-mat/{{$mat->id}}" class="btn btn-danger btn-xs"  onclick="return confirm('Are you sure you want to delete the material: {{$mat->name}}?')">Delete</a>
+                                    @endcanany
+                                      </td>
+                                  </div>
 
                                 </tr>
                             @endforeach

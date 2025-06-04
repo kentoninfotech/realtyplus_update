@@ -7,12 +7,12 @@
   <div class="container-fluid">
     <div class="row mb-2">
       <div class="col-sm-6">
-        <h1 class="m-0">Account Heads</h1>
+        <h1 class="m-0">Category</h1>
       </div><!-- /.col -->
       <div class="col-sm-6">
         <ol class="breadcrumb float-sm-right">
           <li class="breadcrumb-item"><a href="#">Home</a></li>
-          <li class="breadcrumb-item active">Account Heads</li>
+          <li class="breadcrumb-item active">Category</li>
         </ol>
       </div><!-- /.col -->
     </div><!-- /.row -->
@@ -20,14 +20,15 @@
 </div>
 
 <div class="row">
-  <div class="panel">
-      <div class="panel-heading">
+  <div class="card">
+      <div class="card-heading">
 
-              <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#category">Add New</a>
-
+        @canany(['create accounthead', 'create transaction'])
+              <a href="#" class="btn btn-primary float-right mt-3 mx-3" data-toggle="modal" data-target="#category">Add New</a>
+        @endcanany
 
       </div>
-      <div class="panel-body">
+      <div class="card-body">
           <table class="table  responsive-table" id="products">
               <thead>
                   <tr style="color: ">
@@ -47,9 +48,15 @@
                           <td>{{$cat->group_name}}</td>
                           <td>{{$cat->description}}</td>
                           <td>{{$cat->business->business_name}}</td>
-                          <td><button class="label label-primary" id="ach{{$cat->id}}" onclick="category({{$cat->id}})"  data-toggle="modal" data-target="#category" data-title="{{$cat->title}}" data-category_group="{{$cat->category_group}}" data-description="{{$cat->description}}"  data-business_id="{{$cat->business_id}}">Edit</button>
+                          <td>
+                        @canany(['edit accounthead', 'edit transaction'])  
+                          <button class="label label-primary" id="ach{{$cat->id}}" onclick="category({{$cat->id}})"  data-toggle="modal" data-target="#category" data-title="{{$cat->title}}" data-category_group="{{$cat->category_group}}" data-description="{{$cat->description}}"  data-business_id="{{$cat->business_id}}">Edit</button>
+                        @endcanany
+                        @canany(['delete accounthead', 'delete transaction'])
                           <a href="/delete-cat/{{$cat->id}}" class="label label-danger"  onclick="return confirm('Are you sure you want to delete {{$cat->title}}\'s category?')">Delete</a>
-                          </td>
+                        @endcanany  
+                          </td>  
+                        </td>
 
                       </tr>
                   @endforeach

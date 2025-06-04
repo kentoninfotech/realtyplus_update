@@ -7,7 +7,8 @@ use App\Models\tasks;
 use App\Models\User;
 use App\Models\businesses;
 use App\Models\businessgroups;
-use Auth;
+use Illuminate\Support\Facades\Auth;
+// use Auth;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,14 +33,21 @@ class AppServiceProvider extends ServiceProvider
 
             if (Auth::check())
             {
+                $businessId = Auth::user()->business_id;
                 $view->with('login_user', Auth::user());
-                $view->with('mytasks', tasks::where('assigned_to',Auth::user()->id)->get());
-                $view->with('clients', User::select('id','name','name','status')->where('business_id',Auth::user()->business_id)->get());
-                $view->with('staff', User::select('id','name','phone_number','status')->where('business_id',Auth::user()->business_id)->get());
+                $view->with('mytasks', tasks::where('assigned_to', Auth::user()->id)->get());
+                $view->with('clients', User::select('id','name','name','status')->where('business_id', $businessId)->where('category', 'client')->get());
+                $view->with('staff', User::select('id','name','phone_number','status')
+                       ->where('business_id', $businessId)
+                    //    ->whereNotIn('category', ['client', 'supplier', 'labourer'])
+                       ->whereIn('category', ['business', 'worker', 'staff', 'contractor'])
+                       ->get());
 
-                $view->with('userbusinesses',businesses::select('id','business_name')->where('user_id',Auth::user()->id)->orWhere('id',Auth()->user()->business_id)->get());
+                $view->with('userbusinesses',businesses::select('id','business_name')->where('user_id', Auth::user()->id)->orWhere('id', $businessId)->get());
 
-                $view->with('business', businesses::where('id',Auth::user()->business_id)->first());
+                $view->with('business', businesses::where('id', $businessId)->first());
+
+                $view->with('businesses', businesses::where('id', $businessId)->first());
 
             }else{
                 $view->with('business', businesses::first());

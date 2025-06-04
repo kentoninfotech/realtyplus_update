@@ -198,9 +198,13 @@
                         <div class="col-md-6">
 
                             <div class="list-group">
+                                @can('create project')
                                 <a href="{{ url('new-milestone/' . $project->id) }}"
                                     class="list-group-item list-group-item-action active">Milestones <span
                                         class="btn btn-default" style="float: right;">Add New</span></a>
+                                @else
+                                <a href="#" class="list-group-item list-group-item-action active">Milestones</a>
+                                @endcan
 
                                 @foreach ($project->milestones as $pm)
                                     <a href="{{ url('milestone/' . $pm->id) }}"
@@ -211,9 +215,13 @@
                         </div>
                         <div class="col-md-6">
                             <div class="list-group">
+                              @can('create project')
                                 <a href="{{ url('addp-file/' . $project->id) }}"
                                     class="list-group-item list-group-item-action active">Project Files <span
                                         class="btn btn-default" style="float: right;">New File</span></a>
+                              @else
+                                <a href="#" class="list-group-item list-group-item-action active">Project Files</a>
+                              @endcan
 
                                 @foreach ($project->project_files as $ft)
                                     @php
@@ -223,8 +231,10 @@
                                         <a target="_blank"
                                             href="{{ URL::to('public/files/' . $ft->project_id . '/' . $ft->file_name) }}">{{ $ft->file_title }}
                                             <span class="badge badge-info">{{ $file_ext }}</span></a>
-                                        <a href="/delete-file/{{ $ft->id }}"
+                                         @can('edit project')
+                                            <a href="/delete-file/{{ $ft->id }}"
                                             class="btn btn-inline btn-xs btn-danger float-right">Del</a>
+                                         @endcan
                                     </li>
                                 @endforeach
                             </div>

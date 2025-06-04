@@ -36,8 +36,10 @@
                         <div class="icon">
                             <i class="ion ion-persons"></i>
                         </div>
+                     @can('view client')
                         <a href="{{ url('clients') }}" class="small-box-footer">View All Clients <i
                                 class="fas fa-arrow-circle-right"></i></a>
+                     @endcan
                     </div>
                 </div>
 
@@ -53,8 +55,10 @@
                         <div class="icon">
                             <i class="ion ion-person-add"></i>
                         </div>
+                      @can('view project')
                         <a href="{{ url('projects') }}" class="small-box-footer">More info <i
                                 class="fas fa-arrow-circle-right"></i></a>
+                      @endcan 
                     </div>
                 </div>
                 <!-- ./col -->
@@ -72,8 +76,10 @@
                         <div class="icon">
                             <i class="ion ion-stats-bars"></i>
                         </div>
+                      @can('view project')
                         <a href="{{ url('projects') }}" class="small-box-footer">More info <i
                                 class="fas fa-arrow-circle-right"></i></a>
+                      @endcan
                     </div>
                 </div>
 
@@ -88,8 +94,10 @@
                         <div class="icon">
                             <i class="ion ion-pie-graph"></i>
                         </div>
+                      @can('view project')
                         <a href="{{ url('projects') }}" class="small-box-footer">More info <i
                                 class="fas fa-arrow-circle-right"></i></a>
+                      @endcan
                     </div>
                 </div>
                 <!-- ./col -->

@@ -57,10 +57,11 @@
 
 
                     <div class="list-group">
-
+                      @canany(['create project', 'create task', 'create milestone-report'])
                         <a href="{{ url('milestone-task/' . $milestone->id) }}"
                             class="list-group-item list-group-item-action active">Tasks / ToDo <span class="btn btn-default"
                                 style="float: right;">Add New</span></a>
+                      @endcanany
 
                         @foreach ($milestone->tasks as $mt)
                             <div class="list-group-item list-group-item-action"><a
@@ -68,7 +69,9 @@
                                     class="badge badge-pill badge-primary">{{ $mt->status }}</span>
                                 <div class="btn-group" style="float: right;">
                                     <a href="{{ url('task/' . $mt->id) }}" class="btn btn-xs btn-primary">View</a>
+                                @canany(['delete project', 'delete task'])
                                     <a href="{{ url('del-task/' . $mt->id) }}" class="btn btn-xs btn-danger">Delete</a>
+                                @endcanany
                                 </div>
                             </div>
                         @endforeach

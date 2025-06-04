@@ -87,7 +87,7 @@
                         <select name="category" id="category" class="form-control">
                             <option value="{{ $client->category  }}" selected> {{ $client->category }}</option>
                             <option value="client">Client</option>
-                            <option value="suppliers">Suppliers</option>
+                            <option value="supplier">Supplier</option>
                             <option value="labourer">Labourer</option>
                         </select>
                     </div>

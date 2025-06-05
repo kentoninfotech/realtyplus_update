@@ -53,29 +53,34 @@
                                     <td>{{ $transact->date ?? 'N/A'}}</td>
                                     <td>{{ $transact->reference_no ?? 'N/A'}}</td>
                                     <td>{{ $transact->detail ?? 'N/A'}}</td>
-                                    <td>{{ is_numeric($transact->from) ? $users->where('id', $transact->from)->first()->name : $transact->from }}
+                                    <td>{{ is_numeric($transact->from ) && $users->where('id', $transact->from)->first() ? $users->where('id', $transact->from)->first()->name : $transact->from }}
                                     </td>
-                                    <td>{{ is_numeric($transact->to) ? $users->where('id', $transact->to)->first()->name : $transact->to }}
+                                    <td>{{ is_numeric($transact->to) && $users->where('id', $transact->to)->first() ? $users->where('id', $transact->to)->first()->name : $transact->to }}
                                     </td>
-                                    <td>{{ is_numeric($transact->approved_by) ? $users->where('id', $transact->approved_by)->first()->name : $transact->approved_by }}
+                                    <td>{{ is_numeric($transact->approved_by) && $users->where('id', $transact->approved_by)->first() ? $users->where('id', $transact->approved_by)->first()->name : $transact->approved_by }}
                                     </td>
-                                    <td>{{ is_numeric($transact->recorded_by) ? $users->where('id', $transact->recorded_by)->first()->name : $transact->recorded_by }}
+                                    <td>{{ is_numeric($transact->recorded_by) && $users->where('id', $transact->recorded_by)->first() ? $users->where('id', $transact->recorded_by)->first()->name : $transact->recorded_by }}
                                     </td>
                                     <td>
-
-                                        <button class="label label-primary" id="ach{{ $transact->id }}"
-                                            onclick="transaction({{ $transact->id }})" data-toggle="modal"
-                                            data-target="#transaction" data-title="{{ $transact->title }}"
-                                            data-amount="{{ $transact->amount }}"
-                                            data-account_head="{{ $transact->account_head }}"
-                                            data-date="{{ $transact->date }}" data-project="{{ $transact->project_id }}"
-                                            data-reference_no="{{ $transact->reference_no }}"
-                                            data-detail="{{ $transact->detail }}" data-from="{{ $transact->from }}"
-                                            data-to="{{ $transact->to }}" data-approved_by="{{ $transact->approved_by }}"
-                                            data-recorded_by="{{ $transact->recorded_by }}">Edit</button>
-                                        <a href="/delete-trans/{{ $transact->id }}" class="label label-danger"
-                                            onclick="return confirm('Are you sure you want to delete {{ $transact->detail }}\'s Financial Record?')">Delete</a>
-                                    </td>
+                                       <div class="btn-group">
+                                          @can('edit transaction')
+                                            <button class="btn btn-primary btn-xs" id="ach{{ $transact->id }}"
+                                                onclick="transaction({{ $transact->id }})" data-toggle="modal"
+                                                data-target="#transaction" data-title="{{ $transact->title }}"
+                                                data-amount="{{ $transact->amount }}"
+                                                data-account_head="{{ $transact->account_head }}"
+                                                data-date="{{ $transact->date }}" data-project="{{ $transact->project_id }}"
+                                                data-reference_no="{{ $transact->reference_no }}"
+                                                data-detail="{{ $transact->detail }}" data-from="{{ $transact->from }}"
+                                                data-to="{{ $transact->to }}" data-approved_by="{{ $transact->approved_by }}"
+                                                data-recorded_by="{{ $transact->recorded_by }}">Edit</button>
+                                          @endcan
+                                          @can('delete transaction')
+                                            <a href="/delete-trans/{{ $transact->id }}" class="btn btn-danger btn-xs"
+                                                onclick="return confirm('Are you sure you want to delete {{ $transact->detail }}\'s Financial Record?')">Delete</a>
+                                          @endcan
+                                        </div>
+                                        </td>
 
                                 </tr>
                             @endforeach

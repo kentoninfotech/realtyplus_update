@@ -19,16 +19,13 @@
   </div><!-- /.container-fluid -->
 </div>
 
-    <h3 class="page-title">Project: <small style="color: green">{{ $project->title }}</small></h3>
     <div class="row">
-            <div class="panel">
-                <div class="panel-heading">
+            <div class="card">
+                        
 
-                        <!-- <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#materialcheckout">Collect Materials</a> -->
-
-
-                </div>
-                <div class="panel-body">
+                <div class="card-body">
+                  <h3 class="page-title mt-2 ml-3">Project: <small style="color: green">{{ $project->title }}</small></h3>
+                      <a href="{{ url()->previous() }}" class="btn btn-primary float-right mb-3 mx-5"> <i class="fa fa-angle-left"></i> Back</a>
                     <table class="table responsive-table" id="products" style="width:100% !important">
                         <thead>
                             <tr>
@@ -58,8 +55,10 @@
                                     <td>{{$mtc->business->business_name}}</td>
 
                                     <td>
-                                        <a href="/delete-mtc/{{$mtc->id}}/{{$mtc->material_id}}/{{$mtc->quantity}}" class="label label-danger" onclick="return confirm('Are you sure you want to delete the material checkout record, this will return the {{$mtc->material->name}} with quantity {{$mtc->quantity}} back to stock?')">Delete</a>
-                                    </td>
+                                       @can('delete material_checkout')
+                                        <a href="/delete-mtc/{{$mtc->id}}/{{$mtc->material_id}}/{{$mtc->quantity}}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete the material checkout record, this will return the {{$mtc->material->name}} with quantity {{$mtc->quantity}} back to stock?')">Delete</a>
+                                       @endcan
+                                      </td>
 
                                 </tr>
                             @endforeach

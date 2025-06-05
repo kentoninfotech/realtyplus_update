@@ -21,16 +21,16 @@
 
     <!-- <h3 class="page-title">Project: <small style="color: green">{{ $project->title }}</small></h3> -->
     <div class="row">
-            <div class="panel">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-heading">
                     <div class="right">
-                        <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm" style="float: right; margin-top: -30px; margin-right: 10px;"> <i class="fa fa-angle-left"></i> Back</a>
+                        <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm float-right mt-3 mx-3"> <i class="fa fa-angle-left"></i> Back</a>
                     </div>
                         
 
 
                 </div>
-                <div class="panel-body">                    
+                <div class="card-body">                    
                     <table class="table responsive-table" id="products" style="font-size: 0.8em !important;">
                     <thead>
                         <tr style="color: ">
@@ -57,17 +57,21 @@
                                 </td>
 
                                 <td>
-
+                                  @can('edit task')
                                     <a href="{{ url('/inprogresstask/' . $task->id) }}/{{ $task->member }}"
                                         class="badge badge-warning">In Progress</a>
                                     <a href="{{ url('/completetask/' . $task->id) }}/{{ $task->member }}"
-                                        class="badge badge-success">Completed</a><br>
+                                        class="badge badge-success">Completed</a>
+                                  @endcan    
+                                    <br>
+                                  @can('create milestone_report')
                                     <a href="{{ url('/new-task-report/' . $task->id) }}/{{ $task->member }}"
                                         class="badge badge-info">Add Report</a>
-
+                                  @endcan
+                                  @can('delete task')
                                     <a href="{{ url('/del-task/' . $task->id) }}" class="badge badge-danger"
                                         onclick="return confirm('Are you sure you want to delete this task? {{ $task->title }}?')">Delete</a>
-
+                                  @endcan
                                 </td>
 
                             </tr>

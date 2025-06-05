@@ -64,8 +64,17 @@ class MilestoneReportsController extends Controller
      */
     public function store(Request $request)
     {
+        // Ensure milestone_id is always set if possible
+        $milestone_id = $request->milestone_id;
+        if (empty($milestone_id) && $request->task_id) {
+            // Try to get milestone_id from the task if not provided
+            $task = \App\Models\tasks::find($request->task_id);
+            if ($task && $task->milestone_id) {
+                $milestone_id = $task->milestone_id;
+            }
+        }
         milestone_reports::create([
-            'milestone_id'=>$request->milestone_id,
+            'milestone_id'=>$milestone_id,
             'task_id'=>$request->task_id,
             'subject'=>$request->subject,
             'start_date'=>$request->start_date,

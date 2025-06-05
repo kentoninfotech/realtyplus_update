@@ -36,6 +36,7 @@
 
 
                 <div class="col-md-2">
+                  @canany(['edit task', 'edit project'])
                     <form action="{{ route('change_task_status') }}" method="POST">
                         @csrf
                         <input type="hidden" name="task_id" value="{{ $task->id }}">
@@ -47,6 +48,7 @@
                             <option value="Terminated">Terminated</option>
                         </select>
                     </form>
+                  @endcanany
                 </div>
             </div>
 
@@ -81,11 +83,13 @@
 
 
                     <div class="list-group">
-
+                     @canany(['create milestone_report', 'create project', 'create task', 'edit project', 'edit task'])
                         <a href="{{ url('new-task-report/' . $task->id) }}"
                             class="list-group-item list-group-item-action active">Tasks Reports <span
                                 class="btn btn-default" style="float: right;">Add New</span></a>
-
+                     @else
+                        <a href="#" class="list-group-item list-group-item-action active">Tasks Reports</a>
+                     @endcanany
                         @foreach ($task->reports as $tr)
                             <div class="list-group-item list-group-item-action"><a
                                     href="{{ url('task-report/' . $tr->id) }}">{{ $tr->subject }}</a>
@@ -140,7 +144,7 @@
                                         @foreach ($staff as $sta)
                                             <option value="{{ $sta->id }}">
                                                 {{ $sta->name }} -
-                                                <small>{{ $sta->phone_number }}</small>
+                                                <small>{{ $sta->phone_number }}</small> - <i>({{ $sta->category }})</i>
                                             </option>
                                         @endforeach
                                     </select>
@@ -182,7 +186,7 @@
                         <label>Material Checkout Date:</label>
                         <div class="input-group date" id="end_date_activator" data-target-input="nearest">
                             <input type="text" name="dated" class="form-control datetimepicker-input"
-                                data-target="#end_date_activator">
+                                data-target="#end_date_activator" required>
                             <div class="input-group-append" data-target="#end_date_activator"
                                 data-toggle="datetimepicker">
                                 <div class="input-group-text"><i class="fa fa-calendar"></i></div>
@@ -237,7 +241,8 @@
 
                             <label for="checkout_by" class="control-label">Checked Out By</label>
                             <select class="form-control" name="checkout_by" id="checkout_by">
-                                @foreach ($business->personnel as $usr)
+                                <!--{{-- @foreach ($business->personnel as $usr) --}} -->
+                                @foreach ($staff as $usr)
                                     <option value="{{ $usr->id }}">{{ $usr->name }}</option>
                                 @endforeach
 
@@ -247,7 +252,8 @@
                         <div class="form-group col-md-4">
                             <label for="approved_by">Approved By</label>
                             <select class="form-control" name="approved_by" id="approved_by">
-                                @foreach ($business->personnel as $usr)
+                             <!--{{-- @foreach ($business->personnel as $usr) --}} -->
+                                @foreach ($staff as $usr)
                                     <option value="{{ $usr->id }}">{{ $usr->name }}</option>
                                 @endforeach
 

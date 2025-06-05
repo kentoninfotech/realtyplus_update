@@ -21,14 +21,16 @@
 
     <!-- <h3 class="page-title">Project: <small style="color: green">{{ $project->title }}</small></h3> -->
     <div class="row">
-            <div class="panel">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-heading">
 
                         <!-- <a href="#" class="btn btn-primary pull-right" data-toggle="modal" data-target="#materialcheckout">Collect Materials</a> -->
 
 
                 </div>
-                <div class="panel-body">                    
+                <div class="card-body"> 
+                  <h3 class="page-title mt-2 ml-3">Project: <small style="color: green">{{ $project->title }}</small></h3>
+                      <a href="{{ url()->previous() }}" class="btn btn-primary float-right mb-3 mx-5"> <i class="fa fa-angle-left"></i> Back</a>                   
                     <table class="table responsive-table" id="products" style="width:100% !important">
                     <thead>
                         <tr style="color: ">

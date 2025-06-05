@@ -21,16 +21,16 @@
 
     <!-- <h3 class="page-title">Project: <small style="color: green">{{ $project->title }}</small></h3> -->
     <div class="row">
-            <div class="panel">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-heading">
                     <div class="right">
-                        <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm" style="float: right; margin-top: -30px; margin-right: 10px;"> <i class="fa fa-angle-left"></i> Back</a>
+                        <a href="{{ url()->previous() }}" class="btn btn-primary btn-sm float-right mt-3 mx-3"> <i class="fa fa-angle-left"></i> Back</a>
                     </div>
                         
 
 
                 </div>
-                <div class="panel-body">                    
+                <div class="card-body">                    
                     <table class="table responsive-table" id="products" style="width:100% !important">
                     <thead>
                         <tr style="color: ">

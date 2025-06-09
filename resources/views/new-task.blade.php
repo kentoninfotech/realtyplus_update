@@ -83,10 +83,10 @@
                         <label>Assigned To:</label>
                         <select name="assigned_to" class="form-control select2">
                             @foreach ($staff as $st)
-                                <option data-select2-id="{{ $st->id }}" value="{{ $st->id }}">
-                                    {{ $st->name }}</option>
+                                <option data-select="{{ $st->id }}" value="{{ $st->id }}" {{ (isset($task->assigned_to) && $task->assigned_to == $st->id) ? 'selected' : '' }}>
+                                    {{ $st->name }}
+                                </option>
                             @endforeach
-
                         </select>
                     </div>
 

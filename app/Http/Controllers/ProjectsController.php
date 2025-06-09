@@ -95,6 +95,9 @@ class ProjectsController extends Controller
     public function editProject($pid)
     {
         $project = projects::where('id',$pid)->first();
+
+        $this->authorize('update', $project);
+
         return view('new-project')->with(['project'=>$project]);
     }
 

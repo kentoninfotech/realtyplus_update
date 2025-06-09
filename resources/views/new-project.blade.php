@@ -64,7 +64,7 @@
                             <select name="client_id" class="form-control select2">
                                 @foreach ($clients as $cl)
                                     <option data-select2-id="{{ $cl->id }}" value="{{ $cl->id }}">
-                                        {{ $cl->name }} ({{ $cl->company_name }})</option>
+                                        {{ $cl->name }} ({{ $cl->client->company_name }})</option>
                                 @endforeach
 
                             </select>
@@ -145,10 +145,10 @@
                         <label>Project Manager:</label>
                         <select name="project_manager" class="form-control select2">
                             @foreach ($staff as $st)
-                                <option data-select2-id="{{ $st->id }}" value="{{ $st->id }}">
-                                    {{ $st->name }}</option>
+                                <option data-select="{{ $st->id }}" value="{{ $st->id }}" {{ (isset($project->project_manager) && $project->project_manager == $st->id) ? 'selected' : '' }}>
+                                    {{ $st->name }}
+                                </option>
                             @endforeach
-
                         </select>
                     </div>
 

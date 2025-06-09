@@ -37,10 +37,10 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('login_user', Auth::user());
                 $view->with('mytasks', tasks::where('assigned_to', Auth::user()->id)->get());
                 $view->with('clients', User::select('id','name','name','status')->where('business_id', $businessId)->where('category', 'client')->get());
-                $view->with('staff', User::select('id','name','phone_number','status', 'category')
+                $view->with('staff', User::select('id','name','phone_number','status')
                        ->where('business_id', $businessId)
                     //    ->whereNotIn('category', ['client', 'supplier', 'labourer'])
-                       ->whereIn('category', ['owner','business', 'worker', 'staff', 'contractor'])
+                       ->whereIn('category', ['owner', 'worker', 'staff', 'contractor'])
                        ->get());
 
                 $view->with('userbusinesses',businesses::select('id','business_name')->where('user_id', Auth::user()->id)->orWhere('id', $businessId)->get());

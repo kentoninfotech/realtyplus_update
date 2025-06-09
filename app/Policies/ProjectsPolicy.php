@@ -48,10 +48,10 @@ class ProjectsPolicy
      */
     public function create(User $user)
     {
-        if ($user->can('create projects')) {
+       if ($user->can('create project')) {
             return true;
         }
-        return $this->deny('You do not have permission to create/update projects.');
+        return $this->deny('You do not have permission to create projects.');
     }
 
     /**
@@ -63,7 +63,10 @@ class ProjectsPolicy
      */
     public function update(User $user, projects $projects)
     {
-        //
+        if ($user->can('edit project')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to update projects.');
     }
 
     /**

@@ -94,8 +94,8 @@
                             <div class="list-group-item list-group-item-action"><a
                                     href="{{ url('task-report/' . $tr->id) }}">{{ $tr->subject }}</a>
                                 <div class="btn-group" style="float: right;">
-                                    <a href="#" class="btn btn-xs btn-primary">View</a>
-                                    <a href="#" class="btn btn-xs btn-success">Edit</a>
+                                    <a href="{{ url('task-report/' . $tr->id) }}" class="btn btn-xs btn-primary">View</a>
+                                    <a href="" class="btn btn-xs btn-success">Edit</a>
                                     <a href="#" class="btn btn-xs btn-danger">Delete</a>
                                 </div>
                             </div>
@@ -107,6 +107,7 @@
     </div>
 
     <div class="row">
+      @canany(['edit project', 'edit task', 'create transaction', 'create payment'])
         <div class="col-md-6">
             <div class=" card card-primary card-outline" style="padding: 10px !important;">
                 <div class="widget-heading">Add Workers</div>
@@ -173,7 +174,8 @@
                 </form>
             </div>
         </div>
-
+      @endcanany
+      @canany(['create material_checkout', 'edit project', 'edit task', 'create material_stock',])
         <div class="col-md-6">
             <div class="card card-primary card-outline" style="padding: 10px !important;">
                 <div class="widget-heading">Add Materials Used</div>
@@ -269,6 +271,7 @@
                 </form>
             </div>
         </div>
+      @endcanany
     </div>
 
     <div class="row">

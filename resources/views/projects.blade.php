@@ -42,8 +42,8 @@
                             @if ($pr->status == 'In Progress') style="background-color: #FFF8B0 !important;" @endif>
                             <td>{{ $pr->id }}</td>
                             <td>{{ $pr->title }}</td>
-                            <td>{{ $pr->client->company_name }}</td>
-                            <td>{{ $pr->location }}</td>
+                            <td>{{ $pr->client->company_name ?? '' }}</td>
+                            <td>{{ $pr->location ?? '' }}</td>
                             <td>{{ $pr->status }}</td>
                             <td width="90">
 

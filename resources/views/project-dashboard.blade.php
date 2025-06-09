@@ -105,22 +105,25 @@
 
                             <hr>
 
-                            <div class="list-group">
-                                <a href="#" class="list-group-item list-group-item-action active">Menu </a>
-                                <a href="{{ route('project-transactions', $project->id) }}"
-                                    class="list-group-item list-group-item-action">Transactions</a>
-                                <a href="{{ route('project-materials', $project->id) }}"
-                                    class="list-group-item list-group-item-action">Materials Used</a>
-                                <a href="{{ route('project-workers', $project->id) }}"
-                                    class="list-group-item list-group-item-action">Workers</a>
-                                <a href="/project/{{ $project->id }}/reports"
-                                    class="list-group-item list-group-item-action">Reports</a>
-                                <a href="/project/{{ $project->id }}/tasks"
-                                    class="list-group-item list-group-item-action">Tasks</a>
-                                <a href="/project/{{ $project->id }}/milestones"
-                                    class="list-group-item list-group-item-action">MileStones</a>
+                            @if(!auth()->user()->hasrole('Client'))
+                               <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action active">Menu </a>
+                                    <a href="{{ route('project-transactions', $project->id) }}"
+                                        class="list-group-item list-group-item-action">Transactions</a>
+                                    <a href="{{ route('project-materials', $project->id) }}"
+                                        class="list-group-item list-group-item-action">Materials Used</a>
+                                    <a href="{{ route('project-workers', $project->id) }}"
+                                        class="list-group-item list-group-item-action">Workers</a>
+                                    <a href="/project/{{ $project->id }}/reports"
+                                        class="list-group-item list-group-item-action">Reports</a>
+                                    <a href="/project/{{ $project->id }}/tasks"
+                                        class="list-group-item list-group-item-action">Tasks</a>
+                                    <a href="/project/{{ $project->id }}/milestones"
+                                        class="list-group-item list-group-item-action">MileStones</a>
 
-                            </div>
+                                </div>
+                            @endif
+                            
                         </div>
                     </div>
 

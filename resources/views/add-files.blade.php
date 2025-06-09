@@ -93,8 +93,10 @@
                             @if (isset($project_id))
                                 @php
                                     $proj = $business->projects->where('id', $project_id)->first();
-                                    foreach ($proj->tasks as $key => $prm) {
-                                        echo '<option value="' . $pt->id . '" selected>' . $pt->subject . '</option>';
+                                    if ($proj) {
+                                        foreach ($proj->tasks as $key => $pt) {
+                                            echo '<option value="' . $pt->id . '" selected>' . $pt->subject . '</option>';
+                                        }
                                     }
                                 @endphp
                             @else

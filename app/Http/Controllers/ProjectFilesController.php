@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\project_files;
+use App\Models\projects;
 use App\Http\Requests\Storeproject_filesRequest;
 use App\Http\Requests\Updateproject_filesRequest;
 use Illuminate\Http\Request;
@@ -45,6 +46,8 @@ class ProjectFilesController extends Controller
      */
     public function store(Request $request)
     {
+        // Check if the user is authorized to view projects
+        $this->authorize('view', projects::class);
 
         $validateData = $request->validate([
             'picture'=>'image|mimes:jpg,png,jpeg,gif,svg,doc,docx,pdf,xls,xlsx'

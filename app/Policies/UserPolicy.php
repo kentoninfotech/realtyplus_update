@@ -3,10 +3,9 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\staff;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class StaffPolicy
+class UserPolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +17,23 @@ class StaffPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->can('view user');
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\staff  $staff
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, staff $staff)
+    public function view(User $user)
     {
-        //
+        if ($user->can('view user')) {
+            return true;
+        }
+
+        return $this->deny('You do not have permission to view personnels.');
+        // return $user->can('view user');
     }
 
     /**
@@ -41,54 +44,38 @@ class StaffPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create user')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create a personnel.');
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\staff  $staff
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, staff $staff)
+    public function update(User $user)
     {
-        //
+        if ($user->can('edit user')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to update personnel records.');
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\staff  $staff
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, staff $staff)
+    public function delete(User $user)
     {
-        //
+        if ($user->can('delete user')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete personnel records.');
     }
-
-    /**
-     * Determine whether the user can restore the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\staff  $staff
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function restore(User $user, staff $staff)
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     *
-     * @param  \App\Models\User  $user
-     * @param  \App\Models\staff  $staff
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function forceDelete(User $user, staff $staff)
-    {
-        //
-    }
+    
 }

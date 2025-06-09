@@ -18,7 +18,10 @@ class MaterialsPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->can('view material')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view materials.');
     }
 
     /**
@@ -30,7 +33,10 @@ class MaterialsPolicy
      */
     public function view(User $user, materials $materials)
     {
-        //
+        if ($user->can('view material')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view this material.');
     }
 
     /**
@@ -41,7 +47,10 @@ class MaterialsPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create material')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create/update materials.');
     }
 
     /**
@@ -53,7 +62,10 @@ class MaterialsPolicy
      */
     public function update(User $user, materials $materials)
     {
-        //
+        if ($user->can('update material')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to update this material.');
     }
 
     /**
@@ -65,7 +77,10 @@ class MaterialsPolicy
      */
     public function delete(User $user, materials $materials)
     {
-        //
+        if ($user->can('delete material')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete this material.');
     }
 
     /**

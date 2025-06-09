@@ -36,6 +36,8 @@ class HomeController extends Controller
 
     public function clients()
     {
+        $this->authorize('viewAny', Client::class);
+
         $allclients = User::where('business_id', Auth::user()->business_id)->where('category','client')->get();
         return view('clients')->with(['allclients'=>$allclients]);
     }
@@ -44,6 +46,8 @@ class HomeController extends Controller
 
     public function newClient()
     {
+        $this->authorize('create', Client::class);
+
         return view('new-client');
     }
 
@@ -60,6 +64,8 @@ class HomeController extends Controller
 
     public function saveClient(Request $request)
     {
+        $this->authorize('create', Client::class);
+
         if($request->password!=""){
             $password = Hash::make($request->password);
 
@@ -105,12 +111,16 @@ class HomeController extends Controller
 
     public function editClient($cid)
     {
+        $this->authorize('update', Client::class);
+
         $client = User::where('id',$cid)->first();
         return view('edit-client')->with(['client'=>$client]);
     }
 
     public function updateClient(Request $request, $cid)
     {
+        $this->authorize('update', Client::class);
+
         $user = User::findOrFail($cid);
 
         if($request->password!=""){

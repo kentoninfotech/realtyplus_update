@@ -14,6 +14,8 @@ class SuppliersController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', suppliers::class);
+
         $suppliers = suppliers::paginate(50);
         return view('suppliers', compact('suppliers'));
     }
@@ -36,6 +38,8 @@ class SuppliersController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', suppliers::class);
+
         $validateData = $request->validate([
             'picture'=>'image|mimes:jpg,png,jpeg,gif,svg'
         ]);
@@ -110,6 +114,8 @@ class SuppliersController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', suppliers::class);
+        
         materials::findOrFail($id)->delete();
         $message = 'The material has been deleted!';
         return redirect()->route('materials')->with(['message'=>$message]);

@@ -18,7 +18,10 @@ class TasksPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->can('view task')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view tasks.');
     }
 
     /**
@@ -30,7 +33,10 @@ class TasksPolicy
      */
     public function view(User $user, tasks $tasks)
     {
-        //
+        if ($user->can('view task')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view tasks.');
     }
 
     /**
@@ -41,7 +47,10 @@ class TasksPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create task')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create/update tasks.');
     }
 
     /**
@@ -53,7 +62,10 @@ class TasksPolicy
      */
     public function update(User $user, tasks $tasks)
     {
-        //
+        if ($user->can('edit task')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to modify tasks.');
     }
 
     /**
@@ -65,7 +77,10 @@ class TasksPolicy
      */
     public function delete(User $user, tasks $tasks)
     {
-        //
+        if ($user->can('delete task')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete tasks.');
     }
 
     /**

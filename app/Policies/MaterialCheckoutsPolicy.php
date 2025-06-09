@@ -18,7 +18,10 @@ class MaterialCheckoutsPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->can('view material_checkout')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view material checkouts.');
     }
 
     /**
@@ -30,7 +33,10 @@ class MaterialCheckoutsPolicy
      */
     public function view(User $user, material_checkouts $materialCheckouts)
     {
-        //
+        if ($user->can('view material_checkout')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view this material checkout.');
     }
 
     /**
@@ -41,7 +47,10 @@ class MaterialCheckoutsPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create material_checkout')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create/modify material checkouts.');
     }
 
     /**
@@ -65,7 +74,10 @@ class MaterialCheckoutsPolicy
      */
     public function delete(User $user, material_checkouts $materialCheckouts)
     {
-        //
+        if ($user->can('delete material_checkout')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete material checkouts.');
     }
 
     /**

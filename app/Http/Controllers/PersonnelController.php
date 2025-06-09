@@ -22,6 +22,9 @@ class PersonnelController extends Controller
      */
     public function index()
     {
+        // Check if the user has permission to view personnel
+        $this->authorize('view', User::class);
+        
         $users = User::where('business_id', auth()->user()->business_id)->where('category', '!=', 'client')->paginate(10);
         return view('personnel.index', compact('users'));
     }
@@ -32,6 +35,9 @@ class PersonnelController extends Controller
      */
     public function newPersonnel()
     {
+        // Check if the user has permission to create personnel
+        $this->authorize('create', User::class);
+
         $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
         return view('personnel.new-personnel', compact('roles'));
     }
@@ -42,6 +48,8 @@ class PersonnelController extends Controller
      */
     public function showPersonnel($id)
     {
+        $this->authorize('view', User::class);
+
         $user = User::findOrFail($id);
         return view('personnel.personnel', compact('user'));
     }
@@ -52,6 +60,8 @@ class PersonnelController extends Controller
      */
     public function allStaffs()
     {
+        $this->authorize('view', User::class);
+
         $staffs = User::where('business_id', auth()->user()->business_id)->where('category', 'staff')->paginate(20);
         return view('personnel.staffs', compact('staffs'));
     }
@@ -61,6 +71,8 @@ class PersonnelController extends Controller
      */
     public function allWorkers()
     {
+        $this->authorize('view', User::class);
+
         $workers = User::where('business_id', auth()->user()->business_id)->where('category', 'worker')->paginate(20);
         return view('personnel.workers', compact('workers'));
     }
@@ -70,6 +82,8 @@ class PersonnelController extends Controller
      */
     public function allContractors()
     {
+        $this->authorize('view', User::class);
+
         $contractors = User::where('business_id', auth()->user()->business_id)->where('category', 'contractor')->paginate(20);
         return view('personnel.contractors', compact('contractors'));
     }
@@ -80,6 +94,9 @@ class PersonnelController extends Controller
      */
     public function createPersonnel(CreatePersonnelRequest $request)
     {
+        // Check if the user has permission to create personnel
+        $this->authorize('create', User::class);
+
         DB::transaction(function () use ($request) {
             $validateData = $request->all();
 
@@ -136,6 +153,8 @@ class PersonnelController extends Controller
      */
     public function editPersonnel($id)
     {
+        $this->authorize('edit', User::class);
+
         $user = User::findOrFail($id);
         $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
         return view('personnel.edit-personnel', compact('user', 'roles'));
@@ -149,14 +168,7 @@ class PersonnelController extends Controller
         $user = User::findOrFail($id);
 
         // Check if the authenticated user has permission to update this personnel
-        // if (auth()->user()->cannot('update', $user)) {
-        //     return redirect()->route('home')->with('error', 'You do not have permission to update this personnel.');
-        // }
-        if($user->personnel){
-            dd('This user already has a personnel record. Please use the edit personnel form.');
-        }else{
-            dd('This user does not have a personnel record. Please use the create personnel form.');
-        }
+        $this->authorize('edit', User::class);
 
         DB::transaction(function () use ($request, $user) {
             $validateData = $request->all();
@@ -227,6 +239,8 @@ class PersonnelController extends Controller
     public function deletePersonnel($id)
     {
         $user = User::findOrFail($id);
+
+        $this->authorize('delete', User::class);
 
         // delete the user picture & cv from Storage
         if ($user->personnel && $user->personnel->cv) {

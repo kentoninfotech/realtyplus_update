@@ -14,6 +14,8 @@ class AccountheadsController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', accountheads::class);
+
         $accountheads = accountheads::all();
 
         return view('account-heads', compact('accountheads'));
@@ -37,6 +39,7 @@ class AccountheadsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', accountheads::class);
 
         accountheads::updateOrCreate(['id'=>$request->id],[
             'title' => $request->title,
@@ -94,11 +97,10 @@ class AccountheadsController extends Controller
      */
     public function destroy($id)
     {
+      $this->authorize('delete', accountheads::class);
 
       accountheads::findOrFail($id)->delete();
       $message = 'The Account Head has been deleted!';
       return redirect()->route('account-heads')->with(['message'=>$message]);
-
-
     }
 }

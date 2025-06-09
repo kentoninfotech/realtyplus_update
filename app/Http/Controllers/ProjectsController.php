@@ -30,6 +30,13 @@ class ProjectsController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', projects::class);
+
+        if (Auth()->user()->hasRole('Client')){
+            $projects = projects::where('client_id',Auth()->user()->id)->get();
+            return view('projects')->with(['projects'=>$projects]);
+        }
+
         $projects = projects::all();
         return view('projects')->with(['projects'=>$projects]);
     }
@@ -48,12 +55,16 @@ class ProjectsController extends Controller
      */
     public function create($cid)
     {
+        $this->authorize('create', projects::class);
+
         return view('new-project')->with(['client_id'=>$cid]);
 
     }
 
     public function newProject()
     {
+        $this->authorize('create', projects::class);
+
         return view('new-project');
 
     }
@@ -61,6 +72,12 @@ class ProjectsController extends Controller
     public function clientProjects($cid)
     {
         $clientprojects = projects::where('client_id',$cid)->get();
+        // Authorize on the first project if exists, or skip if none
+        if ($clientprojects->count() > 0) {
+            $this->authorize('view', $clientprojects->first());
+        } else {
+            $this->authorize('viewAny', projects::class);
+        }
         return view('projects')->with(['projects'=>$clientprojects]);
 
     }
@@ -68,6 +85,9 @@ class ProjectsController extends Controller
     public function projectDashboard($pid)
     {
         $project = projects::where('id',$pid)->first();
+
+        $this->authorize('view', $project);
+        
         return view('project-dashboard')->with(['project'=>$project]);
 
     }
@@ -95,6 +115,7 @@ class ProjectsController extends Controller
             $outcome = "created";
         }
 
+        $this->authorize('create', projects::class);
 
         projects::updateOrCreate(['id'=>$request->project_id],[
             'client_id'=>$request->client_id,
@@ -197,8 +218,11 @@ class ProjectsController extends Controller
      */
     public function projectMilestones($pid)
     {
+        
         $milestones = project_milestones::where('project_id', $pid)->paginate(10);
         $project = projects::select('title','location')->where('id',$pid)->first();
+
+        $this->authorize('view', $project);
         
         return view('project-milestones', compact('milestones', 'project'));
     }

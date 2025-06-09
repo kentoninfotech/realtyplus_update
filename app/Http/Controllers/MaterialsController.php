@@ -19,6 +19,8 @@ class MaterialsController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', materials::class);
+
         $materials = materials::paginate(50);
         return view('materials', compact('materials'));
     }
@@ -41,6 +43,8 @@ class MaterialsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', materials::class);
+
         $validateData = $request->validate([
             'picture'=>'image|mimes:jpg,png,jpeg,gif,svg'
         ]);
@@ -84,6 +88,9 @@ class MaterialsController extends Controller
     }
 
     public function adddMaterial(Request $request){
+
+        $this->authorize('create', materials::class);
+
         material_damages::updateOrCreate(['id'=>$request->id],[
             'material_id'=>$request->material_id,
             'batchno'=>$request->batchno,
@@ -101,6 +108,8 @@ class MaterialsController extends Controller
 
     public function material($material_id)
     {
+        $this->authorize('view', materials::class);
+
         $material = materials::where('id',$material_id)->first();
         $susupplies = material_supplies::where('material_id',$material_id)->get();
         $mcheckouts = material_checkouts::where('material_id',$material_id)->get();
@@ -150,6 +159,8 @@ class MaterialsController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', materials::class);
+
         materials::findOrFail($id)->delete();
         $message = 'The material has been deleted!';
         return redirect()->route('materials')->with(['message'=>$message]);
@@ -157,6 +168,8 @@ class MaterialsController extends Controller
 
     public function removedMaterial($id)
     {
+        $this->authorize('update', materials::class);
+
         material_damages::findOrFail($id)->delete();
         $message = 'The damaged material has been deleted!';
         return redirect()->route('materials')->with(['message'=>$message]);

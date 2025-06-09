@@ -18,7 +18,10 @@ class ProjectsPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->can('view project')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view projects.');
     }
 
     /**
@@ -30,7 +33,11 @@ class ProjectsPolicy
      */
     public function view(User $user, projects $projects)
     {
-        //
+        if ($user->hasRole('Client')) {
+            return $projects->client_id === $user->id;
+        }
+
+        return $user->can('view project');
     }
 
     /**
@@ -41,7 +48,10 @@ class ProjectsPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create projects')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create/update projects.');
     }
 
     /**

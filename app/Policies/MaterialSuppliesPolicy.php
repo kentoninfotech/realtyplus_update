@@ -18,7 +18,10 @@ class MaterialSuppliesPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->can('view material_supply')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view material supplies.');
     }
 
     /**
@@ -41,7 +44,10 @@ class MaterialSuppliesPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create material_supply')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create/update material supply.');
     }
 
     /**
@@ -65,7 +71,10 @@ class MaterialSuppliesPolicy
      */
     public function delete(User $user, material_supplies $materialSupplies)
     {
-        //
+        if ($user->can('delete material_supply')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete material supply.');
     }
 
     /**

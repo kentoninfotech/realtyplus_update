@@ -18,7 +18,10 @@ class AccountheadsPolicy
      */
     public function viewAny(User $user)
     {
-        //
+         if ($user->can('view accounthead')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view finance records.');
     }
 
     /**
@@ -30,7 +33,10 @@ class AccountheadsPolicy
      */
     public function view(User $user, accountheads $accountheads)
     {
-        //
+        if ($user->can('view accounthead')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view finance records.');
     }
 
     /**
@@ -41,7 +47,10 @@ class AccountheadsPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create accounthead')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create finance records.');
     }
 
     /**
@@ -53,7 +62,10 @@ class AccountheadsPolicy
      */
     public function update(User $user, accountheads $accountheads)
     {
-        //
+        if ($user->can('edit accounthead')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to update finance records.');
     }
 
     /**
@@ -65,7 +77,10 @@ class AccountheadsPolicy
      */
     public function delete(User $user, accountheads $accountheads)
     {
-        //
+        if ($user->can('delete accounthead')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete finance records.');
     }
 
     /**

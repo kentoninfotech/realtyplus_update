@@ -18,7 +18,10 @@ class TransactionsPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->can('view transaction')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view finance records.');
     }
 
     /**
@@ -28,9 +31,12 @@ class TransactionsPolicy
      * @param  \App\Models\transactions  $transactions
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, transactions $transactions)
+    public function view(User $user, transactions $transaction)
     {
-        //
+        if ($user->can('view transaction')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view finance records.');
     }
 
     /**
@@ -41,7 +47,10 @@ class TransactionsPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create transaction')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to modify finance records.');
     }
 
     /**
@@ -51,9 +60,12 @@ class TransactionsPolicy
      * @param  \App\Models\transactions  $transactions
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, transactions $transactions)
+    public function update(User $user, transactions $transaction)
     {
-        //
+        if ($user->can('edit transaction')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to update finance records.');
     }
 
     /**
@@ -63,9 +75,12 @@ class TransactionsPolicy
      * @param  \App\Models\transactions  $transactions
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, transactions $transactions)
+    public function delete(User $user, transactions $transaction)
     {
-        //
+        if ($user->can('delete transaction')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete finance records.');
     }
 
     /**

@@ -17,6 +17,8 @@ class TransactionsController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', transactions::class);
+
         $transactions = transactions::paginate(50);
         $accountheads = accountheads::select('title','category')->get();
         $users = User::select('id','name')->get();
@@ -42,6 +44,8 @@ class TransactionsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', transactions::class);
+
         transactions::updateOrCreate(['id'=>$request->id],[
             'title' => $request->title,
             'amount' => $request->amount,
@@ -109,6 +113,8 @@ class TransactionsController extends Controller
      */
     public function delTrans($id)
     {
+        $this->authorize('delete', transactions::class);
+
         transactions::findOrFail($id)->delete();
         $message = 'The transaction\'s Record has been deleted!';
         return redirect()->route('transactions')->with(['message'=>$message]);

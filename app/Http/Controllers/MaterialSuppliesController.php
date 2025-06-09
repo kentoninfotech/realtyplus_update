@@ -16,6 +16,8 @@ class MaterialSuppliesController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', material_supplies::class);
+
         $supplies = material_supplies::paginate(50);
         return view('supplies', compact('supplies'));
     }
@@ -38,6 +40,8 @@ class MaterialSuppliesController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', material_supplies::class);
+
         material_supplies::updateOrCreate(['id'=>$request->id],[
             'material_id' => $request->material_id,
             'supplier_id' => $request->supplier_id,
@@ -107,6 +111,8 @@ class MaterialSuppliesController extends Controller
      */
     public function destroy($id)
     {
+        $this->authorize('delete', material_supplies::class);
+
         material_supplies::findOrFail($id)->delete();
         $message = 'The Supply record has been deleted!';
         return redirect()->route('supplies')->with(['message'=>$message]);

@@ -19,6 +19,8 @@ class TasksController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', tasks::class);
+
         return view('tasks');
     }
 
@@ -29,6 +31,8 @@ class TasksController extends Controller
      */
     public function create($cid)
     {
+        $this->authorize('create', tasks::class);
+
         return view('project-task')->with(['cid'=>$cid]);
 
     }
@@ -36,6 +40,8 @@ class TasksController extends Controller
     // General Task
     public function newTask()
     {
+        $this->authorize('create', tasks::class);
+
         $categories = categories::where('business_id',Auth()->user()->business_id)->get();
         return view('new-task')->with(['categories'=>$categories]);
 
@@ -44,6 +50,8 @@ class TasksController extends Controller
     // Save General Task
     public function saveTask(Request $request)
     {
+        $this->authorize('create', tasks::class);
+
         tasks::updateOrCreate(['id'=>$request->tid],[
             //'project_id'=>$request->project_id,
             // 'milestone_id'=>$request->milestone_id,
@@ -69,8 +77,11 @@ class TasksController extends Controller
     }
 
     public function viewTask($tid)
-    {
+    {   
         $task = tasks::where('id',$tid)->first();
+
+        $this->authorize('view', $task);
+
         $materials = materials::select('id','name','measurement_unit')->get();
         return view('task')->with(['task'=>$task,'materials'=>$materials]);
 
@@ -79,6 +90,9 @@ class TasksController extends Controller
     public function change_task_status(Request $request)
     {
         $task = tasks::where('id',$request->task_id)->first();
+
+        $this->authorize('update', tasks::class);
+
         $task->status=$request->change_status;
         $task->save();
 
@@ -90,6 +104,8 @@ class TasksController extends Controller
 
     public function addWorkers(Request $request)
     {
+        $this->authorize('create', tasks::class);
+
         foreach($request->worker as $key=>$worker_id){
             task_workers::create([
                 'worker_id'=>$worker_id,
@@ -124,6 +140,9 @@ class TasksController extends Controller
     public function inprogresstask($id)
     {
         $task = tasks::where('id',$id)->first();
+
+        $this->authorize('update', tasks::class);
+
         $task->status = 'In Progress';
         $task->save();
 
@@ -185,7 +204,12 @@ class TasksController extends Controller
      */
     public function destroy($task_id)
     {
-        tasks::find($task_id)->delete();
+        $task = tasks::find($task_id);
+
+        $this->authorize('delete', tasks::class);
+
+        $task->delete();
+
         $message = "The selected task has been deleted";
 
         return redirect()->back()->with(['message'=>$message]);

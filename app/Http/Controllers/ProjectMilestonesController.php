@@ -103,7 +103,8 @@ class ProjectMilestonesController extends Controller
         }else{
             $outcome = "created";
         }
-
+        // Check if the user is authorized to view projects
+        $this->authorize('view', projects::class);
 
         project_milestones::updateOrCreate(['id'=>$request->milestone_id],[
             'project_id'=>$request->project_id,
@@ -124,6 +125,8 @@ class ProjectMilestonesController extends Controller
     }
 
     public function saveMilestoneTask(Request $request){
+        // Check if the user is authorized to view projects
+        $this->authorize('view', tasks::class);
         $savedTask = tasks::create($request->all());
         $savedTask->category='Project Task';
         $savedTask->save();

@@ -311,31 +311,38 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                              @canany(['view material', 'view material_stock'])
                                 <li class="nav-item">
                                     <a href="{{ url('materials') }}" class="nav-link">
                                         <i class="fa fa-cube nav-icon"></i>
                                         <p>Manage Materials</p>
                                     </a>
                                 </li>
+                              @endcanany
+                              @can('view material_checkout')
                                 <li class="nav-item">
                                     <a href="{{ url('mcheckouts') }}" class="nav-link">
                                         <i class="fas fa-cart-arrow-down nav-icon"></i>
                                         <p>Material Checkout</p>
                                     </a>
                                 </li>
-
+                               @endcan
+                               @can('view material_supply')
                                 <li class="nav-item">
                                     <a href="{{ url('suppliers') }}" class="nav-link">
                                         <i class="fas fa-cubes nav-icon"></i>
                                         <p>Suppliers</p>
                                     </a>
                                 </li>
+                               @endcan
+                               @canany(['view material', 'view material_stock'])
                                 <li class="nav-item">
                                     <a href="{{ url('supplies') }}" class="nav-link">
                                         <i class="fa fa-cart-plus nav-icon"></i>
                                         <p>Material Supplies</p>
                                     </a>
                                 </li>
+                               @endcanany
 
 
                             </ul>
@@ -353,18 +360,22 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                              @can('view transaction')
                                 <li class="nav-item">
                                     <a href="{{ url('transactions') }}" class="nav-link">
                                         <i class="far fa-credit-card nav-icon"></i>
                                         <p>Manage Transactions</p>
                                     </a>
                                 </li>
+                              @endcan
+                              @can('view accounthead')
                                 <li class="nav-item">
                                     <a href="{{ url('account-heads') }}" class="nav-link">
                                         <i class="fas fa-money-check nav-icon"></i>
                                         <p>Manage Account Heads</p>
                                     </a>
                                 </li>
+                              @endcan
 
                             </ul>
                         </li>
@@ -419,7 +430,7 @@
 
                 @endcanany
 
-                @hasrole('System Admin')
+                @can('manage settings')
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cog"></i>
@@ -455,9 +466,7 @@
 
                             </ul>
                         </li>
-                @endhasanyrole
-
-
+                @endcan
 
                         <li class="nav-item">
                             <a href="{{ url('logout') }}" class="nav-link">
@@ -482,7 +491,9 @@
             <section class="content">
                 <div class="container-fluid">
 
-                    <!-----------------------------START YIELD PAGE CONTENT -->
+
+ 
+                <!--------FEEDBACK RESPONSE -->
                     @if (Session::get('message'))
                         <div class="alert alert-success alert-dismissible" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
@@ -490,8 +501,16 @@
                             <i class="fa fa-check-circle"></i> {!! Session::get('message') !!}
                         </div>
                     @endif
-                    @yield('content')
+                    @if (Session::get('error'))
+                        <div class="alert alert-info alert-dismissible" role="alert">
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                    aria-hidden="true">×</span></button>
+                            <i class="fa fa-check-circle"></i> {!! Session::get('error') !!}
+                        </div>
+                    @endif
 
+                    <!-----------------------------START YIELD PAGE CONTENT -->
+                    @yield('content')
                     <!----------------------------END YIELD PAGE CONTENT -->
                 </div><!-- /.container-fluid -->
             </section>

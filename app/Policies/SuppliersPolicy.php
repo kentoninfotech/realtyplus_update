@@ -18,7 +18,10 @@ class SuppliersPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        if ($user->can('view material_supply')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view suppliers.');
     }
 
     /**
@@ -30,7 +33,10 @@ class SuppliersPolicy
      */
     public function view(User $user, suppliers $suppliers)
     {
-        //
+        if ($user->can('view material_supply')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to view suppliers.');
     }
 
     /**
@@ -41,7 +47,10 @@ class SuppliersPolicy
      */
     public function create(User $user)
     {
-        //
+        if ($user->can('create material_supply')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to create/update suppliers.');
     }
 
     /**
@@ -65,7 +74,10 @@ class SuppliersPolicy
      */
     public function delete(User $user, suppliers $suppliers)
     {
-        //
+        if ($user->can('delete material_supply')) {
+            return true;
+        }
+        return $this->deny('You do not have permission to delete suppliers.');
     }
 
     /**

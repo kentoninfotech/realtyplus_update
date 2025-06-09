@@ -16,6 +16,8 @@ class MaterialCheckoutsController extends Controller
      */
     public function index()
     {
+        $this->authorize('viewAny', material_checkouts::class);
+
         $mcheckouts = material_checkouts::with(['task', 'task.project'])->latest()->paginate(50);
         return view('mcheckouts', compact('mcheckouts'));
     }
@@ -38,6 +40,8 @@ class MaterialCheckoutsController extends Controller
      */
     public function store(Request $request)
     {
+        $this->authorize('create', material_checkouts::class);
+
         foreach($request->mid as $key => $material_id){
 
             material_checkouts::updateOrCreate(['id'=>$request->id],[
@@ -66,6 +70,8 @@ class MaterialCheckoutsController extends Controller
 
     public function addMaterialsUsed(Request $request)
     {
+        $this->authorize('create', material_checkouts::class);
+
         foreach($request->materialname as $key=>$material_id){
 
             if(isset($request->quantityused[$key])){
@@ -133,6 +139,8 @@ class MaterialCheckoutsController extends Controller
      */
     public function destroy($id,$mid,$qty)
     {
+        $this->authorize('delete', material_checkouts::class);
+        
         material_stock::where('material_id',$mid)->increment('quantity',$qty);
 
         material_checkouts::findOrFail($id)->delete();

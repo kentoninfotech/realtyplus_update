@@ -21,7 +21,6 @@ class Personnel extends Model
         'user_id',
         'marital_status',
         'employment_date',
-        'category',
         'department',
         'phone_number',
         'picture',

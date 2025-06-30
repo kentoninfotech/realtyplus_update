@@ -145,7 +145,7 @@
                                         @foreach ($staff as $sta)
                                             <option value="{{ $sta->id }}">
                                                 {{ $sta->name }} -
-                                                <small>{{ $sta->phone_number }}</small> - <i>({{ $sta->category }})</i>
+                                                <small>{{ $sta->phone_number }}</small> - <i>({{ $sta->user_type }})</i>
                                             </option>
                                         @endforeach
                                     </select>

@@ -206,18 +206,18 @@
                         </div>
                         <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Personnel Type: </label>
-                            <select name="category" class="form-control">
-                                <option disabled {{ old('category', $user->category ?? null) ? '' : 'selected' }}>Personnel Type</option>
-                                <option value="staff" {{ old('category', $user->category ?? null) == 'staff' ? 'selected' : '' }}>Staff</option>
-                                <option value="worker" {{ old('category', $user->category ?? null) == 'worker' ? 'selected' : '' }}>Worker</option>
-                                <option value="contractor" {{ old('category', $user->category ?? null) == 'contractor' ? 'selected' : '' }}>Contractor</option>
+                            <select name="user_type" class="form-control">
+                                <option disabled {{ old('user_type', $user->user_type ?? null) ? '' : 'selected' }}>Personnel Type</option>
+                                <option value="staff" {{ old('user_type', $user->user_type ?? null) == 'staff' ? 'selected' : '' }}>Staff</option>
+                                <option value="worker" {{ old('user_type', $user->user_type ?? null) == 'worker' ? 'selected' : '' }}>Worker</option>
+                                <option value="contractor" {{ old('user_type', $user->user_type ?? null) == 'contractor' ? 'selected' : '' }}>Contractor</option>
                             </select>
                         </div>
                         <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Status: </label>
                             <select name="status" class="form-control">
-                                <option disabled {{ old('category', $user->status ?? null) ? '' : 'selected' }}>Status</option>
-                                <option value="Active" {{ old('category', $user->status ?? null) == 'Active' ? 'selected' : '' }}>Active</option>
+                                <option disabled {{ old('status', $user->status ?? null) ? '' : 'selected' }}>Status</option>
+                                <option value="Active" {{ old('status', $user->status ?? null) == 'Active' ? 'selected' : '' }}>Active</option>
 
                             </select>
                         </div>

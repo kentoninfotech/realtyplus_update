@@ -25,7 +25,6 @@ class CreatePersonnelsTable extends Migration
             $table->string('email')->nullable();
             $table->string('address')->nullable();
             $table->string('department')->nullable();
-            // $table->string('guarantor')->nullable();
             $table->string('salary')->nullable();
             $table->string('highest_certificate')->nullable();
             $table->string('staff_id', 9)->unique()->nullable();

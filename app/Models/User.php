@@ -23,7 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'phone_number',
-        'category',
+        'user_type',
         'business_id',
         'status',
     ];
@@ -67,6 +67,38 @@ class User extends Authenticatable
         return $this->hasOne(Client::class);
     }
 
+    public function agent()
+    {
+        return $this->hasOne(Agent::class);
+    }
+
+    public function owner()
+    {
+        return $this->hasOne(Owner::class);
+    }
+
+    public function tenant()
+    {
+        return $this->hasOne(Tenant::class);
+    }
+
+    
+    public function uploadedDocuments()
+    {
+        return $this->hasMany(Document::class, 'uploaded_by_user_id');
+    }
+    
+    
+    public function reportedMaintenanceRequests()
+    {
+        return $this->hasMany(MaintenanceRequest::class, 'reported_by_user_id');
+    }
+    
+    public function assignedTasks()
+    {
+        return $this->hasMany(PropertyTask::class, 'assigned_to_user_id');
+    }
+        
     public function projects()
     {
         return $this->hasMany(projects::class, 'client_id', 'id');
@@ -76,4 +108,6 @@ class User extends Authenticatable
     {
         return $this->hasMany(tasks::class, 'assigned_to', 'id');
     }
+
+
 }

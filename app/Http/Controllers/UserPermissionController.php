@@ -23,13 +23,13 @@ class UserPermissionController extends Controller
      */
     public function index() {
         $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
-        $users = User::with('roles', 'permissions')->where('business_id', auth()->user()->business_id)->whereNotIn('category', ['client', 'supplier', 'labourer'])->paginate(10);
+        $users = User::with('roles', 'permissions')->where('business_id', auth()->user()->business_id)->whereNotIn('user_type', ['client', 'supplier', 'labourer'])->paginate(10);
         return view('roles.index', compact('users', 'roles'));
     }
 
     public function edit(User $user) {
         $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
-        $users = User::with('roles', 'permissions')->where('business_id', auth()->user()->business_id)->whereNotIn('category', ['client', 'supplier', 'labourer'])->paginate(10);
+        $users = User::with('roles', 'permissions')->where('business_id', auth()->user()->business_id)->whereNotIn('user_type', ['client', 'supplier', 'labourer'])->paginate(10);
         $groupPermissions = $this->groupPermissions->permission();
         return view('roles.user-roles', compact('user', 'users', 'roles', 'groupPermissions'));
     }

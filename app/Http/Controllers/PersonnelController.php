@@ -25,7 +25,7 @@ class PersonnelController extends Controller
         // Check if the user has permission to view personnel
         $this->authorize('view', User::class);
         
-        $users = User::where('business_id', auth()->user()->business_id)->where('category', '!=', 'client')->paginate(10);
+        $users = User::where('business_id', auth()->user()->business_id)->where('user_type', '!=', 'client')->paginate(10);
         return view('personnel.index', compact('users'));
     }
 
@@ -62,7 +62,7 @@ class PersonnelController extends Controller
     {
         $this->authorize('view', User::class);
 
-        $staffs = User::where('business_id', auth()->user()->business_id)->where('category', 'staff')->paginate(20);
+        $staffs = User::where('business_id', auth()->user()->business_id)->where('user_type', 'staff')->paginate(20);
         return view('personnel.staffs', compact('staffs'));
     }
     /**
@@ -73,7 +73,7 @@ class PersonnelController extends Controller
     {
         $this->authorize('view', User::class);
 
-        $workers = User::where('business_id', auth()->user()->business_id)->where('category', 'worker')->paginate(20);
+        $workers = User::where('business_id', auth()->user()->business_id)->where('user_type', 'worker')->paginate(20);
         return view('personnel.workers', compact('workers'));
     }
     /**
@@ -84,7 +84,7 @@ class PersonnelController extends Controller
     {
         $this->authorize('view', User::class);
 
-        $contractors = User::where('business_id', auth()->user()->business_id)->where('category', 'contractor')->paginate(20);
+        $contractors = User::where('business_id', auth()->user()->business_id)->where('user_type', 'contractor')->paginate(20);
         return view('personnel.contractors', compact('contractors'));
     }
 
@@ -107,7 +107,7 @@ class PersonnelController extends Controller
                 'phone_number' => $validateData['phone_number'] ?? null,
                 'business_id' => auth()->user()->business_id,
                 'status' => 'Active',
-                'category' => $validateData['category'] ?? 'staff',
+                'user_type' => $validateData['user_type'] ?? 'staff',
             ]);
 
             // Assign role
@@ -138,7 +138,7 @@ class PersonnelController extends Controller
             }
 
             // Remove fields not needed for Personnel
-            unset($validateData['password'], $validateData['role'], $validateData['category'],);
+            unset($validateData['password'], $validateData['role'], $validateData['user_type'],);
             // Create personnel record
             Personnel::create($validateData);
         });
@@ -153,7 +153,7 @@ class PersonnelController extends Controller
      */
     public function editPersonnel($id)
     {
-        $this->authorize('edit', User::class);
+        $this->authorize('update', User::class);
 
         $user = User::findOrFail($id);
         $roles = Role::whereNotIn('name', ['Super Admin', 'Client'])->get();
@@ -168,7 +168,7 @@ class PersonnelController extends Controller
         $user = User::findOrFail($id);
 
         // Check if the authenticated user has permission to update this personnel
-        $this->authorize('edit', User::class);
+        $this->authorize('update', User::class);
 
         DB::transaction(function () use ($request, $user) {
             $validateData = $request->all();
@@ -178,11 +178,11 @@ class PersonnelController extends Controller
                 'email' => $validateData['email'],
                 'phone_number' => $validateData['phone_number'],
                 'status' => $validateData['status'],
-                'category' => $validateData['category'] ?? 'staff',
+                'user_type' => $validateData['user_type'] ?? 'staff',
             ]);
 
             // Assign role
-            if ($validateData['role']) {
+            if (isset($validateData['role'])) {
                 $user->syncRoles($validateData['role']);
             }
 
@@ -217,7 +217,7 @@ class PersonnelController extends Controller
             }
 
             // Remove fields not needed for Personnel
-            unset($validateData['role'], $validateData['category']);
+            unset($validateData['role'], $validateData['user_type']);
             // Update or create personnel record
             
             if ($user->personnel && $user->personnel->id) {

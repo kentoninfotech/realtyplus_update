@@ -43,7 +43,7 @@ class HomeController extends Controller
     {
         $this->authorize('viewAny', Client::class);
 
-        $allclients = User::where('business_id', Auth::user()->business_id)->where('category','client')->get();
+        $allclients = User::where('business_id', Auth::user()->business_id)->where('user_type','client')->get();
         return view('clients')->with(['allclients'=>$allclients]);
     }
 
@@ -89,7 +89,7 @@ class HomeController extends Controller
             'email'        =>$request->email,
             'password'     =>Hash::make($request->password),
             'phone_number' =>$request->phone_number,
-            'category'     => $request->category ?? 'client',
+            'user_type'     => $request->user_type ?? 'client',
             'address'      =>$request->address,
             'status'       =>$request->status,
             'business_id'  =>Auth()->user()->business_id
@@ -140,7 +140,7 @@ class HomeController extends Controller
             'email'        =>$request->email,
             'password'     =>Hash::make($request->password),
             'phone_number' =>$request->phone_number,
-            'category'     => $request->category ?? 'client',
+            'user_type'     => $request->user_type ?? 'client',
             'address'      =>$request->address,
             'status'       =>$request->status,
         ]);

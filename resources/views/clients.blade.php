@@ -45,7 +45,7 @@
                         <tr @if ($cl->status == 'Active') style="background-color: azure !important;" @endif>
                             <td>{{ $cl->id }}</td>
                             <td>{{ $cl->client->company_name }}</td>
-                            <td>{{ $cl->category }}</td>
+                            <td>{{ Str::headline($cl->user_type) }}</td>
                             <td>{{ $cl->name }}</td>
                             <td>{{ $cl->phone_number }}</td>
 

@@ -97,10 +97,10 @@
                 <div class="row">
 
                     <div class="form-group col-md-4">
-                        <label for="category">Category</label>
-                        <select name="category" id="category" class="form-control">
-                            <option value="{{ isset($client->category) ? $client->category : '' }}" selected>
-                                {{ isset($client->category) ? $client->category : 'Select Category' }}</option>
+                        <label for="user_type">User Type</label>
+                        <select name="user_type" id="user_type" class="form-control">
+                            <option value="{{ isset($client->user_type) ? $client->user_type : '' }}" selected>
+                                {{ isset($client->user_type) ? $client->user_type : 'Select user_type' }}</option>
                             <option value="client">Client</option>
                             <option value="supplier">Supplier</option>
                             <option value="labourer">Labourer</option>

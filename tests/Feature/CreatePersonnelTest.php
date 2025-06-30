@@ -34,7 +34,7 @@ class CreatePersonnelTest extends TestCase
             'designation' => 'Manager',
             'marital_status' => 'Single',
             'employment_date' => '2024-01-01',
-            'category' => 'staff',
+            'user_type' => 'staff',
             'department' => 'HR',
             'phone_number' => '08012345678',
             'picture' => UploadedFile::fake()->image('avatar.jpg'), // Uncomment if testing file upload

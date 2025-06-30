@@ -45,4 +45,5 @@ class tasks extends Model
     {
         return $this->hasMany(material_checkouts::class, 'task_id', 'id');
     }
+    
 }

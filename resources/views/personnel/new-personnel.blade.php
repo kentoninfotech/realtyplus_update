@@ -206,11 +206,11 @@
                         </div>
                         <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Personnel Type: </label>
-                            <select name="category" class="form-control">
-                                <option disabled {{ old('category') ? '' : 'selected' }}>Personnel Type</option>
-                                <option value="staff" {{ old('category') == 'staff' ? 'selected' : '' }}>Staff</option>
-                                <option value="worker" {{ old('category') == 'worker' ? 'selected' : '' }}>Worker</option>
-                                <option value="contractor" {{ old('category') == 'contractor' ? 'selected' : '' }}>Contractor</option>
+                            <select name="user_type" class="form-control">
+                                <option disabled {{ old('user_type') ? '' : 'selected' }}>Personnel Type</option>
+                                <option value="staff" {{ old('user_type') == 'staff' ? 'selected' : '' }}>Staff</option>
+                                <option value="worker" {{ old('user_type') == 'worker' ? 'selected' : '' }}>Worker</option>
+                                <option value="contractor" {{ old('user_type') == 'contractor' ? 'selected' : '' }}>Contractor</option>
                             </select>
                         </div>
                         <div class="col-lg-3">

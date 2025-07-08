@@ -28,7 +28,6 @@ class RolePermissionSeeder extends Seeder
             'view accounthead', 'create accounthead', 'edit accounthead', 'delete accounthead',
             'view user', 'create user', 'edit user', 'delete user', 'view client', 'create client', 'edit client', 'delete client',
             'view material_checkout', 'create material_checkout', 'edit material_checkout', 'delete material_checkout',
-            'view material_damage', 'create material_damage', 'edit material_damage', 'delete material_damage',
             'view material_stock', 'create material_stock', 'edit material_stock', 'delete material_stock',
             'view material_supply', 'create material_supply', 'edit material_supply', 'delete material_supply',
             'view material', 'create material', 'edit material', 'delete material',

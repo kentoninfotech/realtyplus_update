@@ -18,7 +18,8 @@ class CreatePropertyTransactionsTable extends Migration
             $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade'); // Link to a business
             $table->string('transactionable_type');
             $table->unsignedBigInteger('transactionable_id');
-            $table->index(['transactionable_type', 'transactionable_id']); // For polymorphic relations
+            
+            $table->index(['transactionable_type', 'transactionable_id'], 'ptx_type_id_idx'); // For polymorphic relations
 
             $table->enum('type', ['payment', 'expense', 'refund']);
             $table->decimal('amount', 15, 2);

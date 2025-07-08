@@ -15,7 +15,7 @@ class Agent extends Model
         'first_name',
         'last_name',
         'email',
-        'phone',
+        'phone_number',
         'license_number',
         'commission_rate',
         'status',

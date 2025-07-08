@@ -1,0 +1,47 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\PropertyType;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class PropertyFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array
+     */
+    public function definition()
+    {
+        $listingType = $this->faker->randomElement(['sale', 'rent', 'both']);
+        $salePrice = ($listingType == 'sale' || $listingType == 'both') ? $this->faker->randomFloat(2, 1000000, 50000000) : null;
+        $rentPrice = ($listingType == 'rent' || $listingType == 'both') ? $this->faker->randomFloat(2, 50000, 500000) : null;
+
+        return [
+            'business_id'        => null, // Set in seeder if needed
+            'property_type_id'   => PropertyType::factory(),
+            'agent_id'           => User::factory()->agent(),
+            'owner_id'           => User::factory()->owner(),
+            'name'               => $this->faker->streetName . ' ' . $this->faker->buildingNumber,
+            'address'            => $this->faker->address,
+            'state'              => $this->faker->state,
+            'country'            => 'Nigeria',
+            'description'        => $this->faker->optional()->paragraph,
+            'latitude'           => $this->faker->optional()->latitude(-90, 90),
+            'longitude'          => $this->faker->optional()->longitude(-180, 180),
+            'area_sqft'          => $this->faker->optional()->numberBetween(500, 10000),
+            'lot_size_sqft'      => $this->faker->optional()->numberBetween(1000, 20000),
+            'bedrooms'           => $this->faker->optional()->numberBetween(1, 10),
+            'bathrooms'          => $this->faker->optional()->numberBetween(1, 8),
+            'year_built'         => $this->faker->optional()->year,
+            'purchase_price'     => $this->faker->optional()->randomFloat(2, 1000000, 100000000),
+            'sale_price'         => $salePrice,
+            'rent_price'         => $rentPrice,
+            'date_acquired'      => $this->faker->optional()->date(),
+            'listing_type'       => $listingType,
+            'listed_at'          => $this->faker->optional()->date(),
+        ];
+    }
+}

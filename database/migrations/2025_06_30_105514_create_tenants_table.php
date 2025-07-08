@@ -20,7 +20,7 @@ class CreateTenantsTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->unique()->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone_number')->nullable();
             $table->string('address')->nullable();
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_phone')->nullable();

@@ -15,7 +15,7 @@ class Tenant extends Model
         'first_name',
         'last_name',
         'email',
-        'phone',
+        'phone_number',
         'address',
         'emergency_contact_name',
         'emergency_contact_phone',

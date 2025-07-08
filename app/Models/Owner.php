@@ -16,7 +16,7 @@ class Owner extends Model
         'last_name',
         'company_name',
         'email',
-        'phone',
+        'phone_number',
         'address',
         'bank_account_details', 
     ];

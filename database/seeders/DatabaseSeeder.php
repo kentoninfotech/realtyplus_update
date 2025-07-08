@@ -13,6 +13,26 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call([
+            UsersTableSeeder::class, // Users must exist first
+            PropertyTypesTableSeeder::class,
+            PersonnelTableSeeder::class,
+            ClientsTableSeeder::class,
+            TenantsTableSeeder::class,
+            AgentsTableSeeder::class,
+            OwnersTableSeeder::class,
+            PropertiesTableSeeder::class, // Properties depend on PropertyTypes, Owners, Agents
+            AmenitiesTableSeeder::class,
+            PropertyAmenityTableSeeder::class, // Pivot table
+            LeasesTableSeeder::class, // Leases depend on Properties, PropertyUnits, Tenants
+            LeadsTableSeeder::class, // Leads depend on Agents
+            PropertyTransactionsTableSeeder::class, // Transactions can depend on Leases, Properties
+            ViewingsTableSeeder::class, // Viewings depend on Leads, Properties, PropertyUnits, Agents
+            DocumentsTableSeeder::class, // Documents depend on various models including Users
+            PaymentsTableSeeder::class, // Payments depend on Leases, Transactions, Payers (Tenant, Client, Owner)
+            MaintenanceRequestsTableSeeder::class, // Depends on Properties, PropertyUnits, Users, Personnel
+            PropertyTasksTableSeeder::class, // Depends on various models including Users
+        ]);
         // \App\Models\User::factory(10)->create();
     }
 }

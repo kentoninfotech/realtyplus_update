@@ -39,6 +39,14 @@ Route::get('edit-personnel/{id}', [App\Http\Controllers\PersonnelController::cla
 Route::put('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'updatePersonnel'])->name('update.personnel');
 Route::post('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'deletePersonnel'])->name('delete.personnel');
 
+// OWNERS
+Route::get('owners', [App\Http\Controllers\OwnerController::class, 'index'])->name('owners');
+Route::get('new-owner', [App\Http\Controllers\OwnerController::class, 'newOwner'])->name('new-owner');
+Route::post('create-owner', [App\Http\Controllers\OwnerController::class, 'createOwner'])->name('create-owner');
+Route::get('edit-owner/{id}', [App\Http\Controllers\OwnerController::class, 'editOwner'])->name('edit-owner');
+Route::put('update-owner/{id}', [App\Http\Controllers\OwnerController::class, 'updateOwner'])->name('update-owner');
+Route::get('owner/{id}', [App\Http\Controllers\OwnerController::class, 'showOwner'])->name('show-owner');
+Route::post('delete-owner/{id}', [App\Http\Controllers\OwnerController::class, 'deleteOwner'])->name('delete-owner');
 
 // ROLES & PERMISSIONS
 Route::resource('role', App\Http\Controllers\RoleController::class);

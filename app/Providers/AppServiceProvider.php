@@ -40,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('staff', User::select('id','name','phone_number','status')
                        ->where('business_id', $businessId)
                     //    ->whereNotIn('user_type', ['client', 'supplier', 'labourer'])
-                       ->whereIn('user_type', ['owner', 'worker', 'staff', 'contractor'])
+                       ->whereIn('user_type', ['admin', 'worker', 'staff', 'contractor'])
                        ->get());
 
                 $view->with('userbusinesses',businesses::select('id','business_name')->where('user_id', Auth::user()->id)->orWhere('id', $businessId)->get());

@@ -20,7 +20,7 @@ class CreateAgentsTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('email')->nullable();
-            $table->string('phone')->nullable();
+            $table->string('phone_number')->nullable();
             $table->string('license_number')->nullable();
             $table->decimal('commission_rate', 5, 2)->nullable();
             $table->string('status', 20)->default('active');

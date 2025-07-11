@@ -2,6 +2,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
@@ -22,13 +23,18 @@ class UserFactory extends Factory
      */
     public function definition()
     {
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
+            'business_id' => $business->id,
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
+            'phone_number' => $this->faker->optional()->phoneNumber(),
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // password
             'remember_token' => Str::random(10),
             'user_type' => $this->faker->randomElement(['admin', 'agent', 'tenant', 'owner', 'staff', 'client']),
+            'status' => $this->faker->randomElement(['active', 'inactive']),
         ];
     }
 

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Property;
 use App\Models\Lease;
 use App\Models\Client;
+use App\Models\Business;
 
 class DocumentFactory extends Factory
 {
@@ -28,9 +29,10 @@ class DocumentFactory extends Factory
         ];
 
         $documentable = $this->faker->randomElement($documentables);
-        
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'         => null, // Set in seeder if needed
+            'business_id'         => $business->id,
             'documentable_type' => get_class($documentable),
             'documentable_id' => $documentable->id,
             'title' => $this->faker->words(3, true) . ' Document',

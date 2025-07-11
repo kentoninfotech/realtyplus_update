@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Personnel;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+use App\Models\Business;
 
 class PersonnelFactory extends Factory
 {
@@ -12,12 +13,16 @@ class PersonnelFactory extends Factory
 
     public function definition()
     {
+        $business = Business::inRandomOrder()->first();
+        if (!$business) {
+            throw new \Exception('No businesses found. Please seed businesses before running this factory.');
+        }
         return [
-            'business_id'         => null, // Set in seeder if needed
+            'business_id'         => $business->id,
             'user_id'             => User::factory()->personnel(),
-            'lastname'            => $this->faker->lastName,
-            'firstname'           => $this->faker->firstName,
-            'othername'           => $this->faker->optional()->firstName,
+            'last_name'            => $this->faker->lastName,
+            'first_name'           => $this->faker->firstName,
+            'other_name'           => $this->faker->optional()->firstName,
             'designation'         => $this->faker->jobTitle,
             'phone_number'        => $this->faker->phoneNumber,
             'email'               => $this->faker->unique()->safeEmail,

@@ -19,7 +19,7 @@ class CreatePersonnelTest extends TestCase
         Storage::fake('public');
 
         // Create a business and associate it with the user
-        $business = \App\Models\businesses::factory()->create();
+        $business = \App\Models\Business::factory()->create();
         $user = User::factory()->create([
             'business_id' => $business->id,
             // 'password' => 'test123',
@@ -27,9 +27,9 @@ class CreatePersonnelTest extends TestCase
         $this->actingAs($user);
 
         $payload = [
-            'firstname' => 'John',
-            'lastname' => 'Doe',
-            'othername' => 'Middle',
+            'first_name' => 'John',
+            'last_name' => 'Doe',
+            'other_name' => 'Middle',
             'email' => 'john.doe@example.com',
             'designation' => 'Manager',
             'marital_status' => 'Single',
@@ -53,6 +53,6 @@ class CreatePersonnelTest extends TestCase
 
         $response->assertRedirect(route('home'));
         $this->assertDatabaseHas('users', ['email' => 'john.doe@example.com',]);
-        $this->assertDatabaseHas('personnels', ['firstname' => 'John', 'email' => 'john.doe@example.com']);
+        $this->assertDatabaseHas('personnels', ['first_name' => 'John', 'email' => 'john.doe@example.com']);
     }
 }

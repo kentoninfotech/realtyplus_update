@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Models\tasks;
 use App\Models\User;
-use App\Models\businesses;
+use App\Models\Business;
 use App\Models\businessgroups;
 use Illuminate\Support\Facades\Auth;
 // use Auth;
@@ -43,14 +43,14 @@ class AppServiceProvider extends ServiceProvider
                        ->whereIn('user_type', ['admin', 'worker', 'staff', 'contractor'])
                        ->get());
 
-                $view->with('userbusinesses',businesses::select('id','business_name')->where('user_id', Auth::user()->id)->orWhere('id', $businessId)->get());
+                $view->with('userbusinesses',Business::select('id','business_name')->where('user_id', Auth::user()->id)->orWhere('id', $businessId)->get());
 
-                $view->with('business', businesses::where('id', $businessId)->first());
+                $view->with('business', Business::where('id', $businessId)->first());
 
-                $view->with('businesses', businesses::where('id', $businessId)->first());
+                $view->with('businesses', Business::where('id', $businessId)->first());
 
             }else{
-                $view->with('business', businesses::first());
+                $view->with('business', Business::first());
             }
 
             $view->with('businessgroups',businessgroups::select('id','businessgroup_name')->get());

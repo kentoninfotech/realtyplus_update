@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Document;
 use App\Models\User;
+use App\Models\Client;
 use App\Models\Property;
 use App\Models\Lease;
 

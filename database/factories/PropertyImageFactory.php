@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\PropertyImage;
 use App\Models\Property;
 use App\Models\PropertyUnit;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PropertyImageFactory extends Factory
@@ -22,8 +23,10 @@ class PropertyImageFactory extends Factory
         $property = Property::inRandomOrder()->first() ?? Property::factory()->create();
         $propertyUnit = $hasUnit ? (PropertyUnit::where('property_id', $property->id)->inRandomOrder()->first() ?? PropertyUnit::factory()->create(['property_id' => $property->id])) : null;
 
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'       => null, // Set in seeder if needed
+            'business_id'       => $business->id,
             'property_id' => $property->id,
             'property_unit_id' => $propertyUnit ? $propertyUnit->id : null,
             'image_path'        => 'https://placehold.co/800x600/E0E0E0/333333?text=' . urlencode($this->faker->word()),

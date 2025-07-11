@@ -23,11 +23,21 @@ class CreatePersonnelRequest extends FormRequest
      */
     public function rules()
     {
+        $businessId = auth()->user()->business_id;
+
         return [
-            'firstname'            => 'required|string|max:70',
-            'lastname'             => 'required|string|max:70',
-            'othername'            => 'nullable|string|max:70',
-            'email'                => 'required|email|unique:users,email',
+            'first_name'            => 'required|string|max:70',
+            'last_name'             => 'required|string|max:70',
+            'other_name'            => 'nullable|string|max:70',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->where(function ($query) use ($businessId) {
+                    return $query->where('business_id', $businessId);
+                }),
+            ],
             'password'             => 'required|string|min:8',
             'designation'          => 'nullable|string|max:50',
             'department'           => 'nullable|string|max:70',

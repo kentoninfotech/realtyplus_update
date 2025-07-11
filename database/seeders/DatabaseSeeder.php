@@ -14,7 +14,9 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
-            UsersTableSeeder::class, // Users must exist first
+            BusinessesTableSeeder::class,
+            RolePermissionSeeder::class, // Roles and permissions must be set up first 
+            UsersTableSeeder::class, // Users must exist first after business
             PropertyTypesTableSeeder::class,
             PersonnelTableSeeder::class,
             ClientsTableSeeder::class,

@@ -224,9 +224,25 @@
                                 <li class="nav-item">
                                     <a href="{{ url('clients') }}" class="nav-link">
                                         <i class="far fa-user nav-icon"></i>
-                                        <p>All Clients</p>
+                                        <p>Clients</p>
                                     </a>
                                 </li>
+                             @can('view owner')
+                                <li class="nav-item">
+                                    <a href="{{ route('owners') }}" class="nav-link">
+                                        <i class="fas fa-user-tie nav-icon"></i>
+                                        <p>Owners</p>
+                                    </a>
+                                </li>
+                             @endcan
+                             @can('view tenant')
+                                <li class="nav-item">
+                                    <a href="{{-- route('tenants') --}}" class="nav-link">
+                                        <i class="fas fa-user-tie nav-icon"></i>
+                                        <p>Tenants</p>
+                                    </a>
+                                </li>
+                             @endcan
                              @can('create client')
                                 <li class="nav-item">
                                     <a href="{{ url('new-client') }}" class="nav-link">
@@ -419,6 +435,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="{{-- route('agents') --}}" class="nav-link">
+                                        <i class="far fa-user nav-icon"></i>
+                                        <p>Agents</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('contractors') }}" class="nav-link">
                                         <i class="far fa-user nav-icon"></i>
                                         <p>Contractors</p>
@@ -553,6 +575,8 @@
                                     Create New Business</i></small></label>
                     </div>
 
+                    <!-- {{--
+                     
                     <form method="POST" action="{{ route('settings') }}" id="settingsform"
                         enctype="multipart/form-data">
                         @csrf
@@ -569,7 +593,7 @@
                             <label for="ministrygroup_id" class="control-label ">Ministry Group/Headquarter</label>
                             <select class="form-control" name="ministrygroup_id" id="ministrygroup_id">
                                 <option value="{{ $businesses->businessgroup_id }}" selected>
-                                    <!-- {{-- $businessgroups->where('id', $businesses->businessgroup_id)->first()->businessgroup_name --}} -->
+                                     $businessgroups->where('id', $businesses->businessgroup_id)->first()->businessgroup_name 
                                 </option>
                                 @foreach ($businessgroups as $mg)
                                     <option value="{{ $mg->id }}">{{ $mg->businessgroup_name }}</option>
@@ -644,7 +668,7 @@
 
 
                     </form>
-
+                    --}} -->
 
                 </div>
 

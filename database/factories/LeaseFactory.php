@@ -6,6 +6,7 @@ use App\Models\Lease;
 use App\Models\Property;
 use App\Models\PropertyUnit;
 use App\Models\Tenant;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LeaseFactory extends Factory
@@ -26,8 +27,11 @@ class LeaseFactory extends Factory
         $startDate = $this->faker->dateTimeBetween('-2 years', 'now');
         $endDate = (clone $startDate)->modify('+1 year');
         $renewalDate = (clone $endDate)->modify('+1 month');
+
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'        => null, // Set in seeder if needed
+            'business_id'        => $business->id,
             'property_id'        => $property->id,
             'property_unit_id'   => $propertyUnit->id,
             'tenant_id'          => $tenant->id,

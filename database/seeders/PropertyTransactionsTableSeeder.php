@@ -16,6 +16,6 @@ class PropertyTransactionsTableSeeder extends Seeder
             echo "Skipping TransactionsTableSeeder: No leases or properties found. Run LeasesTableSeeder and PropertiesTableSeeder first.\n";
             return;
         }
-        PropertyTransaction::factory(50)->create();
+        PropertyTransaction::factory(100)->create();
     }
 }

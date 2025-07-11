@@ -8,6 +8,7 @@ use App\Models\PropertyTransaction;
 use App\Models\Tenant;
 use App\Models\Client;
 use App\Models\Owner;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PaymentFactory extends Factory
@@ -17,7 +18,12 @@ class PaymentFactory extends Factory
     public function definition()
     {
         $lease = Lease::inRandomOrder()->first() ?? Lease::factory()->create();
-        $transaction = PropertyTransaction::inRandomOrder()->first() ?? PropertyTransaction::factory()->create();
+
+        // Always use an existing PropertyTransaction, never create a new one here
+        $transaction = PropertyTransaction::inRandomOrder()->first();
+        if (!$transaction) {
+            throw new \Exception('No PropertyTransaction exists. Please seed PropertyTransactions before Payments.');
+        }
 
         $payerTypes = [
             Tenant::inRandomOrder()->first() ?? Tenant::factory()->create(),
@@ -26,10 +32,12 @@ class PaymentFactory extends Factory
         ];
         $payer = $this->faker->randomElement($payerTypes);
 
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'      => null, // Set in seeder if needed
+            'business_id'      => $business->id,
             'lease_id'         => $lease->id, // Link to a lease
-            'transaction_id'   => $transaction->id, // Link to a general transaction
+            'transaction_id'   => $transaction->id, // Always link to a valid transaction
             'payer_type'       => get_class($payer),
             'payer_id'         => $payer->id,
             'amount'           => $this->faker->randomFloat(2, 50000, 1000000),

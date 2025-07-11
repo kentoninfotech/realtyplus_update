@@ -49,12 +49,12 @@ class User extends Authenticatable
 
     public function business()
     {
-        return $this->hasOne(businesses::class);
+        return $this->hasOne(Business::class);
     }
 
     public function businesses()
     {
-        return $this->belongsTo(businesses::class, 'business_id', 'id');
+        return $this->belongsTo(Business::class, 'business_id', 'id');
     }
 
     public function personnel()

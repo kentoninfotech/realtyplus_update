@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\PropertyTransaction;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Lease;
+use App\Models\Business;
 use App\Models\Property;
 
 class PropertyTransactionFactory extends Factory
@@ -26,8 +27,10 @@ class PropertyTransactionFactory extends Factory
         $transactionableType = $transactionable instanceof Lease ? 'App\\Models\\Lease' : 'App\\Models\\Property';
         $transactionableId = $transactionable->id;
 
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'           => null, // Set in seeder if needed
+            'business_id'           => $business->id,
             'transactionable_type' => $transactionableType,
             'transactionable_id' => $transactionableId,
             'type'                  => $this->faker->randomElement(['payment', 'expense', 'refund']),

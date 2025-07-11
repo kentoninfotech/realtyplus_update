@@ -15,7 +15,7 @@ class CreatePropertyTypesTable extends Migration
     {
         Schema::create('property_types', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
+            // $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
             $table->string('name')->unique();
             $table->text('description')->nullable();
             $table->timestamps();

@@ -12,9 +12,9 @@ class Personnel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'firstname',
-        'lastname',
-        'othername',
+        'first_name',
+        'last_name',
+        'other_name',
         'email',
         'designation',
         'business_id',
@@ -50,10 +50,13 @@ class Personnel extends Model
 
     public static function generateUniqueStaffId()
     {
-        // Generate abbrevation from Business company name
+        // Generate abbreviation from Business company name
         $stopWords = ['and', 'of', 'the', 'in', 'on', 'at', 'for', 'to', 'with', 'a', 'an', 'by'];
+        $user = Auth::user();
+        $business = $user && $user->business ? $user->business : null;
+        $businessName = $business ? $business->business_name : 'RP'; // Default to 'RP' if no business found
         // Split the string into words
-        $words = explode(" ", Auth::user()->business->business_name);
+        $words = explode(" ", $businessName);
         $abbreviation = "";
 
         foreach ($words as $word) {
@@ -73,7 +76,7 @@ class Personnel extends Model
     // ORM ELOQUENT RELATIONSHIP
     public function business()
     {
-        return $this->belongsTo(businesses::class);
+        return $this->belongsTo(Business::class);
     }
 
     public function user()

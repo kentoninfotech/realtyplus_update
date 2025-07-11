@@ -101,7 +101,7 @@ class PersonnelController extends Controller
             $validateData = $request->all();
 
             $user = User::create([
-                'name' => $validateData['firstname'] . ' ' . $validateData['lastname'],
+                'name' => $validateData['first_name'] . ' ' . $validateData['last_name'],
                 'email' => $validateData['email'],
                 'password' => bcrypt($validateData['password']),
                 'phone_number' => $validateData['phone_number'] ?? null,
@@ -174,7 +174,7 @@ class PersonnelController extends Controller
             $validateData = $request->all();
 
             $user->update([
-                'name' => $validateData['firstname'] . ' ' . $validateData['lastname'],
+                'name' => $validateData['first_name'] . ' ' . $validateData['last_name'],
                 'email' => $validateData['email'],
                 'phone_number' => $validateData['phone_number'],
                 'status' => $validateData['status'],

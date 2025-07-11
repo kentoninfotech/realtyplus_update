@@ -42,15 +42,15 @@
                 <div class="row form-group">
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Firstname:</label>
-                        <input name="firstname" type="text" class="form-control" id="first Name" maxlength="50" placeholder="First Name" value="{{ old('firstname') }}">
+                        <input name="first_name" type="text" class="form-control" id="first Name" maxlength="50" placeholder="First Name" value="{{ old('first_name') }}">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Lastname: </label>
-                        <input name="lastname" type="text" class="form-control" placeholder="Last Name" value="{{ old('lastname') }}" maxlength="50">
+                        <input name="last_name" type="text" class="form-control" placeholder="Last Name" value="{{ old('last_name') }}" maxlength="50">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Othernames: </label>
-                        <input name="othername" type="text" class="form-control" placeholder="Othernames" value="{{ old('othername') }}" maxlength="50">
+                        <input name="other_name" type="text" class="form-control" placeholder="Othernames" value="{{ old('other_name') }}" maxlength="50">
                     </div>
                 </div>
 

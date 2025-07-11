@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\PropertyType;
 use App\Models\User;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PropertyFactory extends Factory
@@ -19,11 +20,18 @@ class PropertyFactory extends Factory
         $salePrice = ($listingType == 'sale' || $listingType == 'both') ? $this->faker->randomFloat(2, 1000000, 50000000) : null;
         $rentPrice = ($listingType == 'rent' || $listingType == 'both') ? $this->faker->randomFloat(2, 50000, 500000) : null;
 
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
+        // Use existing PropertyType, Agent and Owner or create if none exists
+        $propertyType = PropertyType::inRandomOrder()->first();// ?? PropertyType::factory()->create();
+        $agent = User::where('user_type', 'agent')->inRandomOrder()->first();// ?? User::factory()->agent()->create();
+        $owner = User::where('user_type', 'owner')->inRandomOrder()->first();// ?? User::factory()->owner()->create();
+
         return [
-            'business_id'        => null, // Set in seeder if needed
-            'property_type_id'   => PropertyType::factory(),
-            'agent_id'           => User::factory()->agent(),
-            'owner_id'           => User::factory()->owner(),
+            'business_id'        => $business->id,
+            'property_type_id'   => $propertyType->id,
+            'agent_id'           => $agent->id,
+            'owner_id'           => $owner->id,
             'name'               => $this->faker->streetName . ' ' . $this->faker->buildingNumber,
             'address'            => $this->faker->address,
             'state'              => $this->faker->state,

@@ -18,15 +18,20 @@ class PropertyTypesTableSeeder extends Seeder
             ['name' => 'Apartment', 'description' => 'A self-contained housing unit that occupies only part of a building.'],
             ['name' => 'House', 'description' => 'A building that serves as living quarters for one or a few families.'],
             ['name' => 'Land', 'description' => 'Undeveloped real estate, often used for future construction.'],
-            ['name' => 'Commercial Space', 'description' => 'Property used for business activities, such as offices, retail stores, or warehouses.'],
+            ['name' => 'Commercial Space', 'description' => 'Property used for business activities, such retail stores, or warehouses.'],
+            ['name' => 'Office', 'description' => 'Property used for business activities, such as offices.'],
+            ['name' => 'Warehouse', 'description' => 'Property used for business activities, such as warehouses.'],
             ['name' => 'Duplex', 'description' => 'A house divided into two apartments, with a separate entrance for each.'],
             ['name' => 'Bungalow', 'description' => 'A single-story house.'],
         ];
 
         foreach ($propertyTypes as $type) {
-            PropertyType::firstOrCreate(['name' => $type['name']], $type);
+            PropertyType::firstOrCreate(
+                ['name' => $type['name']],
+                ['description' => $type['description']]
+            );
         }
 
-        PropertyType::factory(5)->create();
+        // PropertyType::factory(5)->create();
     }
 }

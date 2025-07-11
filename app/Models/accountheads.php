@@ -13,6 +13,6 @@ class accountheads extends Model
 
     public function business()
     {
-        return $this->belongsTo(businesses::class, 'business_id', 'id');
+        return $this->belongsTo(Business::class, 'business_id', 'id');
     }
 }

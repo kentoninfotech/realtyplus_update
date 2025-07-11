@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\PropertyUnit;
 use App\Models\Property;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class PropertyUnitFactory extends Factory
@@ -22,8 +23,10 @@ class PropertyUnitFactory extends Factory
         $salePrice = ($listingType == 'sale' || $listingType == 'both') ? $this->faker->randomFloat(2, 500000, 20000000) : null;
         $rentPrice = ($listingType == 'rent' || $listingType == 'both') ? $this->faker->randomFloat(2, 30000, 300000) : null;
 
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'      => null, // Set in seeder if needed
+            'business_id'      => $business->id,
             'property_id'      => $property->id,
             'unit_number'      => 'Unit ' . $this->faker->unique()->bothify('###'),
             'unit_type'        => $this->faker->randomElement(['Studio', '1 Bed', '2 Bed', 'Retail', 'Office']),

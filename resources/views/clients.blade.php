@@ -32,7 +32,7 @@
                     <tr>
                         <th width="20">#</th>
                         <th>Company Name</th>
-                        <th>Category</th>
+                        <!-- <th>Category</th> -->
                         <th>Contact Person</th>
                         <th>Phone Number</th>
                         <th>Projects</th>
@@ -44,8 +44,8 @@
                     @foreach ($allclients as $cl)
                         <tr @if ($cl->status == 'Active') style="background-color: azure !important;" @endif>
                             <td>{{ $cl->id }}</td>
-                            <td>{{ $cl->client->company_name }}</td>
-                            <td>{{ Str::headline($cl->user_type) }}</td>
+                            <td>{{ $cl->client->company_name ?? $cl->name }}</td>
+                            <!-- <td>{{-- Str::headline($cl->user_type) --}}</td> -->
                             <td>{{ $cl->name }}</td>
                             <td>{{ $cl->phone_number }}</td>
 

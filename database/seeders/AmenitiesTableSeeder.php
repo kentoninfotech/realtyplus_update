@@ -18,7 +18,7 @@ class AmenitiesTableSeeder extends Seeder
             ['name' => 'Balcony', 'icon' => 'fa-building'],
             ['name' => 'Garden', 'icon' => 'fa-tree'],
             ['name' => 'Playground', 'icon' => 'fa-child-reaching'],
-            ['name' => 'Pet Friendly', 'icon' => 'fa-paw'],
+            ['name' => 'Pet Friendly', 'icon' => 'fa-dog'],
             ['name' => 'Air Conditioning', 'icon' => 'fa-fan'],
             ['name' => 'Furnished', 'icon' => 'fa-couch'],
             ['name' => 'Water Supply', 'icon' => 'fa-faucet-drip'],
@@ -31,6 +31,6 @@ class AmenitiesTableSeeder extends Seeder
             Amenity::firstOrCreate(['name' => $amenity['name']], $amenity);
         }
 
-        Amenity::factory(5)->create();
+        // Amenity::factory(5)->create();
     }
 }

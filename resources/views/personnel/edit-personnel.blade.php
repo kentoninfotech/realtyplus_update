@@ -41,15 +41,15 @@
                 <div class="row form-group">
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">First Name:</label>
-                        <input name="firstname" type="text" class="form-control" id="firstname" maxlength="50" placeholder="First Name" value="{{ old('firstname', $user->personnel->firstname ?? '') }}">
+                        <input name="first_name" type="text" class="form-control" id="first_name" maxlength="50" placeholder="First Name" value="{{ old('first_name', $user->personnel->first_name ?? '') }}">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Last Name: </label>
-                        <input name="lastname" type="text" class="form-control" placeholder="Last Name" value="{{ old('lastname', $user->personnel->lastname ?? '') }}" maxlength="50">
+                        <input name="last_name" type="text" class="form-control" placeholder="Last Name" value="{{ old('last_name', $user->personnel->last_name ?? '') }}" maxlength="50">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Othernames: </label>
-                        <input name="othername" type="text" class="form-control" placeholder="Othernames" value="{{ old('othername', $user->personnel->othername ?? '') }}" maxlength="50">
+                        <input name="other_name" type="text" class="form-control" placeholder="Othernames" value="{{ old('other_name', $user->personnel->other_name ?? '') }}" maxlength="50">
                     </div>
                 </div>
 
@@ -218,6 +218,7 @@
                             <select name="status" class="form-control">
                                 <option disabled {{ old('status', $user->status ?? null) ? '' : 'selected' }}>Status</option>
                                 <option value="Active" {{ old('status', $user->status ?? null) == 'Active' ? 'selected' : '' }}>Active</option>
+                                <option value="Inactive" {{ old('status', $user->status ?? null) == 'Inactive' ? 'selected' : '' }}>Inactive</option>
 
                             </select>
                         </div>

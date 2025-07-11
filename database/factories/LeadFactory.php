@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Lead;
 use App\Models\Agent;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class LeadFactory extends Factory
@@ -17,8 +18,10 @@ class LeadFactory extends Factory
      */
     public function definition()
     {
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'              => null, // Set in seeder if needed
+            'business_id'              => $business->id,
             'agent_id'                 => Agent::inRandomOrder()->first() ?? Agent::factory(),
             'first_name'               => $this->faker->firstName,
             'last_name'                => $this->faker->lastName,

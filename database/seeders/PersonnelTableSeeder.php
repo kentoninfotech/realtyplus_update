@@ -20,9 +20,7 @@ class PersonnelTableSeeder extends Seeder
                     'last_name' => 'Lee',
                     'email' => 'manager@example.com',
                     'phone_number' => '08012345678',
-                    'role' => 'Administrator',
                     'address' => '123 Admin St, City, State',
-                    'status' => 'active',
                 ]
             );
         }

@@ -30,6 +30,7 @@ class MaintenanceRequestFactory extends Factory
         $status = $completedAt ? 'completed' : $this->faker->randomElement(['open', 'in_progress', 'cancelled']);
 
         return [
+            'business_id' => $property->business_id, // Assuming Property has a business_id
             'property_id' => $property->id,
             'property_unit_id' => $propertyUnit ? $propertyUnit->id : null,
             'reported_by_user_id' => $reporter->id,

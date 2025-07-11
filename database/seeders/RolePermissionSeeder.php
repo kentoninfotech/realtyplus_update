@@ -31,6 +31,10 @@ class RolePermissionSeeder extends Seeder
             'view material_stock', 'create material_stock', 'edit material_stock', 'delete material_stock',
             'view material_supply', 'create material_supply', 'edit material_supply', 'delete material_supply',
             'view material', 'create material', 'edit material', 'delete material',
+            'view owner', 'create owner', 'edit owner', 'delete owner',
+            'view property', 'create property', 'edit property', 'delete property',
+            'view tenant', 'create tenant', 'edit tenant', 'delete tenant',
+            'view agent', 'create agent', 'edit agent', 'delete agent',
             'manage businesses', // Admin exception
         ];
 
@@ -42,7 +46,7 @@ class RolePermissionSeeder extends Seeder
         $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);
         $superAdmin->givePermissionTo(Permission::all());
 
-        $admin = Role::firstOrCreate(['name' => 'Admin']);
+        $admin = Role::firstOrCreate(['name' => 'System Admin']);
         $admin->givePermissionTo(Permission::all()->filter(fn($p) => $p->name !== 'manage businesses'));
 
         $manager = Role::firstOrCreate(['name' => 'Manager']);
@@ -50,7 +54,6 @@ class RolePermissionSeeder extends Seeder
             'view project', 'create project', 'edit project',
             'view task', 'create task', 'edit task', 'delete task',
             'view material_checkout', 'create material_checkout', 'edit material_checkout',
-            'view material_damage', 'create material_damage', 'edit material_damage',
             'view material_stock', 'create material_stock', 'edit material_stock',
             'view material_supply', 'create material_supply', 'edit material_supply',
             'view material', 'create material', 'edit material',

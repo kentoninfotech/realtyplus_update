@@ -44,9 +44,9 @@
                 <!-- <a href="{{-- route('edit.personnel', $user->id) --}}" class="btn btn-link btn-sm ml-auto">Edit</a> -->
             </div>
             <div class="card-body row">
-                <div class="col-md-6 mb-2">First Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->firstname ?? '' }}</span></div>
-                <div class="col-md-6 mb-2">Last Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->lastname ?? '' }}</span></div>
-                <div class="col-md-12 mb-2">Other Names: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->othername ?? '' }}</span></div>
+                <div class="col-md-6 mb-2">First Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->first_name ?? '' }}</span></div>
+                <div class="col-md-6 mb-2">Last Name: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->last_name ?? '' }}</span></div>
+                <div class="col-md-12 mb-2">Other Names: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->other_name ?? '' }}</span></div>
                 <div class="col-md-6 mb-2">State: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->state_of_origin ?? '' }}</span></div>
                 <div class="col-md-6 mb-2">Nationality: <span class="font-weight-bold" style="font-weight: 700;">{{ $user->personnel->nationality ?? '' }}</span></div>
                 <div class="col-md-6 mb-2">Date of Birth: <span class="font-weight-bold" style="font-weight: 700;">{{ isset($user->personnel->dob) ? $user->personnel->dob->format('d-M-Y') : '' }}</span></div>
@@ -84,7 +84,7 @@
         </div>
 
         <!-- Roles and Permissions (Optional Section) -->
-    @hasrole('System Admin')
+    @hasanyrole('System Admin|Super Admin')
         @if($user->roles->isNotEmpty())
         <div class="card shadow-sm rounded-4">
             <div class="card-header d-flex justify-content-between align-items-center">
@@ -120,7 +120,7 @@
             </div>
         </div>
         @endif
-    @endhasrole
+    @endhasanyrole
     </div>
 </div>
 </div>

@@ -7,6 +7,7 @@ use App\Models\Lead;
 use App\Models\Property;
 use App\Models\PropertyUnit;
 use App\Models\Agent;
+use App\Models\Business;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ViewingFactory extends Factory
@@ -25,8 +26,10 @@ class ViewingFactory extends Factory
         $propertyUnit = PropertyUnit::where('property_id', $property->id)->inRandomOrder()->first() ?? PropertyUnit::factory()->create(['property_id' => $property->id]);
         $agent = Agent::inRandomOrder()->first() ?? Agent::factory()->create();
 
+        $business = Business::inRandomOrder()->first() ?? Business::factory()->create();
+
         return [
-            'business_id'      => null, // Set in seeder if needed
+            'business_id'      => $business->id,
             'lead_id'          => $lead ? $lead->id : null,
             'property_id'      => $property->id,
             'property_unit_id' => $propertyUnit ? $propertyUnit->id : null,

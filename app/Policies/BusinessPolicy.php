@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Models\User;
-use App\Models\businesses;
+use App\Models\Business;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class BusinessesPolicy
+class BusinessPolicy
 {
     use HandlesAuthorization;
 
@@ -25,10 +25,10 @@ class BusinessesPolicy
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\businesses  $businesses
+     * @param  \App\Models\Business  $businesses
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, businesses $businesses)
+    public function view(User $user, Business $businesses)
     {
         //
     }
@@ -48,10 +48,10 @@ class BusinessesPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\businesses  $businesses
+     * @param  \App\Models\Business  $businesses
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, businesses $businesses)
+    public function update(User $user, Business $businesses)
     {
         //
     }
@@ -60,10 +60,10 @@ class BusinessesPolicy
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\businesses  $businesses
+     * @param  \App\Models\Business  $businesses
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, businesses $businesses)
+    public function delete(User $user, Business $businesses)
     {
         //
     }
@@ -72,10 +72,10 @@ class BusinessesPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\businesses  $businesses
+     * @param  \App\Models\Business  $businesses
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, businesses $businesses)
+    public function restore(User $user, Business $businesses)
     {
         //
     }
@@ -84,10 +84,10 @@ class BusinessesPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\businesses  $businesses
+     * @param  \App\Models\Business  $businesses
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, businesses $businesses)
+    public function forceDelete(User $user, Business $businesses)
     {
         //
     }

@@ -17,9 +17,9 @@ class CreatePersonnelsTable extends Migration
             $table->id();
             $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
-            $table->string('lastname')->nullable();
-            $table->string('firstname')->nullable();
-            $table->string('othername')->nullable();
+            $table->string('last_name')->nullable();
+            $table->string('first_name')->nullable();
+            $table->string('other_name')->nullable();
             $table->string('designation')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('email')->nullable();

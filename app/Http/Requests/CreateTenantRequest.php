@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateOwnerRequest extends FormRequest
+class CreateTenantRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,9 @@ class CreateOwnerRequest extends FormRequest
     public function rules()
     {
         $businessId = auth()->user()->business_id;
-
         return [
-            'first_name'    => 'required|string|max:100',
-            'last_name'     => 'required|string|max:100',
-            'company_name'  => 'nullable|string|max:150',
+            'first_name'               => 'required|string|max:100',
+            'last_name'                => 'required|string|max:100',
             'email' => [
                 'required',
                 'string',
@@ -38,9 +36,11 @@ class CreateOwnerRequest extends FormRequest
                     return $query->where('business_id', $businessId);
                 }),
             ],
-            'phone_number'  => 'nullable|string|max:150',
-            'address'       => 'nullable|string|max:200',
-            'password'      => 'nullable|string|min:8',
+            'phone_number'             => 'nullable|string|max:150',
+            'address'                  => 'nullable|string|max:200',
+            'emergency_contact_name'   => 'nullable|string|max:150',
+            'emergency_contact_phone'  => 'nullable|string|max:150',
+            'password'                 => 'nullable|string|min:8',
         ];
     }
 }

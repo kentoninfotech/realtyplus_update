@@ -20,7 +20,7 @@ class OwnersTableSeeder extends Seeder
                     'last_name' => 'Family',
                     'company_name' => null,
                     'email' => 'owner@example.com',
-                    'phone' => '09055667788',
+                    'phone_number' => '09055667788',
                     'address' => '101 Owner Estate, City, State',
                     'bank_account_details' => '1234567890 (Dummy Bank)',
                 ]

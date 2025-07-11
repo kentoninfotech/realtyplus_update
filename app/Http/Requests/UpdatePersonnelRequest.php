@@ -24,9 +24,9 @@ class UpdatePersonnelRequest extends FormRequest
     public function rules()
     {
         return [
-            'firstname' => 'nullable|string|max:70',
-            'lastname' => 'nullable|string|max:70',
-            'othername' => 'nullable|string|max:70',
+            'first_name' => 'nullable|string|max:70',
+            'last_name' => 'nullable|string|max:70',
+            'other_name' => 'nullable|string|max:70',
             'email' => 'required|email|',
             'designation' => 'nullable|string|max:50',
             'department' => 'nullable|string|max:70',

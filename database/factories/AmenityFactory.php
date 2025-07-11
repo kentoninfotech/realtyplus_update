@@ -35,7 +35,7 @@ class AmenityFactory extends Factory
         ];
         $name = $this->faker->unique()->randomElement(array_keys($amenities));
         return [
-            'business_id'  => null, // Set in seeder if needed
+            // 'business_id'  => null, // Set in seeder if needed
             'name'         => $name,
             'icon'         => $amenities[$name],
             'description'  => $this->faker->optional()->sentence,

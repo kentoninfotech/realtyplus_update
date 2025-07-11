@@ -17,7 +17,7 @@ class CreatePaymentsTable extends Migration
             $table->id();
             $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade'); 
             $table->foreignId('lease_id')->nullable()->constrained('leases')->onDelete('set null');
-            $table->foreignId('transaction_id')->nullable()->constrained('transactions')->onDelete('set null'); // Link to a general transaction if it's part of one
+            $table->foreignId('transaction_id')->nullable()->constrained('property_transactions')->onDelete('set null'); // Link to a general transaction if it's part of one
 
             $table->string('payer_type')->nullable(); // For polymorphic payer (Tenant, Client, Owner)
             $table->unsignedBigInteger('payer_id')->nullable();

@@ -19,7 +19,7 @@ class AgentsTableSeeder extends Seeder
                     'first_name' => 'John',
                     'last_name' => 'Agent',
                     'email' => 'agent@example.com',
-                    'phone' => '08011223344',
+                    'phone_number' => '08011223344',
                     'license_number' => 'AB12345',
                     'commission_rate' => 5.00,
                     'status' => 'active',

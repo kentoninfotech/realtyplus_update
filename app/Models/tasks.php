@@ -13,7 +13,7 @@ class tasks extends Model
 
     public function business()
     {
-        return $this->belongsTo(businesses::class, 'id', 'business_id');
+        return $this->belongsTo(Business::class, 'id', 'business_id');
     }
 
     public function project()

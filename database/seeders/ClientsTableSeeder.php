@@ -16,13 +16,12 @@ class ClientsTableSeeder extends Seeder
             Client::firstOrCreate(
                 ['user_id' => $clientUser->id],
                 [
-                    'first_name' => 'Sarah',
-                    'last_name' => 'Connor',
+                    'name' => 'Client Sarah',
                     'company_name' => null,
                     'email' => 'client@example.com',
                     'phone_number' => '09011223344',
                     'address' => '456 Client Ave, City, State',
-                    'notes' => 'Looking for land for personal development.',
+                    'about' => 'Looking for land for personal development.',
                 ]
             );
         }

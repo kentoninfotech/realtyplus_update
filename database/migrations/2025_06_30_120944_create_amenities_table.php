@@ -15,7 +15,7 @@ class CreateAmenitiesTable extends Migration
     {
         Schema::create('amenities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
+            // $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
             $table->string('name')->unique();
             $table->string('icon')->nullable();
             $table->text('description')->nullable();

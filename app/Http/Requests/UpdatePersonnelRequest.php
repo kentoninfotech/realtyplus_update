@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdatePersonnelRequest extends FormRequest
 {
@@ -23,11 +24,21 @@ class UpdatePersonnelRequest extends FormRequest
      */
     public function rules()
     {
+        $businessId = auth()->user()->business_id;
+
         return [
             'first_name' => 'nullable|string|max:70',
             'last_name' => 'nullable|string|max:70',
             'other_name' => 'nullable|string|max:70',
-            'email' => 'required|email|',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->where(function ($query) use ($businessId) {
+                    return $query->where('business_id', $businessId);
+                })->ignore($this->user->id),
+            ],
             'designation' => 'nullable|string|max:50',
             'department' => 'nullable|string|max:70',
             'phone_number' => 'nullable|string|max:100',

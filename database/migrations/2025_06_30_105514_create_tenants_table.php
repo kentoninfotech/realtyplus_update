@@ -25,6 +25,8 @@ class CreateTenantsTable extends Migration
             $table->string('emergency_contact_name')->nullable();
             $table->string('emergency_contact_phone')->nullable();
             $table->timestamps();
+
+            $table->unique(['business_id', 'email']);
         });
     }
 

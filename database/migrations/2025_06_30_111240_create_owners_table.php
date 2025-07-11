@@ -25,6 +25,8 @@ class CreateOwnersTable extends Migration
             $table->string('address')->nullable();
             $table->string('bank_account_details')->nullable(); // Consider encrypting or storing securely
             $table->timestamps();
+
+            $table->unique(['business_id', 'email']);
         });
     }
 

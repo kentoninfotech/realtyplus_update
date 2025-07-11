@@ -36,6 +36,8 @@ class CreatePersonnelsTable extends Migration
             $table->string('employment_date')->nullable();
             $table->string('picture')->nullable();
             $table->timestamps();
+
+            $table->unique(['business_id', 'email']);
         });
     }
 

@@ -25,6 +25,8 @@ class CreateAgentsTable extends Migration
             $table->decimal('commission_rate', 5, 2)->nullable();
             $table->string('status', 20)->default('active');
             $table->timestamps();
+
+            $table->unique(['business_id', 'email']);
         });
     }
 

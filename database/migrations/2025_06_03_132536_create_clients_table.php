@@ -24,6 +24,8 @@ class CreateClientsTable extends Migration
             $table->string('about')->nullable();
             $table->string('address')->nullable();
             $table->timestamps();
+
+            $table->unique(['business_id', 'email']);
         });
     }
 

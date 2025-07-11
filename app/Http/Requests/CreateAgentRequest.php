@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateTenantRequest extends FormRequest
+class CreateAgentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,6 @@ class UpdateTenantRequest extends FormRequest
     public function rules()
     {
         $businessId = auth()->user()->business_id;
-
         return [
             'first_name'               => 'required|string|max:100',
             'last_name'                => 'required|string|max:100',
@@ -34,9 +33,9 @@ class UpdateTenantRequest extends FormRequest
                 'string',
                 'email',
                 'max:255',
-                // Rule::unique('users')->where(function ($query) use ($businessId) {
-                //     return $query->where('business_id', $businessId);
-                // })->ignore($this->tenant->id),
+                Rule::unique('users')->where(function ($query) use ($businessId) {
+                    return $query->where('business_id', $businessId);
+                }),
             ],
             'phone_number'             => 'nullable|string|max:150',
             'address'                  => 'nullable|string|max:200',

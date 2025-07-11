@@ -97,10 +97,10 @@
                         <select name="status" id="status" class="form-control">
                             <option value="{{ $client->status ?? '' }}" selected>
                                 {{ $client->status ?? 'Select Status' }}</option>
-                            <option value="Active">Active</option>
-                            <option value="Suspended">Suspended</option>
-                            <option value="Terminated">Terminated</option>
-                            <option value="Awaiting Approval">Awaiting Approval</option>
+                            <option value="inactive">Active</option>
+                            <option value="suspended">Suspended</option>
+                            <option value="terminated">Terminated</option>
+                            <option value="awaiting_approval">Awaiting Approval</option>
                         </select>
                     </div>
 

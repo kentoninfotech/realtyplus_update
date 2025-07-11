@@ -39,12 +39,12 @@
                     <div class="form-group col-md-6">
                         <label for="first_name">First Name</label>
                         <input type="text" class="form-control" name="first_name" id="first_name"
-                            placeholder="Enter a First Name" value="{{ old('first_name') }}">
+                            placeholder="Enter First Name" value="{{ old('first_name') }}">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="last_name">Last Name</label>
                         <input type="text" class="form-control" name="last_name" id="last_name"
-                            placeholder="Enter a Last Name" value="{{ old('last_name') }}">
+                            placeholder="Enter Last Name" value="{{ old('last_name') }}">
                     </div>
 
                 </div>
@@ -81,17 +81,17 @@
                 <div class="row">
 
                     <div class="form-group col-md-6">
-                        <label for="status">Status</label>
+                        <label for="status">Owner Status</label>
                         <select name="status" id="status" class="form-control">
                             <option disabled {{ old('status') ? '' : 'selected' }}>Select Status</option>
-                            <option value="Active" old('status') == 'Active' ? 'selected' : ''>Active</option>
-                            <option value="Suspended" old('status') == 'Suspended' ? 'selected' : ''>Suspended</option>
-                            <option value="Terminated" old('status') == 'Terminated' ? 'selected' : ''>Terminated</option>
+                            <option value="inactive" old('status') == 'active' ? 'selected' : ''>Active</option>
+                            <option value="suspended" old('status') == 'Suspended' ? 'selected' : ''>Suspended</option>
+                            <option value="terminated" old('status') == 'Terminated' ? 'selected' : ''>Terminated</option>
                             <option value="Pending" old('status') == 'Pending' ? 'selected' : ''>Pending</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
-                        <label for="password">Change Password</label>
+                        <label for="password">Password</label>
                         <input type="text" class="form-control" name="password" id="password"
                             placeholder="Password">
                     </div>

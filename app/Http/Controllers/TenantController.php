@@ -22,7 +22,7 @@ class TenantController extends Controller
      */
     public function index()
     {
-        $tenants = Tenant::with('user', 'properties')->paginate(10);
+        $tenants = Tenant::with('user')->paginate(10);
         return view('personnel.tenants.tenants', compact('tenants'));
     }
 
@@ -56,12 +56,12 @@ class TenantController extends Controller
                 'phone_number' => $request->phone_number ?? null,
                 'password' => bcrypt($request->password),
                 'user_type' => 'tenant',
-                'status' => $request->status ?? 'Active',
+                'status' => $request->status ?? 'active',
                 'business_id' => auth()->user()->business_id,
             ]);
 
             // Assign tenant role
-            $user->assignRole('tenant');
+            $user->assignRole('Tenant');
 
             //set user & business ID
             $request['user_id'] = $user->id;
@@ -108,7 +108,7 @@ class TenantController extends Controller
                 'phone_number' => $request->phone_number ?? null,
                 'password' => $request->password,
                 'user_type' => 'tenant',
-                'status' => $request->status ?? 'Active',
+                'status' => $request->status ?? 'active',
             ]);
 
             // Update tenant

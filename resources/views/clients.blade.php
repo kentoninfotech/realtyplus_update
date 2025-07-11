@@ -42,7 +42,7 @@
                 </thead>
                 <tbody>
                     @foreach ($allclients as $cl)
-                        <tr @if ($cl->status == 'Active') style="background-color: azure !important;" @endif>
+                        <tr @if ($cl->status == 'active') style="background-color: azure !important;" @endif>
                             <td>{{ $cl->id }}</td>
                             <td>{{ $cl->client->company_name ?? $cl->name }}</td>
                             <!-- <td>{{-- Str::headline($cl->user_type) --}}</td> -->

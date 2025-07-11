@@ -217,8 +217,8 @@
                             <label class="control-label col-lg-12" for="content">Status: </label>
                             <select name="status" class="form-control">
                                 <option disabled {{ old('status', $user->status ?? null) ? '' : 'selected' }}>Status</option>
-                                <option value="Active" {{ old('status', $user->status ?? null) == 'Active' ? 'selected' : '' }}>Active</option>
-                                <option value="Inactive" {{ old('status', $user->status ?? null) == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+                                <option value="inactive" {{ old('status', $user->status ?? null) == 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ old('status', $user->status ?? null) == 'inactive' ? 'selected' : '' }}>Inactive</option>
 
                             </select>
                         </div>

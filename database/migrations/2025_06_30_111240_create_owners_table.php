@@ -20,7 +20,7 @@ class CreateOwnersTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->string('company_name')->nullable();
-            $table->string('email')->unique()->nullable();
+            $table->string('email')->nullable();
             $table->string('phone_number')->nullable();
             $table->string('address')->nullable();
             $table->string('bank_account_details')->nullable(); // Consider encrypting or storing securely

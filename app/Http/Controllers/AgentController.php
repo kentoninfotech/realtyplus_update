@@ -3,50 +3,50 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Owner;
+use App\Models\Agent;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-use App\Http\Requests\CreateOwnerRequest;
-use App\Http\Requests\UpdateOwnerRequest;
+use App\Http\Requests\CreateAgentRequest;
+use App\Http\Requests\UpdateAgentRequest;
 
-class OwnerController extends Controller
+class AgentController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
     }
     /**
-     * Show all Owners.
-     * Modify owners records, properties, and transactions.
+     * Show all Agents.
+     * Modify agents records, properties, and transactions.
      **
      */
     public function index()
     {
-        $owners = Owner::with('user', 'properties')->paginate(10);
-        return view('personnel.owners.owners', compact('owners'));
+        $agents = Agent::with('user')->paginate(10);
+        return view('personnel.agents.agents', compact('agents'));
     }
 
     /**
-     * Show add new Owner form.
+     * Show add new Agent form.
      **
      */
-    public function newOwner()
+    public function newAgent()
     {
-        return view('personnel.owners.new-owner');
+        return view('personnel.agents.new-agent');
     }
     /**
-     * Show Owner form.
+     * Show Agent form.
      **
      */
-    public function showOwner($id)
+    public function showAgent($id)
     {
         //
     }
     /**
-     * Store a new Owner.
+     * Store a new Agent.
      **
      */
-    public function createOwner(CreateOwnerRequest $request)
+    public function createAgent(CreateAgentRequest $request)
     {
         DB::transaction(function () use ($request){
             //create user
@@ -55,45 +55,45 @@ class OwnerController extends Controller
                 'email' => $request->email,
                 'phone_number' => $request->phone_number ?? null,
                 'password' => bcrypt($request->password),
-                'user_type' => 'owner',
+                'user_type' => 'agent',
                 'status' => $request->status ?? 'active',
                 'business_id' => auth()->user()->business_id,
             ]);
 
-            // Assign owner role
-            $user->assignRole('owner');
+            // Assign agent role
+            $user->assignRole('Agent');
 
             //set user & business ID
             $request['user_id'] = $user->id;
             $request['business_id'] = auth()->user()->business_id;
 
-            //create owner's record linked to user
-            Owner::create($request->except(['password', 'user_type', 'status']));
+            //create agent's record linked to user
+            Agent::create($request->except(['password', 'user_type', 'status']));
 
         });
 
-        return redirect()->route('owners')->with('message', 'Owner created successfully.');
+        return redirect()->route('agents')->with('message', 'Agent created successfully.');
 
     }
     /**
-     * Show edit Owner form.
+     * Show edit Agent form.
      **
      */
-    public function editOwner($id)
+    public function editAgent($id)
     {
-        $owner = Owner::findOrFail($id);
-        return view('personnel.owners.edit-owner', compact('owner'));
+        $agent = Agent::findOrFail($id);
+        return view('personnel.agents.edit-agent', compact('agent'));
     }
     /**
-     * Update Owner records.
+     * Update Agent records.
      **
      */
-    public function updateOwner(UpdateOwnerRequest $request, $id)
+    public function updateAgent(UpdateAgentRequest $request)
     {
-        $owner = Owner::findOrFail($id);
-        $user = User::findOrFail($owner->user_id);
+        $agent = Agent::findOrFail($request->id);
+        $user = User::findOrFail($agent->user_id);
 
-        DB::transaction(function () use ($request, $owner, $user) {
+        DB::transaction(function () use ($request, $agent, $user) {
             // Check If password is provided, hash it; otherwise, keep the existing password
             if (isset($request->password) && !empty($request->password)) {
                 $request->merge(['password' => bcrypt($request->password)]);
@@ -107,27 +107,27 @@ class OwnerController extends Controller
                 'email' => $request->email,
                 'phone_number' => $request->phone_number ?? null,
                 'password' => $request->password,
-                'user_type' => 'owner',
+                'user_type' => 'agent',
                 'status' => $request->status ?? 'active',
             ]);
 
-            // Update owner
-            $owner->update($request->except(['password', 'user_type', 'status']));
+            // Update agent
+            $agent->update($request->except(['password', 'user_type', 'status']));
         });
 
-        return redirect()->route('owners')->with('message', 'Owner records updated successfully.');
+        return redirect()->route('agents')->with('message', 'Agent records updated successfully.');
     }
     /**
-     * Delete an Owner.
+     * Delete an Agent.
      **
      */
-    public function deleteOwner($id)
+    public function deleteAgent($id)
     {
-        $owner = Owner::findOrFail($id);
-        $user = User::findOrFail($owner->user_id);
-        $owner->delete();
+        $agent = Agent::findOrFail($id);
+        $user = User::findOrFail($agent->user_id);
+        $agent->delete();
         $user->delete();
-        return redirect()->route('owners')->with('message', 'Owner deleted successfully.');
+        return redirect()->route('agents')->with('message', 'Agent deleted successfully.');
     }
 
 }

@@ -106,7 +106,7 @@ class PersonnelController extends Controller
                 'password' => bcrypt($validateData['password']),
                 'phone_number' => $validateData['phone_number'] ?? null,
                 'business_id' => auth()->user()->business_id,
-                'status' => 'Active',
+                'status' => 'active',
                 'user_type' => $validateData['user_type'] ?? 'staff',
             ]);
 

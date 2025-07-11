@@ -5,12 +5,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Edit Owner</h1>
+                    <h1 class="m-0">Edit Agent</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('owners') }}">Owner</a></li>
-                        <li class="breadcrumb-item active">Edit Owner</li>
+                        <li class="breadcrumb-item"><a href="{{ route('agents') }}">Agent</a></li>
+                        <li class="breadcrumb-item active">Edit Agent</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -19,11 +19,11 @@
 
     <div class="card card-primary">
         <div class="card-header">
-            <h4 class="card-title">Edit {{$owner->user->name }}' Records</h4>
-            <a class="btn btn-success sm float-right" href="{{ route('owners') }}">Back</a>
+            <h4 class="card-title">Edit {{$agent->user->name }}' Records</h4>
+            <a class="btn btn-success sm float-right" href="{{ route('agents') }}">Back</a>
         </div>
         <div class="card-body">
-            <form action="{{ route('update.owner', $owner->id) }}" method="post">
+            <form action="{{ route('update.agent', $agent->id) }}" method="post">
                 @csrf
                 @method('PUT')
                 @if ($errors->any())
@@ -40,28 +40,14 @@
                     <div class="form-group col-md-6">
                         <label for="first_name">First Name</label>
                         <input type="text" class="form-control" name="first_name" id="first_name"
-                            placeholder="Enter a First Name" value="{{ old('first_name', $owner->first_name) }}">
+                            placeholder="Enter a First Name" value="{{ old('first_name', $agent->first_name) }}">
                     </div>
                     <div class="form-group col-md-6">
                         <label for="last_name">Last Name</label>
                         <input type="text" class="form-control" name="last_name" id="last_name"
-                            placeholder="Enter a Last Name" value="{{ old('last_name', $owner->last_name) }}">
+                            placeholder="Enter a Last Name" value="{{ old('last_name', $agent->last_name) }}">
                     </div>
 
-                </div>
-
-                <div class="row form-group">
-                    <div class="form-group col-md-6">
-                        <label for="company_name">Name / Organization /Company Name</label>
-                        <input type="text" class="form-control" name="company_name" id="company_name"
-                            placeholder="Company name"
-                            value="{{ old('company_name', $owner->company_name) }}">
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label for="address">Address </label>
-                        <input type="text" class="form-control" name="address" id="address"
-                            placeholder="Residential or office address" value="{{ old('address', $owner->address) }}">
-                    </div>
                 </div>
 
                 <div class="row">
@@ -69,13 +55,27 @@
                         <label for="phone_number">Phone Number</label>
                         <input type="text" class="form-control" name="phone_number" id="phone_number"
                             placeholder="Phone Number"
-                            value="{{ old('phone_number', $owner->phone_number) }}">
+                            value="{{ old('phone_number', $agent->phone_number) }}">
                     </div>
 
                     <div class="form-group col-md-6">
                         <label for="email">Email</label>
-                        <input type="email" class="form-control" name="email" id="email" placeholder="Email Address"
-                            value="{{ old('email', $owner->email) }}">
+                        <input type="email" class="form-control" name="email" id="email" placeholder="Email Commission_rate"
+                            value="{{ old('email', $agent->email) }}">
+                    </div>
+                </div>
+
+                <div class="row form-group">
+                    <div class="form-group col-md-6">
+                        <label for="license_number">License Number</label>
+                        <input type="text" class="form-control" name="license_number" id="license_number"
+                            placeholder="License Number"
+                            value="{{ old('license_number', $agent->license_number) }}">
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="commission_rate">Commission Rate </label>
+                        <input type="text" class="form-control" name="commission_rate" id="commission_rate"
+                            placeholder="Commission Rate" value="{{ old('commission_rate', $agent->commission_rate) }}">
                     </div>
                 </div>
 
@@ -84,12 +84,12 @@
                     <div class="form-group col-md-6">
                         <label for="status">Status</label>
                         <select name="status" id="status" class="form-control">
-                            <option disabled {{ old('status', $owner->user->status ?? null) ? '' : 'selected' }}>Select Status</option>
-                            <option value="active" {{ old('status', $owner->user->status) == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ old('status', $owner->user->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            <option value="suspended" {{ old('status', $owner->user->status) == 'suspended' ? 'selected' : '' }}>Suspended</option>
-                            <option value="terminated" {{ old('status', $owner->user->status) == 'terminated' ? 'selected' : '' }}>Terminated</option>
-                            <option value="pending" {{ old('status', $owner->user->status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option disabled {{ old('status', $agent->user->status ?? null) ? '' : 'selected' }}>Select Status</option>
+                            <option value="active" {{ old('status',$agent->user->status) == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ old('status',$agent->user->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="suspended" {{ old('status', $agent->user->status) == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                            <option value="terminated" {{ old('status', $agent->user->status) == 'terminated' ? 'selected' : '' }}>Terminated</option>
+                            <option value="pending" {{ old('status', $agent->user->status) == 'pending' ? 'selected' : '' }}>Pending</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">
@@ -102,7 +102,7 @@
 
 
                 <div class="form-group col-md-12">
-                    <button type="submit" class="btn btn-primary">Update Owner</button>
+                    <button type="submit" class="btn btn-primary">Update Agent</button>
                 </div>
             </form>
         </div>

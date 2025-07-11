@@ -7,12 +7,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Owners</h1>
+                    <h1 class="m-0">Agents</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Owners</li>
+                        <li class="breadcrumb-item active">Agents</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -23,8 +23,8 @@
     <div class="card">
 
         <div class="card-body" style="overflow: auto;">
-          @can('create owner')
-            <a href="{{ route('new.owner') }}" class="btn btn-primary" style="float: right;">Add New</a>
+          @can('create agent')
+            <a href="{{ route('new.agent') }}" class="btn btn-primary" style="float: right;">Add New</a>
           @endcan
             <br>
             <table class="table responsive-table" id="products">
@@ -32,33 +32,31 @@
                     <tr>
                         <th width="20">#</th>
                         <th>Name</th>
-                        <th>Company Name</th>
-                        <th>email</th>
-                        <th>Phone Number</th>
-                        <th>Address</th>
+                        <th>Contact</th>
+                        <th>License Number</th>
+                        <th>Commission Rate</th>
+                        <th>Leads</th>
+                        <th>Apartment/Property</th>
                         <th>Status</th>
-                        <th>Property</th>
-                        <th>Available Property</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($owners as $owner)
-                        <tr @if ($owner->user->status == 'Active') style="background-color: azure !important;" @endif>
-                            <td>{{ $owner->id }}</td>
-                            <td>{{ $owner->first_name }} {{ $owner->last_name }}</td>
-                            <td>{{ $owner->company_name }}</td>
-                            <td>{{ $owner->email }}</td>
-                            <td>{{ $owner->phone_number }}</td>
-                            <td>{{ $owner->address }}</td>
-                            <td>
-                                <span class="badge {{ $owner->user->status === 'Active' ? 'bg-success' : 'bg-danger' }}">
-                                    {{ $owner->user->status }}
-                                </span>
+                    @foreach ($agents as $agent)
+                        <tr @if ($agent->user->status == 'active') style="background-color: azure !important;" @endif>
+                            <td>{{ $agent->id }}</td>
+                            <td>{{ $agent->first_name ?? '' }} {{ $agent->last_name ?? '' }}</td>
+                            <td>{{ $agent->phone_number ?? '' }}
+                                <span>{{ $agent->email }}</span>
                             </td>
-
-                            <td>{{ $owner->properties->count() }}</td>
-                            <td>{{ isset($owner->properties->where('status', 'available')->first()->title) ? $owner->properties->where('status', 'available')->first()->title : 'None' }}
+                            <td>{{ $agent->license_number ?? '' }}</td>
+                            <td>{{ $agent->commission_rate ?? '' }}</td>
+                            <td>{{ $agent->leads->count() ?? 0 }}</td>
+                            <td>{{ $agent->properties->count() ?? 0 }}</td>
+                            <td>
+                                <span class="badge {{ $agent->user->status === 'active' ? 'bg-success' : 'bg-danger' }}">
+                                    {{ Str::headline($agent->user->status) }}
+                                </span>
                             </td>
                             <td>
                               <div class="btn-group">
@@ -69,31 +67,31 @@
                                     </button>
                                     <div class="dropdown-menu text-center">
                                         @can('view property')
-                                            <a class="dropdown-item" href="{{-- route('owner.property', $owner->id) --}}">
+                                            <a class="dropdown-item" href="{{-- route('agent.property', $agent->id) --}}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-buildings" viewBox="0 0 16 16"><path d="M14.763.075A.5.5 0 0 1 15 .5v15a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5V14h-1v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .342-.474L6 7.64V4.5a.5.5 0 0 1 .276-.447l8-4a.5.5 0 0 1 .487.022M6 8.694 1 10.36V15h5zM7 15h2v-1.5a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 .5.5V15h2V1.309l-7 3.5z"/><path d="M2 11h1v1H2zm2 0h1v1H4zm-2 2h1v1H2zm2 0h1v1H4zm4-4h1v1H8zm2 0h1v1h-1zm-2 2h1v1H8zm2 0h1v1h-1zm2-2h1v1h-1zm0 2h1v1h-1zM8 7h1v1H8zm2 0h1v1h-1zm2 0h1v1h-1zM8 5h1v1H8zm2 0h1v1h-1zm2 0h1v1h-1zm0-2h1v1h-1z"/></svg>
-                                            Property</a>
+                                            Apartment/Propert</a>
                                         @endcan
                                         @can('create property')
-                                            <a class="dropdown-item" href="{{-- route('new.owner.property', $owner->id) --}}/">
+                                            <a class="dropdown-item" href="{{-- route('new.agent.property', $agent->id) --}}/">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-building-add" viewBox="0 0 16 16"><path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0"/><path d="M2 1a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6.5a.5.5 0 0 1-1 0V1H3v14h3v-2.5a.5.5 0 0 1 .5-.5H8v4H3a1 1 0 0 1-1-1z"/><path d="M4.5 2a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-6 3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm-6 3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5zm3 0a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h1a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z"/></svg>
-                                            Add Property</a>
+                                            View Leads</a>
                                         @endcan
-                                        @can('view owner')
-                                            <a class="dropdown-item" href="{{ route('show.owner', $owner->id) }}"><i class="fa fa-eye"></i> View</a>
+                                        @can('view agent')
+                                            <a class="dropdown-item" href="{{ route('show.agent', $agent->id) }}"><i class="fa fa-eye"></i> View</a>
                                         @endcan
-                                        @can('edit owner')
-                                            <a class="dropdown-item" href="{{ route('edit.owner', $owner->id) }}"><i class="fa fa-edit"></i> Edit</a>
+                                        @can('edit agent')
+                                            <a class="dropdown-item" href="{{ route('edit.agent', $agent->id) }}"><i class="fa fa-edit"></i> Edit</a>
                                         @endcan
                                         @hasanyrole('System Admin|Super Admin') 
-                                            <a class="dropdown-item" href="{{ route('user.role.edit', $owner->user) }}">
+                                            <a class="dropdown-item" href="{{ route('user.role.edit', $agent->user) }}">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16"><path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0m-9 8c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4m9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0"/></svg>  
                                             Manage role</a>
                                         @endhasanyrole
-                                        @can('delete owner')
+                                        @can('delete agent')
                                             <div class="dropdown-divider"></div>
-                                            <form class="d-inline" action="{{ route('delete.owner', $owner->id) }}" method="post">
+                                            <form class="d-inline" action="{{ route('delete.agent', $agent->id) }}" method="post">
                                                 @csrf
-                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this owner?');">
+                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this agent?');">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg> 
                                                 Delete
                                                 </button>

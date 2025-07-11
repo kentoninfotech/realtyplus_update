@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateOwnerRequest extends FormRequest
+class UpdateAgentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,8 @@ class UpdateOwnerRequest extends FormRequest
         $businessId = auth()->user()->business_id;
 
         return [
-            'first_name'    => 'required|string|max:100',
-            'last_name'     => 'required|string|max:100',
-            'company_name'  => 'nullable|string|max:150',
+            'first_name'               => 'required|string|max:100',
+            'last_name'                => 'required|string|max:100',
             'email' => [
                 'required',
                 'string',
@@ -37,11 +36,13 @@ class UpdateOwnerRequest extends FormRequest
                 'max:255',
                 // Rule::unique('users')->where(function ($query) use ($businessId) {
                 //     return $query->where('business_id', $businessId);
-                // })->ignore($this->owner->id),
+                // })->ignore($this->user->id),
             ],
-            'phone_number'  => 'nullable|string|max:150',
-            'address'       => 'nullable|string|max:200',
-            'password'      => 'nullable|string|min:8',
+            'phone_number'             => 'nullable|string|max:150',
+            'address'                  => 'nullable|string|max:200',
+            'emergency_contact_name'   => 'nullable|string|max:150',
+            'emergency_contact_phone'  => 'nullable|string|max:150',
+            'password'                 => 'nullable|string|min:8',
         ];
     }
 }

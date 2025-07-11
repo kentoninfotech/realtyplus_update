@@ -77,7 +77,7 @@
                         @endforeach
                     </td>
                     <td>
-                        <span class="badge {{ $staff->status === 'Active' ? 'bg-success' : 'bg-danger' }}">
+                        <span class="badge {{ $staff->status === 'active' ? 'bg-success' : 'bg-danger' }}">
                             {{ $staff->status }}
                         </span>
                     </td>

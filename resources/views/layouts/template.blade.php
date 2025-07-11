@@ -237,7 +237,7 @@
                              @endcan
                              @can('view tenant')
                                 <li class="nav-item">
-                                    <a href="{{-- route('tenants') --}}" class="nav-link">
+                                    <a href="{{ route('tenants') }}" class="nav-link">
                                         <i class="fas fa-user-tie nav-icon"></i>
                                         <p>Tenants</p>
                                     </a>
@@ -655,7 +655,7 @@
                             <label for="mode">Mode</label>
                             <select class="form-control" name="mode" id="mode">
                                 <option value="{{ $businesses->mode }}">{{ Auth::user()->businesses->mode }}</option>
-                                <option value="Active" selected>Active</option>
+                                <option value="inactive" selected>Active</option>
                                 <option value="Maintenance">Maintenance</option>
                             </select>
                         </div>

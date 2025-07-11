@@ -48,6 +48,24 @@ Route::put('update-owner/{id}', [App\Http\Controllers\OwnerController::class, 'u
 Route::get('owner/{id}', [App\Http\Controllers\OwnerController::class, 'showOwner'])->name('show.owner');
 Route::post('delete-owner/{id}', [App\Http\Controllers\OwnerController::class, 'deleteOwner'])->name('delete.owner');
 
+// TENANTS
+Route::get('tenants', [App\Http\Controllers\TenantController::class, 'index'])->name('tenants');
+Route::get('new-tenant', [App\Http\Controllers\TenantController::class, 'newTenant'])->name('new.tenant');
+Route::post('create-tenant', [App\Http\Controllers\TenantController::class, 'createTenant'])->name('create.tenant');
+Route::get('edit-tenant/{id}', [App\Http\Controllers\TenantController::class, 'editTenant'])->name('edit.tenant');
+Route::put('update-tenant/{id}', [App\Http\Controllers\TenantController::class, 'updateTenant'])->name('update.tenant');
+Route::get('tenant/{id}', [App\Http\Controllers\TenantController::class, 'showTenant'])->name('show.tenant');
+Route::post('delete-tenant/{id}', [App\Http\Controllers\TenantController::class, 'deleteTenant'])->name('delete.tenant');
+
+// AGENTS
+Route::get('agents', [App\Http\Controllers\AgentController::class, 'index'])->name('agents');
+Route::get('new-agent', [App\Http\Controllers\AgentController::class, 'newAgent'])->name('new.agent');
+Route::post('create-agent', [App\Http\Controllers\AgentController::class, 'createAgent'])->name('create.agent');
+Route::get('edit-agent/{id}', [App\Http\Controllers\AgentController::class, 'editAgent'])->name('edit.agent');
+Route::put('update-agent/{id}', [App\Http\Controllers\AgentController::class, 'updateAgent'])->name('update.agent');
+Route::get('agent/{id}', [App\Http\Controllers\AgentController::class, 'showAgent'])->name('show.agent');
+Route::post('delete-agent/{id}', [App\Http\Controllers\AgentController::class, 'deleteAgent'])->name('delete.agent');
+
 // ROLES & PERMISSIONS
 Route::resource('role', App\Http\Controllers\RoleController::class);
 Route::get('/roles', [App\Http\Controllers\UserPermissionController::class, 'index'])->name('users.role');

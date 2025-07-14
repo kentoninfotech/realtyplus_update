@@ -21,6 +21,16 @@ class Owner extends Model
         'bank_account_details', 
     ];
 
+    /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    } 
+
     public function user()
     {
         return $this->belongsTo(User::class);

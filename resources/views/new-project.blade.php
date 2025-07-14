@@ -64,7 +64,7 @@
                             <select name="client_id" class="form-control select2">
                                 @foreach ($clients as $cl)
                                     <option data-select2-id="{{ $cl->id }}" value="{{ $cl->id }}">
-                                        {{ $cl->name }} ({{ $cl->client->company_name }})</option>
+                                        {{ $cl->name }} ({{ $cl->client->company_name ?? $cl->name }})</option>
                                 @endforeach
 
                             </select>
@@ -98,7 +98,6 @@
                     <textarea name="details" id="details" class="wyswygeditor">
               {{ isset($project->details) ? $project->details : 'Place <em>some</em> <u>text</u> <strong>here</strong>' }}
             </textarea>
-
                     <small id="task_details" class="form-text text-muted">A Detailed infomation about the project
                         entered</small>
                 </div>

@@ -40,6 +40,7 @@ class Property extends Model
     ];
 
 
+
     public function propertyType()
     {
         return $this->belongsTo(PropertyType::class);

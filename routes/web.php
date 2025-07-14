@@ -66,6 +66,15 @@ Route::put('update-agent/{id}', [App\Http\Controllers\AgentController::class, 'u
 Route::get('agent/{id}', [App\Http\Controllers\AgentController::class, 'showAgent'])->name('show.agent');
 Route::post('delete-agent/{id}', [App\Http\Controllers\AgentController::class, 'deleteAgent'])->name('delete.agent');
 
+// PROPERTIES
+Route::get('properties', [App\Http\Controllers\PropertyController::class, 'index'])->name('properties');
+Route::get('new-property', [App\Http\Controllers\PropertyController::class, 'newProperty'])->name('new.property');
+Route::post('create-property', [App\Http\Controllers\PropertyController::class, 'createProperty'])->name('create.property');
+Route::get('edit-property/{id}', [App\Http\Controllers\PropertyController::class, 'editProperty'])->name('edit.property');
+Route::put('update-property/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
+Route::get('property/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
+Route::post('delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
+
 // ROLES & PERMISSIONS
 Route::resource('role', App\Http\Controllers\RoleController::class);
 Route::get('/roles', [App\Http\Controllers\UserPermissionController::class, 'index'])->name('users.role');

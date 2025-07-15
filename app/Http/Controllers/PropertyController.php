@@ -31,7 +31,14 @@ class PropertyController extends Controller
         $properties = Property::with(['propertyType', 'agent', 'owner'])->paginate(30);
         return view('properties.index', compact('properties'));
     }
-
+    /**
+     * Show property.
+     */
+    public function showProperty($id)
+    {
+        $property = Property::with(['propertyType', 'agent', 'owner', 'amenities', 'images'])->findOrFail($id);
+        return view('properties.property', compact('property'));
+    }
     /**
      * Show the form for creating a new property.
      */
@@ -43,7 +50,6 @@ class PropertyController extends Controller
         $agents = Agent::all();
         return view('properties.new-property', compact('propertyTypes', 'amenities', 'owners', 'agents'));
     }
-
     /**
      * Store a newly created property in storage.
      */

@@ -18,6 +18,9 @@ class CreatePropertyTypesTable extends Migration
             // $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
             $table->string('name')->unique();
             $table->text('description')->nullable();
+            $table->string('slug')->unique();
+            $table->boolean('is_residential')->default(true);
+            $table->boolean('can_have_multiple_units')->default(false);
             $table->timestamps();
         });
     }

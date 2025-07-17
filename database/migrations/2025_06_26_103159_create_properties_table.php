@@ -24,12 +24,11 @@ class CreatePropertiesTable extends Migration
             $table->string('state');
             $table->string('country')->default('Nigeria');
             $table->text('description')->nullable();
+            $table->string('status')->default('available'); // e.g., 'vacant', 'sold', 'leased', 'under_maintenance', 'unavailable'
             $table->decimal('latitude', 10, 7)->nullable(); // For geo-location
             $table->decimal('longitude', 10, 7)->nullable(); // For geo-location
             $table->integer('area_sqft')->nullable();
             $table->integer('lot_size_sqft')->nullable();
-            $table->integer('bedrooms')->nullable();
-            $table->integer('bathrooms')->nullable();
             $table->year('year_built')->nullable();
             $table->decimal('purchase_price', 15, 2)->nullable();
             $table->decimal('sale_price', 15, 2)->nullable();

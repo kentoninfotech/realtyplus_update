@@ -22,8 +22,6 @@ class Property extends Model
         'longitude',
         'area_sqft',
         'lot_size_sqft',
-        'bedrooms',
-        'bathrooms',
         'year_built',
         'purchase_price',
         'sale_price',

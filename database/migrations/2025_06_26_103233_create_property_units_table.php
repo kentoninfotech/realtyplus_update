@@ -21,6 +21,8 @@ class CreatePropertyUnitsTable extends Migration
             $table->string('unit_type')->nullable(); // e.g., 'Studio', '1 Bed', 'Retail', 'Office'
             $table->text('description')->nullable(); // Additional details about the unit
             $table->decimal('square_footage', 10, 2)->nullable();
+            $table->decimal('area_sqm', 15, 2)->nullable();
+            $table->string('zoning_type')->nullable();
             $table->string('status')->default('available'); // e.g., 'vacant', 'sold', 'leased', 'under_maintenance', 'unavailable'
             $table->integer('floor_number')->nullable(); // e.g., 3
             $table->integer('bedrooms')->nullable();

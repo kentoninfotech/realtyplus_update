@@ -27,6 +27,8 @@ class CreatePropertiesTable extends Migration
             $table->string('status')->default('available'); // e.g., 'vacant', 'sold', 'leased', 'under_maintenance', 'unavailable'
             $table->decimal('latitude', 10, 7)->nullable(); // For geo-location
             $table->decimal('longitude', 10, 7)->nullable(); // For geo-location
+            $table->boolean('has_units')->default(false); // To mark if the property can have multiple units
+            $table->integer('total_units')->nullable();
             $table->integer('area_sqft')->nullable();
             $table->integer('lot_size_sqft')->nullable();
             $table->year('year_built')->nullable();

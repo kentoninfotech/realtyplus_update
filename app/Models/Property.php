@@ -18,6 +18,9 @@ class Property extends Model
         'state',
         'country',
         'description',
+        'status',
+        'has_units',
+        'total_units',
         'latitude',
         'longitude',
         'area_sqft',
@@ -33,6 +36,7 @@ class Property extends Model
 
 
     protected $casts = [
+        'has_units' => 'boolean',
         'date_acquired' => 'date',
         'listed_at'   => 'datetime'
     ];

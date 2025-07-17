@@ -15,8 +15,10 @@ class PropertyUnit extends Model
         'unit_type',
         'description',
         'square_footage',
+        'area_sqm',
+        'zoning_type',
         'status',
-        'floor_number',
+        'floor_number', // nullable
         'bedrooms',
         'bathrooms',
         'sale_price',

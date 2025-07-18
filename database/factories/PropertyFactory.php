@@ -37,7 +37,7 @@ class PropertyFactory extends Factory
             'state'              => $this->faker->state,
             'country'            => 'Nigeria',
             'description'        => $this->faker->optional()->paragraph,
-            'has_units'          => $propertyType->can_have_multiple_units,
+            'has_units'          => $propertyType->can_have_multiple_units ?? false,
             'status'             => $this->faker->randomElement(['available', 'vacant', 'sold', 'leased', 'under_maintenance', 'unavailable']),
             'latitude'           => $this->faker->optional()->latitude(-90, 90),
             'longitude'          => $this->faker->optional()->longitude(-180, 180),

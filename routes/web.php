@@ -74,6 +74,11 @@ Route::get('edit-property/{id}', [App\Http\Controllers\PropertyController::class
 Route::put('update-property/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
 Route::get('property/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
 Route::post('delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
+// HANDLE PROPERTY IMAGES
+Route::post('/property/{id}/upload-image', [App\Http\Controllers\PropertyController::class, 'uploadPropertyImage'])->name('property.uploadImage');
+Route::post('/property/{id}/featured-image/{image}', [App\Http\Controllers\PropertyController::class, 'setFeaturedImage'])->name('property.setFeaturedImage');
+Route::delete('/property/images/{propertyImage}', [App\Http\Controllers\PropertyController::class, 'deleteImage'])->name('property.deleteImage');
+
 
 // ROLES & PERMISSIONS
 Route::resource('role', App\Http\Controllers\RoleController::class);

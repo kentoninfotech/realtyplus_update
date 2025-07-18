@@ -29,7 +29,7 @@ class PropertyImageFactory extends Factory
             'business_id'       => $business->id,
             'property_id' => $property->id,
             'property_unit_id' => $propertyUnit ? $propertyUnit->id : null,
-            'image_path'        => 'https://placehold.co/800x600/E0E0E0/333333?text=' . urlencode($this->faker->word()),
+            'image_path'        => 'property_images/3038-view-' . $this->faker->numberBetween(1, 6) . '.jpg', // Example image path, adjust as needed
             'caption'           => $this->faker->optional()->sentence,
             'is_featured'       => $this->faker->boolean(20), // 20% chance featured
             'order'             => $this->faker->optional()->numberBetween(1, 10),

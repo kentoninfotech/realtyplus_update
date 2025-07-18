@@ -47,7 +47,7 @@
                         </ul>
                     </div>
                 @endif
-
+                
                 {{-- Section 1: Basic Property Information --}}
                 <div class="card card-secondary card-outline">
                     <div class="card-header">
@@ -212,7 +212,7 @@
                         {{-- Dynamic Fields for Multi-Unit --}}
                         <div id="multi_unit_fields_section" class="hidden-section p-3 border rounded bg-warning-light">
                             <h5 class="mt-0">Multi-Unit Property Details</h5>
-                            <p class="text-muted">This property contains multiple units. You will define individual unit details in a separate step.</p>
+                            <p class="text-muted">This property contains multiple units. You will define individual unit details in property dashboard.</p>
                             <div class="form-group">
                                 <label for="total_units">Total Units (estimated)</label>
                                 <input type="number" name="total_units" id="total_units" class="form-control" value="{{ old('total_units') }}">

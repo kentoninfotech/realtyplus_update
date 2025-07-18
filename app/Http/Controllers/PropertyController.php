@@ -11,7 +11,9 @@ use App\Models\Owner;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreatePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
+use App\Models\PropertyImage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 
 class PropertyController extends Controller
 {
@@ -160,8 +162,6 @@ class PropertyController extends Controller
         
         // The validated data is available via $request->validated()
         $validatedData = $request->validated();
-        // Add businness ID
-        $validatedData['business_id'] = auth()->user()->business_id;
 
         // Fetch the selected property type again, as it's needed for unit creation logic
         $propertyType = PropertyType::find($validatedData['property_type_id']);
@@ -229,7 +229,7 @@ class PropertyController extends Controller
                 $unit->fill($unitData)->save(); // Fill and save the unit
 
                 // Delete any other units if the property is now marked as single-unit
-                $property->units()->where('id', '!=', $unit->id)->delete();
+                // $property->units()->where('id', '!=', $unit->id)->delete();
 
             } else {
                 // If it's now a multi-unit property:
@@ -239,7 +239,7 @@ class PropertyController extends Controller
                 // and units will be managed externally.
                 // If you had a single unit and now it's multi, you might want to delete the old unit
                 // and manage new units through a separate interface.
-                $property->units()->delete(); // Delete all existing units, they'll be managed externally
+                // $property->units()->delete(); // Delete all existing units, they'll be managed externally
             }
 
             // Sync amenities
@@ -252,6 +252,92 @@ class PropertyController extends Controller
 
         return redirect()->route('properties')->with('message', 'Property updated successfully.');
     }  
+
+    /**
+     * Handle image uploads for a property.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Property  $property
+     */
+    public function uploadPropertyImage(Request $request, $id)
+    {
+        $property = Property::findOrFail($id);
+        $request->validate([
+            'images' => ['required', 'array', 'min:1'],
+            'images.*' => ['image', 'mimes:jpeg,png,jpg,gif,svg,webp', 'max:5120'], // Max 5MB per image
+            'caption' => ['nullable', 'string', 'max:150'],
+            'is_featured' => ['boolean'],
+        ]);
+
+        $uploadedImages = [];
+        $isFeaturedSet = $request->boolean('is_featured');
+        $existingFeatured = $property->images()->where('is_featured', true)->first();
+
+        DB::transaction(function () use ($request, $property, &$uploadedImages, $isFeaturedSet, $existingFeatured) {
+            // If a new image is marked as featured, unmark any existing featured image for this property
+            if ($isFeaturedSet && $existingFeatured) {
+                $existingFeatured->update(['is_featured' => false]);
+            }
+
+            foreach ($request->file('images') as $index => $image) {
+                $fileName = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+                $destinationPath = public_path('property_images');
+
+                // Ensure the directory exists
+                if (!File::isDirectory($destinationPath)) {
+                    File::makeDirectory($destinationPath, 0755, true, true);
+                }
+
+                // Use the move() method to store the image
+                $image->move($destinationPath, $fileName);
+
+                $newImage = $property->images()->create([
+                    'image_path' => 'property_images/' . $fileName, // Store path relative to public
+                    'caption' => $request->caption,
+                    'is_featured' => ($isFeaturedSet && $index === 0) ? true : false, // Only set first uploaded as featured if checkbox is true
+                    'order' => $property->images()->count() + 1, // Simple ordering
+                ]);
+                $uploadedImages[] = $newImage;
+            }
+        });
+
+        return redirect()->back()->with('message', 'Images uploaded successfully!');
+    }
+    /**
+     * Set property featured image.
+     */
+    public function setFeaturedImage($propertyId, $imageId)
+    {
+        $property = Property::findOrFail($propertyId);
+        foreach ($property->images as $img) {
+            $img->is_featured = ($img->id == $imageId);
+            $img->save();
+        }
+        return back()->with('message', 'Featured Image updated.');
+    }
+
+    /**
+     * Remove a specific image from storage.
+     *
+     * @param  \App\Models\PropertyImage  $propertyImage
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function deleteImage(PropertyImage $propertyImage)
+    {
+        DB::transaction(function () use ($propertyImage) {
+            // Delete the file from the public directory
+            $filePath = public_path($propertyImage->image_path);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
+            }
+
+            // Delete the record from the database
+            $propertyImage->delete();
+        });
+
+        return redirect()->back()->with('message', 'Image deleted successfully!');
+    }
+
     /**
      * Remove the specified property from storage.
      */
@@ -260,15 +346,16 @@ class PropertyController extends Controller
         $property = Property::findOrFail($id);
         $property->amenities()->detach(); // Detach amenities before deleting
 
-        // Delete linked images from storage and database
-        if ($property->images && $property->images->count()) {
-            foreach ($property->images as $image) {
-                if ($image->path && Storage::exists($image->path)) {
-                    Storage::delete($image->path);
-                }
-                $image->delete();
+        
+        // Before deleting the property, delete all associated image files
+        foreach ($property->images as $image) {
+            $filePath = public_path($image->image_path);
+            if (File::exists($filePath)) {
+                File::delete($filePath);
             }
+            // The database record will be deleted by cascade on property deletion
         }
+        
         $property->delete();
         return redirect()->route('properties')->with('message', 'Property deleted successfully.');
     }

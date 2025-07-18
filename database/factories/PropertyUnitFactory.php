@@ -28,7 +28,7 @@ class PropertyUnitFactory extends Factory
         return [
             'business_id'      => $business->id,
             'property_id'      => $property->id,
-            'unit_number'      => 'Unit ' . $this->faker->unique()->bothify('###'),
+            'unit_number'      => $this->faker->randomElement(['Unit', 'Plot', 'Block']) . $this->faker->unique()->bothify('###'),
             'unit_type'        => $this->faker->randomElement(['Studio', '1 Bed', '2 Bed', 'Retail', 'Office']),
             'description'      => $this->faker->optional()->sentence,
             'status'           => $this->faker->randomElement(['available', 'vacant', 'sold', 'leased', 'under_maintenance', 'unavailable']),

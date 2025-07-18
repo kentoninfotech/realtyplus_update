@@ -199,7 +199,7 @@ class PropertyController extends Controller
                 $unit = $property->units()->firstOrNew([]); // Find first unit or create new instance
 
                 $unitData = [
-                    'status' => 'Available', // Default status for unit
+                    'status' => 'available', // Default status for unit
                     'rent_price' => $validatedData['rent_price'] ?? null,
                     'sale_price' => $validatedData['sale_price'] ?? null,
                     'deposit_amount' => null, // Not on form, default null

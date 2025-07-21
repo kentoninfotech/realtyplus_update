@@ -40,7 +40,9 @@ class PropertyController extends Controller
     public function showProperty($id)
     {
         $property = Property::with(['propertyType', 'agent', 'owner', 'amenities', 'images'])->findOrFail($id);
-        return view('properties.property', compact('property'));
+        $featuredImage = $property->images->firstWhere('is_featured', 1);
+        $displayImage = $featuredImage ? $featuredImage->image_path : ($property->images->count() > 0 ? $property->images->first()->image_path : null);
+        return view('properties.property', compact('property', 'displayImage', 'featuredImage'));
     }
     /**
      * Show the form for creating a new property.

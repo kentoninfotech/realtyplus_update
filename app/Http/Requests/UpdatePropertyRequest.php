@@ -18,6 +18,16 @@ class UpdatePropertyRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        // Ensure 'has_units' is always present in the request data.
+        // If the checkbox was checked, it will be '1'. If unchecked, it won't be in the request,
+        // so we merge it as false.
+        $this->merge([
+            'has_units' => $this->has('has_units'), // Returns true if 'has_units' key exists, false otherwise
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

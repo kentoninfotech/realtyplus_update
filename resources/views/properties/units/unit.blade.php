@@ -17,16 +17,10 @@
         </div><!-- /.container-fluid -->
     </div>
 
-    <!-- RETRIEVING UNIT FEATURED IMAGE -->
-    @php
-        $featuredImage = $unit->images->firstWhere('is_featured', 1);
-        $displayImage = $featuredImage ? $featuredImage->image_path : ($unit->images->count() > 0 ? $unit->images->first()->image_path : null);
-    @endphp
-
     <div class="card card-widget widget-user">
         <!-- Add the bg color to the header using any of the bg-* classes -->
         <div class="widget-user-header text-white"
-            style="background: @if ($featuredImage) url({{ asset('public/' . $featuredImage->image_path) }}); @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
+            style="background: @if ($featuredImage) url({{ asset('public/' . $featuredImage->image_path) }}); background-size: cover; background-repeat: no-repeat;  @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
             <h1 class="text-right">{{ $unit->unit_number }}</h1>
             <h5 class="widget-user-desc text-right"><i class="nav-icon fas fa-map-marker-alt"></i> {{ $unit->property->address ?? '' }}, {{ $unit->property->state }}, {{ $unit->property->country }}
             </h5>
@@ -66,6 +60,7 @@
                 <!-- /.col -->
                 <div class="col-sm-4">
                     <div class="description-block">
+                        <i class="fas fa-map-marker-alt"></i>
                         <a href="#">View on</a> <br>
                         <span class="description-text">MAP</span>
                     </div>
@@ -81,17 +76,30 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title"><i>Owner: </i><b>{{ $unit->owner->full_name ?? '' }}</b></h4>
-
+                            <h4 class="card-title"><i>Owner: </i>
+                            <a href=""><b>{{ $unit->owner->full_name ?? $unit->property->owner->full_name ?? '' }}</b></a>
+                            </h4>
                             <p class="card-text small"><i class="nav-icon fas fa-map-marker-alt"></i>
-                                {{ $unit->owner->address ?? '' }}</p>
+                                {{ $unit->owner->address ?? $unit->property->owner->address ?? '' }}</p>
 
                             <ul class="list-group">
                                 <li class="list-group-item d-flex justify-content-between align-items-center active small">
                                     Unit Details
                                 </li>
+                                @isset($units->bedrooms)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Bedrooms
+                                        <span class="small">{{ $units->bedrooms  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($units->bedrooms)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Bathrooms
+                                        <span class="small">{{ $units->bathrooms  }}</span>
+                                  </li>
+                                @endisset
                                 <li
-                                    class="list-group-item d-flex justify-content-between align-items-center disabled small">
+                                    class="list-group-item d-flex justify-content-between align-items-center">
                                     Unit Status
                                     <span class="badge badge-{{ 
                                         $unit->status == 'available' ? 'success' : 
@@ -102,18 +110,48 @@
                                         {{ ucwords(str_replace('_', ' ', $unit->status)) }}
                                     </span>
                                 </li>
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center disabled small">
-                                    Estimated Duration
-                                    <span
-                                        class="badge badge-danger badge-pill small">{{ $unit->estimated_duration . ' ' . $unit->duration }}</span>
-                                </li>
-
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center disabled small">
-                                    % Completion:
-                                    <span class="badge badge-secondary badge-pill"></span>
-                                </li>
+                                @isset($unit->available_from)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Available From
+                                        <span class="small">{{ $unit->available_from->format('Y-m-d H:i') }}</span>
+                                    </li>
+                                @endisset
+                                @isset($unit->deposit_amount)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Deposit Amount
+                                        <span class="small">₦{{ number_format($unit->deposit_amount, 0, '.', ',') }}</span>
+                                    </li>
+                                @endisset
+                                @isset($unit->square_footage)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Square Footage
+                                        <span class="small">{{ $unit->square_footage  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($unit->area_sqm)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Area SQM
+                                        <span class="small">{{ $unit->area_sqm  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($unit->unit_type)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Unit Type
+                                        <span class="badge badge-info badge-pill small">{{ $unit->unit_type  }}</span>
+                                   </li>
+                                @endisset
+                                @isset($unit->zoning_type)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Zoning Type
+                                        <span class="badge badge-info badge-pill small">{{ $unit->zoning_type  }}</span>
+                                   </li>
+                                @endisset
+                                @if (isset($unit->property->latitude) && isset($unit->property->longitude))
+                                   <li class="list-group-item d-flex justify-content-between align-items-center disabled small">
+                                        <i class="nav-icon fa fa-map"></i>Coordinates: 
+                                        <span class="small">{{ $unit->property->latitude }}, {{ $unit->property->longitude }}</span>
+                                   </li>
+                                @endif
                             </ul>
 
                             <hr>
@@ -134,11 +172,11 @@
                 </div>
                 <div class="col-md-9">
 
-                    <div class="row">
+                    <!-- <div class="row">
                         <h5>Unit Description: </h5>
                         <p style="text-align: left">{!! $unit->details !!} </p>
-                    </div>
-                    <hr>
+                    </div> -->
+                    <!-- <hr> -->
 
                     <div class="row">
                         <div class="card">

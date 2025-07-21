@@ -17,16 +17,10 @@
         </div><!-- /.container-fluid -->
     </div>
 
-    <!-- RETRIEVING PROPERTY FEATURED IMAGE -->
-    @php
-        $featuredImage = $property->images->firstWhere('is_featured', 1);
-        $displayImage = $featuredImage ? $featuredImage->image_path : ($property->images->count() > 0 ? $property->images->first()->image_path : null);
-    @endphp
-
     <div class="card card-widget widget-user">
         <!-- Add the bg color to the header using any of the bg-* classes -->
         <div class="widget-user-header text-white"
-            style="background: @if ($featuredImage) url({{ asset('public/' . $featuredImage->image_path) }}); @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
+            style="background: @if ($featuredImage) url({{ asset('public/' . $featuredImage->image_path) }}); background-size: cover; background-repeat: no-repeat; @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
             <h1 class="text-right">{{ $property->name }}</h1>
             <h5 class="widget-user-desc text-right"><i class="nav-icon fas fa-map-marker-alt"></i> {{ $property->address ?? '' }}, {{ $property->state }}, {{ $property->country }}
             </h5>
@@ -47,9 +41,9 @@
                 <!-- /.col -->
                 <div class="col-sm-{{ $property->has_units ? 3 : 4 }} border-right">
                     <div class="description-block">
-                        <h5 class="description-header">₦{{ number_format($property->purchase_price, 0, '.', ',') }}
+                        <h5 class="description-header">₦{{ number_format($property->rent_price, 0, '.', ',') }}
                         </h5>
-                        <span class="description-text">ACQUIRED PRICE</span>
+                        <span class="description-text">RENT PRICE</span>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -64,6 +58,7 @@
                 <!-- /.col -->
                 <div class="col-sm-{{ $property->has_units ? 3 : 4 }}">
                     <div class="description-block">
+                        <i class="fas fa-map-marker-alt"></i>
                         <a href="#">View on</a> <br>
                         <span class="description-text">MAP</span>
                     </div>
@@ -79,21 +74,52 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title"><i>Owner: </i><b>{{ $property->owner->full_name ?? '' }}</b></h4>
-
+                            <h4 class="card-title"><i>Owner: </i>
+                            <a href=""><b>{{ $property->owner->full_name ?? '' }}</b></a>
+                           </h4>
                             <p class="card-text small"><i class="nav-icon fas fa-map-marker-alt"></i>
-                                {{ $property->owner->address ?? '' }}</p>
-
+                                {{ $property->owner->address ?? '' }}
+                            </p>
+                            @if ($property->agent)
+                                <hr>
+                                <h4 class="lead"><i>Agent: </i>
+                                    <a href=""><b>{{ $property->agent->full_name ?? '' }}</b></a>
+                                </h4>
+                                <p class="card-text small"><i class="nav-icon fas fa-map-marker-alt"></i>
+                                {{ $property->agent->address ?? '' }}
+                            </p>
+                            @endif
+                            
                             <ul class="list-group">
                                 <li class="list-group-item d-flex justify-content-between align-items-center active small">
                                     Property Details
                                 </li>
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
-                                    Year Built
-                                    <span class="badge badge-primary badge-pill">{{ $property->year_built }}</span>
-                                </li>
+                                @isset($property->units->bedrooms)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Bedrooms
+                                        <span class="small">{{ $property->units->bedrooms->count()  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($property->date_acquired)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Year Built
+                                        <span class="small">{{ $property->year_built }}</span>
+                                    </li>
+                                @endisset
+                                @isset($property->date_acquired)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Date Acquired
+                                        <span class="small">{{ $property->date_acquired->format('Y-m-d H:i') }}</span>
+                                    </li>
+                                @endisset
+                                @isset($property->purchase_price)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Purchase Price
+                                        <span class="small">₦{{ number_format($property->purchase_price, 0, '.', ',') }}</span>
+                                    </li>
+                                @endisset
                                 <li
-                                    class="list-group-item d-flex justify-content-between align-items-center disabled small">
+                                    class="list-group-item d-flex justify-content-between align-items-center">
                                     Property Status
                                     <span class="badge badge-{{ 
                                         $property->status == 'available' ? 'success' : 
@@ -104,18 +130,37 @@
                                         {{ ucwords(str_replace('_', ' ', $property->status)) }}
                                     </span>
                                 </li>
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center disabled small">
-                                    Estimated Duration
-                                    <span
-                                        class="badge badge-danger badge-pill small">{{ $property->estimated_duration . ' ' . $property->duration }}</span>
-                                </li>
+                                @isset($property->area_sqft)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Area SQFT
+                                        <span class="small">{{ $property->area_sqft  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($property->lot_size_sqft)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Lot Size SQFT
+                                        <span class="small">{{ $property->lot_size_sqft  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($property->listing_type)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Listing Type
+                                        <span class="badge badge-info badge-pill small">{{ $property->listing_type  }}</span>
+                                   </li>
+                                @endisset
+                                @isset($property->listed_at)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Listed At
+                                        <span class="small">{{ $property->listed_at->format('Y-m-d H:i')  }}</span>
+                                   </li>
+                                @endisset
+                                @if (isset($property->latitude) && isset($property->longitude))
+                                   <li class="list-group-item d-flex justify-content-between align-items-center disabled small">
+                                        <i class="nav-icon fa fa-map"></i>Coordinates: 
+                                        <span class="small">{{ $property->latitude }}, {{ $property->longitude }}</span>
+                                   </li>
+                                @endif
 
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center disabled small">
-                                    % Completion:
-                                    <span class="badge badge-secondary badge-pill"></span>
-                                </li>
                             </ul>
 
                             <hr>
@@ -136,11 +181,11 @@
                 </div>
                 <div class="col-md-9">
 
-                    <div class="row">
+                    <!-- <div class="row">
                         <h5>Property Description: </h5>
                         <p style="text-align: left">{!! $property->details !!} </p>
                     </div>
-                    <hr>
+                    <hr> -->
 
                     <div class="row">
                         <div class="card">
@@ -156,7 +201,11 @@
                                                     alt="Featured"
                                                     class="img-featured featured-item {{ $img->is_featured ? 'active' : '' }} thumb-anim"
                                                     data-main-image="{{ asset('public/'.$img->image_path) }}"
-                                                    style="width: 80px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid {{ $borderColor }}; display: inline-block; margin-right: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: border-color 0.3s, transform 0.2s; {{ $img->is_featured ? 'transform: scale(1.08); z-index:2;' : '' }}">
+                                                    style="width: 80px; height: 60px; object-fit: cover; cursor: pointer; 
+                                                       border: 2px solid {{ $borderColor }}; display: inline-block; 
+                                                       margin-right: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); 
+                                                       transition: border-color 0.3s, transform 0.2s; {{ $img->is_featured ? 
+                                                       'transform: scale(1.08); z-index:2;' : '' }}">
                                             @endforeach
                                             @if($property->images->count() > $maxVisible)
                                                 <button id="expandGalleryBtn" class="btn btn-info btn-xs" style="vertical-align: top; margin: 15px 0 0 2px; font-weight: bold; letter-spacing: 0.5px; transition: background 0.2s;">+{{ $property->images->count() - $maxVisible }} more</button>
@@ -211,57 +260,176 @@
                                 @endif
                             </div>
                         </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="title">Amenities</h5>
+                                <div class="d-flex flex-wrap justify-content-start">
+                                    @foreach ($property->amenities as $amenity)
+                                        <div class="amenity-box">
+                                            <i class="{{ $amenity->icon }} amenity-icon"></i>
+                                            <span>{{ $amenity->name }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                                @isset($property->description)
+                                    <div class="card-text">
+                                        <hr>
+                                        <h5>Property Description: </h5>
+                                        <p style="text-align: left">{!! $property->description !!} </p>
+                                    </div>
+                                @endisset
+                            </div>
+                        </div>
                     </div>
 
                     <hr>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <!-- PROPERTY UNITS -->
+                        @if ($property->units->count() > 1 || $property->has_units)
+                            <div class="col-md-6">
+                                    <div class="list-group mb-3">
+                                        @can('create property')
+                                        <a href="{{ route('new.unit', $property->id) }}"
+                                            class="list-group-item list-group-item-action active">Property Units <span
+                                                class="btn btn-default" style="float: right;">Add New</span></a>
+                                        @else
+                                        <a href="#" class="list-group-item list-group-item-action active">Units</a>
+                                        @endcan
 
-                            <div class="list-group">
+                                        @foreach ($property->units as $unit)
+                                            <a href="{{ route('show.unit', $unit->id) }}"
+                                                class="list-group-item list-group-item-action">{{ $unit->unit_number ?? '' }}</a>
+                                        @endforeach
+                                    </div>
+                            </div>
+                        @endif
+                        <!-- PROPERTY DOCUMENTS -->
+                        @if ($property->documents->count() > 0)
+                            <div class="col-md-6">
+                                <div class="list-group mb-3">
                                 @can('create property')
-                                <a href="{{ route('new.unit', $property->id) }}"
-                                    class="list-group-item list-group-item-action active">Property Units <span
-                                        class="btn btn-default" style="float: right;">Add New</span></a>
+                                    <a href="{{ url('addp-file/' . $property->id) }}"
+                                        class="list-group-item list-group-item-action active">Property Documents <span
+                                            class="btn btn-default" style="float: right;">New File</span></a>
                                 @else
-                                <a href="#" class="list-group-item list-group-item-action active">Units</a>
+                                    <a href="#" class="list-group-item list-group-item-action active">Property Files</a>
                                 @endcan
-
-                                @foreach ($property->units as $unit)
-                                    <a href="{{ route('show.unit', $unit->id) }}"
-                                        class="list-group-item list-group-item-action">{{ $unit->unit_number ?? '' }}</a>
-                                @endforeach
+                                    @foreach ($property->documents as $document)
+                                        @php
+                                            $file_ext = pathinfo($document->file_path, PATHINFO_EXTENSION);
+                                            $file_ext = strtoupper($file_ext);
+                                        @endphp
+                                        <li class="list-group-item list-group-item-action">
+                                            <a target="_blank"
+                                                href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
+                                                <span class="badge badge-info">{{ $file_ext }}</span></a>
+                                            @can('edit property')
+                                                <a href="/delete-file/{{ $document->id }}"
+                                                class="btn btn-inline btn-xs btn-danger float-right">Del</a>
+                                            @endcan
+                                        </li>
+                                    @endforeach
+                                </div>
                             </div>
-
-                        </div>
-                        <div class="col-md-6">
-                            <div class="list-group">
-                              @can('create property')
-                                <a href="{{ url('addp-file/' . $property->id) }}"
-                                    class="list-group-item list-group-item-action active">Property Documents <span
-                                        class="btn btn-default" style="float: right;">New File</span></a>
-                              @else
-                                <a href="#" class="list-group-item list-group-item-action active">Property Files</a>
-                              @endcan
-
-                                @foreach ($property->documents as $document)
-                                    @php
-                                        $file_ext = pathinfo($document->file_path, PATHINFO_EXTENSION);
-                                        $file_ext = strtoupper($file_ext);
-                                    @endphp
-                                    <li class="list-group-item list-group-item-action">
-                                        <a target="_blank"
-                                            href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
-                                            <span class="badge badge-info">{{ $file_ext }}</span></a>
-                                         @can('edit property')
-                                            <a href="/delete-file/{{ $document->id }}"
-                                            class="btn btn-inline btn-xs btn-danger float-right">Del</a>
-                                         @endcan
-                                    </li>
-                                @endforeach
+                        @endif
+                        <!-- PROPERTY MAINTENANCE REQUESTS -->
+                        @if ($property->maintenanceRequests->count() > 0 )
+                            <div class="col-md-6">
+                                <div class="list-group mb-3">
+                                    @can('create property')
+                                    <a href="{{ url('new.maintenance-request', $property->id) }}"
+                                        class="list-group-item list-group-item-action active">Maintenance Requests <span
+                                            class="btn btn-default" style="float: right;">Add New</span></a>
+                                    @else
+                                    <a href="#" class="list-group-item list-group-item-action active">Maintenance Requests</a>
+                                    @endcan
+                                    @foreach ($property->maintenanceRequests as $maintenanceRequest)
+                                        <li class="list-group-item list-group-item-
+                                            {{ $maintenanceRequest->priority == 'urgent' ? 'list-group-item-danger' : 
+                                            ($maintenanceRequest->priority == 'hign' ? 'list-group-item-warning' : '') }}">
+                                            <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
+                                                {{ $maintenanceRequest->title ?? '' }}
+                                            </a>
+                                            @if ($maintenanceRequest->status == 'pending')
+                                                <span class="badge badge-warning float-right">Pending</span>
+                                            @elseif ($maintenanceRequest->status == 'completed')
+                                                <span class="badge badge-success float-right">Completed</span>
+                                            @elseif ($maintenanceRequest->status == 'cancelled')
+                                                <span class="badge badge-danger float-right">Cancelled</span>
+                                            @elseif ($maintenanceRequest->status == 'open')
+                                                <span class="badge badge-primary float-right">Open</span>
+                                            @else
+                                                <span class="badge badge-secondary float-right">In Progress</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        @endif
+                        <!-- PROPERTY TASKS -->
+                        @if ($property->tasks->count() > 0 )
+                            <div class="col-md-6">
+                                <div class="list-group mb-3">
+                                    @can('create property')
+                                    <a href="{{ url('new.viewing', $property->id) }}"
+                                        class="list-group-item list-group-item-action active">Tasks <span
+                                            class="btn btn-default" style="float: right;">Add New</span></a>
+                                    @else
+                                    <a href="#" class="list-group-item list-group-item-action active">Tasks</a>
+                                    @endcan
+                                    @foreach ($property->tasks as $task)
+                                        <li class="list-group-item list-group-item-action">
+                                            <a href="{{ url('show.task', $task->id) }}">
+                                                {{ $task->title ?? '' }}
+                                            </a>
+                                            <span class="small">To: {{ $task->assignee->name }} </span>
+                                            @if ($task->status == 'pending')
+                                                <span class="badge badge-warning float-right">Pending</span>
+                                            @elseif ($task->status == 'completed')
+                                                <span class="badge badge-success float-right">Completed</span>
+                                            @elseif ($task->status == 'cancelled')
+                                                <span class="badge badge-danger float-right">Cancelled</span>
+                                            @else
+                                                <span class="badge badge-secondary float-right">In Progress</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                         <!-- PROPERTY VIEWINGS -->
+                        @if ($property->viewings->count() > 0 )
+                            <div class="col-md-6">
+                                <div class="list-group mb-3">
+                                    @can('create property')
+                                    <a href="{{ url('new.viewing', $property->id) }}"
+                                        class="list-group-item list-group-item-action active">Viewings <span
+                                            class="btn btn-default" style="float: right;">Add New</span></a>
+                                    @else
+                                    <a href="#" class="list-group-item list-group-item-action active">Viewings</a>
+                                    @endcan
+                                    @foreach ($property->viewings as $viewing)
+                                        <li class="list-group-item list-group-item-action">
+                                            <a href="{{ url('show.viewing', $viewing->id) }}">
+                                                {{ $viewing->client_name ?? '' }}
+                                            </a>
+                                            <span class="small">{{ $viewing->scheduled_at->format('d F, Y h:i A') }} </span>
+                                            @if ($viewing->status == 'scheduled')
+                                                <span class="badge badge-warning float-right">Scheduled</span>
+                                            @elseif ($viewing->status == 'completed')
+                                                <span class="badge badge-success float-right">Completed</span>
+                                            @elseif ($viewing->status == 'cancelled')
+                                                <span class="badge badge-danger float-right">Cancelled</span>
+                                            @else
+                                                <span class="badge badge-secondary float-right">In Progress</span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+                    </div> <!-- /.row -->
                 </div>
             </div>
         </div>
@@ -316,6 +484,20 @@
     #expandGalleryBtn:hover, #collapseGalleryBtn:hover {
         background: #337ab7;
         color: #fff;
+    }
+    .amenity-box {
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px 15px;
+      margin: 5px;
+      display: flex;
+      align-items: center;
+      min-width: 100px;
+    }
+    .amenity-icon {
+      font-size: 20px;
+      margin-right: 10px;
+      color: #333;
     }
     .thumb-anim {
         opacity: 0;

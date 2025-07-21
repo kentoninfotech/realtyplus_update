@@ -20,6 +20,15 @@ class Agent extends Model
         'commission_rate',
         'status',
     ];
+    /**
+     * Get the Agent's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    } 
 
     public function user()
     {

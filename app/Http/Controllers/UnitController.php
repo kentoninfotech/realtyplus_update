@@ -68,7 +68,10 @@ class UnitController extends Controller
     public function showUnit($id)
     {
         $unit = PropertyUnit::with(['property', 'images'])->findOrFail($id);
-        return view('properties.units.unit', compact('unit'));
+        // If you want to display the first image as a featured image
+        $featuredImage = $unit->images->firstWhere('is_featured', 1);
+        $displayImage = $featuredImage ? $featuredImage->image_path : ($unit->images->count() > 0 ? $unit->images->first()->image_path : null);
+        return view('properties.units.unit', compact('unit', 'displayImage', 'featuredImage'));
     }
 
     /**

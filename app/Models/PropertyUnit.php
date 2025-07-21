@@ -27,9 +27,25 @@ class PropertyUnit extends Model
         'available_from',
     ];
 
+    protected $casts = [
+        'available_from' => 'date',
+        'square_footage' => 'float', 
+        'area_sqm' => 'float',       
+        'bedrooms' => 'integer',
+        'bathrooms' => 'float',      
+        'sale_price' => 'float',
+        'rent_price' => 'float',
+        'deposit_amount' => 'float',
+    ];
+
     public function property()
     {
         return $this->belongsTo(Property::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(Owner::class);
     }
 
     public function images()

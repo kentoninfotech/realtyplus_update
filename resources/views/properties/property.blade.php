@@ -58,9 +58,10 @@
                 <!-- /.col -->
                 <div class="col-sm-{{ $property->has_units ? 3 : 4 }}">
                     <div class="description-block">
-                        <i class="fa fa-map"></i>
-                        <a href="#">View on</a> <br>
-                        <span class="description-text">MAP</span>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#mapModal">
+                            <i class="fa fa-map"></i>
+                            View on MAP
+                        </button>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -577,6 +578,34 @@
         @endif
     </div> <!-- /.row -->
 
+    <!-- MAP MODAL -->
+    <div class="modal fade" id="mapModal" tabindex="-1" role="dialog" aria-labelledby="mapModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title">
+                        Property location
+                     </h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span>&times;</span></button>
+                 </div>
+                 <div class="modal-body">
+                    <!-- Address Info -->
+                    <p><strong>Address:</strong>{{ $property->address ?? 'N/A' }}</p>
+                    <p><strong>State:</strong>{{ $property->state ?? 'N/A' }}</p>
+                    <p><strong>Country:</strong>{{ $property->country ?? 'N/A' }}</p>
+                    <!-- Map container -->
+                    @if ($property->latitude && $property->longitude)
+                       <div id="map" style="height: 400px;"></div>
+                    @else
+                       <div class="alert alert-warning">
+                          No location coordinates available for this property.
+                       </div>
+                    @endif
+                 </div>
+             </div>
+          </div>
+    </div>
     <!-- Modal for adding images -->
     <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -679,7 +708,33 @@
         to { opacity: 1; transform: none; }
     }
 </style>
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+@if ($property->latitude && $property->longitude)
+<script>
+    let mapInitialized = false;
+    $('#mapModal').on('show.bs.modal', function () {
+        // Prevent multiple map instances
+        if (!mapInitialized){
+            const map = L.map('map').setView([{{ $property->latitude }},
+            {{ $property->longitude }}], 15);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap constributors'
+            }).addTo(map);
+            L.marker([{{ $property->latitude }},
+            {{ $property->longitude }}])
+             .addTo(map)
+             .bindPopup("{{ $property->name ?? 'Property' }}")
+             .openPopup();
+        }
+        // Resize fix
+        setTimeout(() => {
+        map.invalidateSize();
+       }, 300);
+       mapInitialized = true;
+    });
+</script>
+@endif
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         let mainPropertyImage = document.getElementById('mainPropertyImage');

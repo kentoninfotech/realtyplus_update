@@ -58,7 +58,7 @@
                 <!-- /.col -->
                 <div class="col-sm-{{ $property->has_units ? 3 : 4 }}">
                     <div class="description-block">
-                        <i class="fas fa-map-marker-alt"></i>
+                        <i class="fa fa-map"></i>
                         <a href="#">View on</a> <br>
                         <span class="description-text">MAP</span>
                     </div>
@@ -70,6 +70,213 @@
         </div>
         <div class="card-body">
             <div class="row">
+                <div class="col-md-9">
+                    <div class="row">
+                        <div class="card">
+                            <div class="card-body">
+                                @if($displayImage)
+                                    <img src="{{ asset('public/'.$displayImage) }}" alt="{{ $property->name }}" class="img-responsive img-featured center-block" id="mainPropertyImage" style="max-width: 100%; height: auto; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); transition: box-shadow 0.3s;">
+                                    <div id="featuredGallery" style="margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; padding: 10px 8px 6px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                                        @php $maxVisible = 6; @endphp
+                                        <div id="featuredRow" style="display: inline-block;">
+                                            @foreach($property->images->take($maxVisible) as $img)
+                                                @php $borderColor = $img->is_featured ? '#337ab7' : 'transparent'; @endphp
+                                                <img src="{{ asset('public/'.$img->image_path) }}"
+                                                    alt="Featured"
+                                                    class="img-featured featured-item {{ $img->is_featured ? 'active' : '' }} thumb-anim"
+                                                    data-main-image="{{ asset('public/'.$img->image_path) }}"
+                                                    style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;
+                                                       border: 2px solid {{ $borderColor }}; display: inline-block;
+                                                       margin-right: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+                                                       transition: border-color 0.3s, transform 0.2s; {{ $img->is_featured ?
+                                                       'transform: scale(1.08); z-index:2;' : '' }}">
+                                            @endforeach
+                                            @if($property->images->count() > $maxVisible)
+                                                <button id="expandGalleryBtn" class="btn btn-info btn-xs" style="vertical-align: top; margin: 15px 0 0 2px; font-weight: bold; letter-spacing: 0.5px; transition: background 0.2s;">+{{ $property->images->count() - $maxVisible }} more</button>
+                                            @endif
+                                        </div>
+                                        <div id="allFeaturedsRow" style="display: none; margin-top: 10px;">
+                                            @foreach($property->images as $img)
+                                                @php $borderColor = $img->is_featured ? '#0bc624ff' : 'transparent'; @endphp
+                                                <img src="{{ asset('/public/'.$img->image_path) }}"
+                                                    alt="Featured"
+                                                    class="img-featured featured-item {{ $img->is_featured ? 'active' : '' }} thumb-anim"
+                                                    data-main-image="{{ asset('/public/'.$img->image_path) }}"
+                                                    style="width: 80px; height: 60px; object-fit: cover; cursor: pointer; border: 3px solid {{ $borderColor }}; display: inline-block; margin: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: border-color 0.3s, transform 0.2s;{{ $img->is_featured ? 'transform: scale(1.08); z-index:2;' : '' }}">
+                                            @endforeach
+                                            <button id="collapseGalleryBtn" class="btn btn-default btn-xs" style="vertical-align: top; margin: 15px 0 0 2px; font-weight: bold; letter-spacing: 0.5px; transition: background 0.2s;">Show less</button>
+                                        </div>
+                                    </div>
+
+                                @else
+                                    <div style="height: 220px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
+                                        <p class="text-danger" style="margin:0; font-size: 18px;">No image uploaded for this property.</p>
+                                    </div>
+                                @endif
+
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addImageModal">
+                                    Add Images
+                                </button>
+
+                                    @if ($errors->any())
+                                        <div class="alert alert-danger">
+                                            <ul>
+                                                @foreach ($errors->all() as $error)
+                                                    <li>{{ $error }}</li>
+                                                @endforeach
+                                            </ul>
+                                        </div>
+                                    @endif
+
+                                <!-- ADD SET FEATURE BUTTON -->
+                                @if($property->images->count())
+                                    <div class="text-center" style="margin-top: 15px;">
+                                        <p>Manage Featureds:</p>
+                                        @foreach($property->images as $img)
+                                            @if(!$img->is_featured)
+                                                <form action="{{ route('property.setFeaturedImage', [$property->id, $img->id]) }}" method="POST" style="display:inline-block; margin-right: 5px; margin-bottom: 5px;">
+                                                    @csrf
+                                                    <button type="submit" class="btn btn-info btn-xs">Set Image {{ $loop->index + 1 }} as Featured</button>
+                                                </form>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="title">Overview</h5>
+                                <div class="container mt-3">
+                                    <div class="row text-center">
+                                        @if ($property->units()->sum('bedrooms') > 0)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="property-info-box">
+                                                    <i class="fa fa-bed"></i>
+                                                    <div class="label">Bedrooms</div>
+                                                    <div class="value">{{ $property->units()->sum('bedrooms') }}</div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @if ($property->units()->sum('bathrooms') > 0)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="property-info-box">
+                                                    <i class="fa fa-bath"></i>
+                                                    <div class="label">Bathrooms</div>
+                                                    <div class="value">{{ $property->units()->sum('bathrooms') }}</div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @isset($property->year_built)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="property-info-box">
+                                                    <i class="fa fa-calendar"></i>
+                                                    <div class="label">Year Built</div>
+                                                    <div class="value">{{ $property->year_built}}</div>
+                                                </div>
+                                            </div>
+                                        @endisset
+                                        @isset($property->area_sqft)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="property-info-box">
+                                                    <i class="fa fa-arrows-alt"></i>
+                                                    <div class="label">Area</div>
+                                                    <div class="value">{{ $property->area_sqft}} sq ft</div>
+                                                </div>
+                                            </div>
+                                        @endisset
+                                        @isset($property->lot_size_sqft)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="property-info-box">
+                                                    <i class="fa fa-square-o"></i>
+                                                    <div class="label">Lot Size</div>
+                                                    <div class="value">{{ $property->lot_size_sqft}} sq ft</div>
+                                                </div>
+                                            </div>
+                                        @endisset
+                                        @isset($property->date_acquired)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="property-info-box">
+                                                    <i class="fa fa-calendar"></i>
+                                                    <div class="label">Date Acquired</div>
+                                                    <div class="value">{{ $property->date_acquired->format('F, Y')}}</div>
+                                                </div>
+                                            </div>
+                                        @endisset
+
+                                    </div>
+                                </div>
+                                <h5 class="title">Additional Details</h5>
+                                @isset($property->description)
+                                    <div class="card-text">
+                                        <h6 class="title">Description: </h6>
+                                        <p style="text-align: left">{!! $property->description !!} </p>
+                                    </div>
+                                @endisset
+                                <table class="table mb-4">
+                                    <tbody>
+                                        <tr>
+                                            <th>Property Status:</th>
+                                            <td>
+                                                <span class="badge badge-{{
+                                                    $property->status == 'available' ? 'success' :
+                                                    ($property->status == 'sold' ? 'danger' :
+                                                    ($property->status == 'under_maintenance' ? 'warning' :
+                                                    ($property->status == 'leased' ? 'danger' : 'info')))
+                                                    }} badge-pill">
+                                                    {{ ucwords(str_replace('_', ' ', $property->status)) }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        @isset($property->purchase_price)
+                                            <tr>
+                                                <th>Purchase Price:</th>
+                                                <td>
+                                                    <span class="small">₦{{ number_format($property->purchase_price, 0, '.', ',') }}</span>
+                                                </td>
+                                            </tr>
+                                        @endisset
+                                        @isset($property->listing_type)
+                                            <tr>
+                                                <th>Listing Type:</th>
+                                                <td>
+                                                    <span class="badge badge-info badge-pill small">{{ $property->listing_type }}</span>
+                                                </td>
+                                            </tr>
+                                        @endisset
+                                        @isset($property->listed_at)
+                                            <tr>
+                                                <th>Listed At:</th>
+                                                <td>
+                                                    <span class="small">{{ $property->listed_at->format('d F, Y H:i')  }}</span>
+                                                </td>
+                                            </tr>
+                                        @endisset
+                                        @if (isset($property->latitude) && isset($property->longitude))
+                                            <tr>
+                                                <th>Coordinate:</th>
+                                                <td>
+                                                    <span class="badge badge-info">{{ $property->latitude }}</span> /
+                                                    <span class="badge badge-primary">{{ $property->longitude }}</span>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                                <h6 class="title">Amenities</h6>
+                                <div class="d-flex flex-wrap justify-content-start">
+                                    @foreach ($property->amenities as $amenity)
+                                        <div class="amenity-box">
+                                            <i class="{{ $amenity->icon }} amenity-icon"></i>
+                                            <span>{{ $amenity->name }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div> <!-- / .col-md-9 -->
                 <div class="col-md-3">
 
                     <div class="card">
@@ -151,7 +358,7 @@
                                 @isset($property->listed_at)
                                    <li class="list-group-item d-flex justify-content-between align-items-center">
                                         Listed At
-                                        <span class="small">{{ $property->listed_at->format('Y-m-d H:i')  }}</span>
+                                        <span class="small">{{ $property->listed_at->format('d F, Y H:i')  }}</span>
                                    </li>
                                 @endisset
                                 @if (isset($property->latitude) && isset($property->longitude))
@@ -177,112 +384,7 @@
 
                         </div>
                     </div>
-
-                </div>
-                <div class="col-md-9">
-
-                    <!-- <div class="row">
-                        <h5>Property Description: </h5>
-                        <p style="text-align: left">{!! $property->details !!} </p>
-                    </div>
-                    <hr> -->
-
-                    <div class="row">
-                        <div class="card">
-                            <div class="card-body">
-                                @if($displayImage)
-                                    <img src="{{ asset('public/'.$displayImage) }}" alt="{{ $property->name }}" class="img-responsive img-featured center-block" id="mainPropertyImage" style="max-width: 100%; height: auto; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); transition: box-shadow 0.3s;">
-                                    <div id="featuredGallery" style="margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; padding: 10px 8px 6px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                                        @php $maxVisible = 6; @endphp
-                                        <div id="featuredRow" style="display: inline-block;">
-                                            @foreach($property->images->take($maxVisible) as $img)
-                                                @php $borderColor = $img->is_featured ? '#337ab7' : 'transparent'; @endphp
-                                                <img src="{{ asset('public/'.$img->image_path) }}"
-                                                    alt="Featured"
-                                                    class="img-featured featured-item {{ $img->is_featured ? 'active' : '' }} thumb-anim"
-                                                    data-main-image="{{ asset('public/'.$img->image_path) }}"
-                                                    style="width: 80px; height: 60px; object-fit: cover; cursor: pointer;
-                                                       border: 2px solid {{ $borderColor }}; display: inline-block;
-                                                       margin-right: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-                                                       transition: border-color 0.3s, transform 0.2s; {{ $img->is_featured ?
-                                                       'transform: scale(1.08); z-index:2;' : '' }}">
-                                            @endforeach
-                                            @if($property->images->count() > $maxVisible)
-                                                <button id="expandGalleryBtn" class="btn btn-info btn-xs" style="vertical-align: top; margin: 15px 0 0 2px; font-weight: bold; letter-spacing: 0.5px; transition: background 0.2s;">+{{ $property->images->count() - $maxVisible }} more</button>
-                                            @endif
-                                        </div>
-                                        <div id="allFeaturedsRow" style="display: none; margin-top: 10px;">
-                                            @foreach($property->images as $img)
-                                                @php $borderColor = $img->is_featured ? '#0bc624ff' : 'transparent'; @endphp
-                                                <img src="{{ asset('/public/'.$img->image_path) }}"
-                                                    alt="Featured"
-                                                    class="img-featured featured-item {{ $img->is_featured ? 'active' : '' }} thumb-anim"
-                                                    data-main-image="{{ asset('/public/'.$img->image_path) }}"
-                                                    style="width: 80px; height: 60px; object-fit: cover; cursor: pointer; border: 3px solid {{ $borderColor }}; display: inline-block; margin: 0 8px 8px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: border-color 0.3s, transform 0.2s;{{ $img->is_featured ? 'transform: scale(1.08); z-index:2;' : '' }}">
-                                            @endforeach
-                                            <button id="collapseGalleryBtn" class="btn btn-default btn-xs" style="vertical-align: top; margin: 15px 0 0 2px; font-weight: bold; letter-spacing: 0.5px; transition: background 0.2s;">Show less</button>
-                                        </div>
-                                    </div>
-
-                                @else
-                                    <div style="height: 220px; display: flex; align-items: center; justify-content: center; background: #f8f9fa; border-radius: 8px; margin-bottom: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
-                                        <p class="text-danger" style="margin:0; font-size: 18px;">No image uploaded for this property.</p>
-                                    </div>
-                                @endif
-
-                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addImageModal">
-                                    Add Images
-                                </button>
-
-                                    @if ($errors->any())
-                                        <div class="alert alert-danger">
-                                            <ul>
-                                                @foreach ($errors->all() as $error)
-                                                    <li>{{ $error }}</li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                    @endif
-
-                                <!-- ADD SET FEATURE BUTTON -->
-                                @if($property->images->count())
-                                    <div class="text-center" style="margin-top: 15px;">
-                                        <p>Manage Featureds:</p>
-                                        @foreach($property->images as $img)
-                                            @if(!$img->is_featured)
-                                                <form action="{{ route('property.setFeaturedImage', [$property->id, $img->id]) }}" method="POST" style="display:inline-block; margin-right: 5px; margin-bottom: 5px;">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-info btn-xs">Set Image {{ $loop->index + 1 }} as Featured</button>
-                                                </form>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="title">Amenities</h5>
-                                <div class="d-flex flex-wrap justify-content-start">
-                                    @foreach ($property->amenities as $amenity)
-                                        <div class="amenity-box">
-                                            <i class="{{ $amenity->icon }} amenity-icon"></i>
-                                            <span>{{ $amenity->name }}</span>
-                                        </div>
-                                    @endforeach
-                                </div>
-                                @isset($property->description)
-                                    <div class="card-text">
-                                        <hr>
-                                        <h5>Property Description: </h5>
-                                        <p style="text-align: left">{!! $property->description !!} </p>
-                                    </div>
-                                @endisset
-                            </div>
-                        </div>
-                    </div>
-
-                </div> <!-- / .col-md-9 -->
+                </div> <!-- /.col-3 -->
             </div> <!-- / .row -->
         </div> <!-- /.card-body -->
     </div> <!-- /.card -->
@@ -525,6 +627,28 @@
     #expandGalleryBtn:hover, #collapseGalleryBtn:hover {
         background: #337ab7;
         color: #fff;
+    }
+
+    .property-info-box {
+        background-color: #e6f5fd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        color: #007fae;
+        min-width: 120px;
+        margin-bottom: 15px;
+    }
+    .property-info-box i {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+    .property-info-box .label {
+        font-size: 0.85rem;
+        color: #666;
+    }
+    .property-info-box .value {
+        font-size: 1.1rem;
+        font-weight: bold;
     }
     .amenity-box {
       border: 1px solid #ddd;

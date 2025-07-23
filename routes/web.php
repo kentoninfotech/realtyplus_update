@@ -73,15 +73,20 @@ Route::post('create-property', [App\Http\Controllers\PropertyController::class, 
 Route::get('edit-property/{id}', [App\Http\Controllers\PropertyController::class, 'editProperty'])->name('edit.property');
 Route::put('update-property/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
 Route::get('property/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
+Route::get('property-units/{propertyId}', [App\Http\Controllers\PropertyController::class, 'propertyUnit'])->name('property-units');
 Route::post('delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
+// OWNERS PROPERTY
+Route::get('owner-property/{id}', [App\Http\Controllers\PropertyController::class, 'ownerProperty'])->name('owner.property');
+Route::get('add-owner-property/{id}', [App\Http\Controllers\PropertyController::class, 'AddOwnerProperty'])->name('add.owner.property');
 // HANDLE PROPERTY IMAGES
 Route::post('/property/{id}/upload-image', [App\Http\Controllers\PropertyController::class, 'uploadPropertyImage'])->name('property.uploadImage');
 Route::post('/property/{id}/featured-image/{image}', [App\Http\Controllers\PropertyController::class, 'setFeaturedImage'])->name('property.setFeaturedImage');
 Route::delete('/property/images/{propertyImage}', [App\Http\Controllers\PropertyController::class, 'deleteImage'])->name('property.deleteImage');
 
+// PROPERTY UNITS, LEASES, VIEWINGS, TASKS, MAINTENANCE REQUEST, DOCUMENTS,
+
 // UNITS
-Route::get('property-units', [App\Http\Controllers\UnitController::class, 'index'])->name('property-units');
-Route::get('new-unit', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.unit');
+Route::get('new-unit/{propertyId}', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.unit');
 Route::post('create-unit', [App\Http\Controllers\UnitController::class, 'createUnit'])->name('create.unit');
 Route::get('edit-unit/{id}', [App\Http\Controllers\UnitController::class, 'editUnit'])->name('edit.unit');
 Route::put('update-unit/{id}', [App\Http\Controllers\UnitController::class, 'updateUnit'])->name('update.unit');

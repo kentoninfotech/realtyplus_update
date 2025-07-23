@@ -282,195 +282,199 @@
                         </div>
                     </div>
 
-                    <hr>
+                </div> <!-- / .col-md-9 -->
+            </div> <!-- / .row -->
+        </div> <!-- /.card-body -->
+    </div> <!-- /.card -->
 
-                    <div class="row">
-                        <!-- PROPERTY UNITS -->
-                        @if ($property->units->count() > 1 || $property->has_units)
-                            <div class="col-md-6">
-                                    <ul class="list-group mb-3">
-                                        @can('create property')
-                                        <a href="{{ route('new.unit', $property->id) }}"
-                                            class="list-group-item list-group-item-action active">Property Units <span
-                                                class="btn btn-default" style="float: right;">Add New</span></a>
-                                        @else
-                                        <a href="#" class="list-group-item list-group-item-action active">Units</a>
-                                        @endcan
-
-                                        @foreach ($property->units->take(5) as $unit)
-                                        <li class="list-group-item list-group-item-action">
-                                            <a href="{{ route('show.unit', $unit->id) }}">
-                                               {{ $unit->unit_number ?? '' }}
-                                            </a>
-                                                @if ($unit->status == 'under_maintenance')
-                                                    <span class="badge badge-warning float-right">Under Maintenance</span>
-                                                @elseif ($unit->status == 'available')
-                                                    <span class="badge badge-primary float-right">Available</span>
-                                                @elseif ($unit->status == 'sold')
-                                                    <span class="badge badge-danger float-right">Sold</span>
-                                                @elseif ($unit->status == 'leased')
-                                                    <span class="badge badge-success float-right">Leased</span>
-                                                @elseif ($unit->status == 'vacant')
-                                                    <span class="badge badge-info float-right">Vacant</span>
-                                                @else
-                                                    <span class="badge badge-secondary float-right">Unavailable</span>
-                                                @endif
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                            </div>
-                        @endif
-                        <!-- PROPERTY DOCUMENTS -->
-                        @if ($property->documents->count() > 0)
-                            <div class="col-md-6">
-                                <ul class="list-group mb-3">
+    <div class="row mt-5">
+        <!-- PROPERTY UNITS -->
+        @if ($property->units->count() > 1 || $property->has_units)
+            <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <ul class="list-group mb-3">
                                 @can('create property')
-                                    <a href="{{ url('addp-file/' . $property->id) }}"
-                                        class="list-group-item list-group-item-action active">Property Documents <span
-                                            class="btn btn-default" style="float: right;">New File</span></a>
+                                <a href="{{ route('new.unit', $property->id) }}"
+                                    class="list-group-item list-group-item-action active">Property Units <span
+                                        class="btn btn-default" style="float: right;">Add New</span></a>
                                 @else
-                                    <a href="#" class="list-group-item list-group-item-action active">Property Files</a>
+                                <a href="#" class="list-group-item list-group-item-action active">Units</a>
                                 @endcan
-                                    @foreach ($property->documents as $document)
-                                        @php
-                                            $file_ext = pathinfo($document->file_path, PATHINFO_EXTENSION);
-                                            $file_ext = strtoupper($file_ext);
-                                        @endphp
-                                        <li class="list-group-item list-group-item-action">
-                                            <a target="_blank"
-                                                href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
-                                                <span class="badge badge-info">{{ $file_ext }}</span></a>
-                                            @can('edit property')
-                                                <a href="/delete-file/{{ $document->id }}"
-                                                class="btn btn-inline btn-xs btn-danger float-right">Del</a>
-                                            @endcan
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                         <!-- PROPERTY LEASES -->
-                         @if ($property->leases->count() > 0 )
-                            <div class="col-md-6">
-                                <ul class="list-group mb-3">
-                                    @can('create property')
-                                    <a href="{{ url('new.lease', $property->id) }}"
-                                        class="list-group-item list-group-item-action active">Leases <span
-                                            class="btn btn-default" style="float: right;">Add New</span></a>
-                                    @else
-                                    <a href="#" class="list-group-item list-group-item-action active">Leases</a>
-                                    @endcan
-                                    @foreach ($property->leases as $lease)
-                                        <li class="list-group-item list-group-item-action">
-                                            <b>Tenant:</b> {{ $lease->tenant->first_name  }} <i>End on:</i>
-                                            {{ $lease->end_date->format('F, Y') }}
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                        <!-- PROPERTY MAINTENANCE REQUESTS -->
-                        @if ($property->maintenanceRequests->count() > 0 )
-                            <div class="col-md-6">
-                                <ul class="list-group mb-3">
-                                    @can('create property')
-                                    <a href="{{ url('new.maintenance-request', $property->id) }}"
-                                        class="list-group-item list-group-item-action active">Maintenance Requests <span
-                                            class="btn btn-default" style="float: right;">Add New</span></a>
-                                    @else
-                                    <a href="#" class="list-group-item list-group-item-action active">Maintenance Requests</a>
-                                    @endcan
 
-                                    @foreach ($property->maintenanceRequests as $maintenanceRequest)
-                                        <li class="list-group-item list-group-item-
-                                            {{ $maintenanceRequest->priority == 'urgent' ? 'list-group-item-danger' :
-                                            ($maintenanceRequest->priority == 'hign' ? 'list-group-item-warning' : '') }}">
-                                            <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
-                                                {{ $maintenanceRequest->title ?? '' }}
-                                            </a>
-                                            @if ($maintenanceRequest->status == 'pending')
-                                                <span class="badge badge-warning float-right">Pending</span>
-                                            @elseif ($maintenanceRequest->status == 'completed')
-                                                <span class="badge badge-success float-right">Completed</span>
-                                            @elseif ($maintenanceRequest->status == 'cancelled')
-                                                <span class="badge badge-danger float-right">Cancelled</span>
-                                            @elseif ($maintenanceRequest->status == 'open')
-                                                <span class="badge badge-primary float-right">Open</span>
-                                            @else
-                                                <span class="badge badge-secondary float-right">In Progress</span>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                    </ul>
-                            </div>
-                        @endif
-                        <!-- PROPERTY TASKS -->
-                        @if ($property->tasks->count() > 0 )
-                            <div class="col-md-6">
-                                <ul class="list-group mb-3">
-                                    @can('create property')
-                                    <a href="{{ url('new.viewing', $property->id) }}"
-                                        class="list-group-item list-group-item-action active">Tasks <span
-                                            class="btn btn-default" style="float: right;">Add New</span></a>
-                                    @else
-                                    <a href="#" class="list-group-item list-group-item-action active">Tasks</a>
-                                    @endcan
-                                    @foreach ($property->tasks as $task)
-                                        <li class="list-group-item list-group-item-action">
-                                            <a href="{{ url('show.task', $task->id) }}">
-                                                {{ $task->title ?? '' }}
-                                            </a>
-                                            <span class="small">To: {{ $task->assignee->name }} </span>
-                                            @if ($task->status == 'pending')
-                                                <span class="badge badge-warning float-right">Pending</span>
-                                            @elseif ($task->status == 'completed')
-                                                <span class="badge badge-success float-right">Completed</span>
-                                            @elseif ($task->status == 'cancelled')
-                                                <span class="badge badge-danger float-right">Cancelled</span>
-                                            @else
-                                                <span class="badge badge-secondary float-right">In Progress</span>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                         <!-- PROPERTY VIEWINGS -->
-                        @if ($property->viewings->count() > 0 )
-                            <div class="col-md-6">
-                                <ul class="list-group mb-3">
-                                    @can('create property')
-                                    <a href="{{ url('new.viewing', $property->id) }}"
-                                        class="list-group-item list-group-item-action active">Viewings <span
-                                            class="btn btn-default" style="float: right;">Add New</span></a>
-                                    @else
-                                    <a href="#" class="list-group-item list-group-item-action active">Viewings</a>
-                                    @endcan
-                                    @foreach ($property->viewings as $viewing)
-                                        <li class="list-group-item list-group-item-action">
-                                            <a href="{{ url('show.viewing', $viewing->id) }}">
-                                                {{ $viewing->client_name ?? '' }}
-                                            </a>
-                                            <span class="small">{{ $viewing->scheduled_at->format('d F, Y h:i A') }} </span>
-                                            @if ($viewing->status == 'scheduled')
-                                                <span class="badge badge-warning float-right">Scheduled</span>
-                                            @elseif ($viewing->status == 'completed')
-                                                <span class="badge badge-success float-right">Completed</span>
-                                            @elseif ($viewing->status == 'cancelled')
-                                                <span class="badge badge-danger float-right">Cancelled</span>
-                                            @else
-                                                <span class="badge badge-secondary float-right">In Progress</span>
-                                            @endif
-                                        </li>
-                                    @endforeach
-                                </ul>
-                            </div>
-                        @endif
-                    </div> <!-- /.row -->
-                </div>
+                                @foreach ($property->units->take(5) as $unit)
+                                <li class="list-group-item list-group-item-action">
+                                    <a href="{{ route('show.unit', $unit->id) }}">
+                                        {{ $unit->unit_number ?? '' }}
+                                    </a>
+                                        @if ($unit->status == 'under_maintenance')
+                                            <span class="badge badge-warning float-right">Under Maintenance</span>
+                                        @elseif ($unit->status == 'available')
+                                            <span class="badge badge-primary float-right">Available</span>
+                                        @elseif ($unit->status == 'sold')
+                                            <span class="badge badge-danger float-right">Sold</span>
+                                        @elseif ($unit->status == 'leased')
+                                            <span class="badge badge-success float-right">Leased</span>
+                                        @elseif ($unit->status == 'vacant')
+                                            <span class="badge badge-info float-right">Vacant</span>
+                                        @else
+                                            <span class="badge badge-secondary float-right">Unavailable</span>
+                                        @endif
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
             </div>
-        </div>
-    </div>
+        @endif
+        <!-- PROPERTY DOCUMENTS -->
+        @if ($property->documents->count() > 0)
+            <div class="col-md-6">
+                <ul class="list-group mb-3">
+                @can('create property')
+                    <a href="{{ url('addp-file/' . $property->id) }}"
+                        class="list-group-item list-group-item-action active">Property Documents <span
+                            class="btn btn-default" style="float: right;">New File</span></a>
+                @else
+                    <a href="#" class="list-group-item list-group-item-action active">Property Files</a>
+                @endcan
+                    @foreach ($property->documents as $document)
+                        @php
+                            $file_ext = pathinfo($document->file_path, PATHINFO_EXTENSION);
+                            $file_ext = strtoupper($file_ext);
+                        @endphp
+                        <li class="list-group-item list-group-item-action">
+                            <a target="_blank"
+                                href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
+                                <span class="badge badge-info">{{ $file_ext }}</span></a>
+                            @can('edit property')
+                                <a href="/delete-file/{{ $document->id }}"
+                                class="btn btn-inline btn-xs btn-danger float-right">Del</a>
+                            @endcan
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+            <!-- PROPERTY LEASES -->
+            @if ($property->leases->count() > 0 )
+            <div class="col-md-6">
+                <ul class="list-group mb-3">
+                    @can('create property')
+                    <a href="{{ url('new.lease', $property->id) }}"
+                        class="list-group-item list-group-item-action active">Leases <span
+                            class="btn btn-default" style="float: right;">Add New</span></a>
+                    @else
+                    <a href="#" class="list-group-item list-group-item-action active">Leases</a>
+                    @endcan
+                    @foreach ($property->leases as $lease)
+                        <li class="list-group-item list-group-item-action">
+                            <b>Tenant:</b> {{ $lease->tenant->first_name  }} <i>End on:</i>
+                            {{ $lease->end_date->format('F, Y') }}
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <!-- PROPERTY MAINTENANCE REQUESTS -->
+        @if ($property->maintenanceRequests->count() > 0 )
+            <div class="col-md-6">
+                <ul class="list-group mb-3">
+                    @can('create property')
+                    <a href="{{ url('new.maintenance-request', $property->id) }}"
+                        class="list-group-item list-group-item-action active">Maintenance Requests <span
+                            class="btn btn-default" style="float: right;">Add New</span></a>
+                    @else
+                    <a href="#" class="list-group-item list-group-item-action active">Maintenance Requests</a>
+                    @endcan
+
+                    @foreach ($property->maintenanceRequests as $maintenanceRequest)
+                        <li class="list-group-item list-group-item-
+                            {{ $maintenanceRequest->priority == 'urgent' ? 'list-group-item-danger' :
+                            ($maintenanceRequest->priority == 'hign' ? 'list-group-item-warning' : '') }}">
+                            <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
+                                {{ $maintenanceRequest->title ?? '' }}
+                            </a>
+                            @if ($maintenanceRequest->status == 'pending')
+                                <span class="badge badge-warning float-right">Pending</span>
+                            @elseif ($maintenanceRequest->status == 'completed')
+                                <span class="badge badge-success float-right">Completed</span>
+                            @elseif ($maintenanceRequest->status == 'cancelled')
+                                <span class="badge badge-danger float-right">Cancelled</span>
+                            @elseif ($maintenanceRequest->status == 'open')
+                                <span class="badge badge-primary float-right">Open</span>
+                            @else
+                                <span class="badge badge-secondary float-right">In Progress</span>
+                            @endif
+                        </li>
+                    @endforeach
+                    </ul>
+            </div>
+        @endif
+        <!-- PROPERTY TASKS -->
+        @if ($property->tasks->count() > 0 )
+            <div class="col-md-6">
+                <ul class="list-group mb-3">
+                    @can('create property')
+                    <a href="{{ url('new.viewing', $property->id) }}"
+                        class="list-group-item list-group-item-action active">Tasks <span
+                            class="btn btn-default" style="float: right;">Add New</span></a>
+                    @else
+                    <a href="#" class="list-group-item list-group-item-action active">Tasks</a>
+                    @endcan
+                    @foreach ($property->tasks as $task)
+                        <li class="list-group-item list-group-item-action">
+                            <a href="{{ url('show.task', $task->id) }}">
+                                {{ $task->title ?? '' }}
+                            </a>
+                            <span class="small">To: {{ $task->assignee->name }} </span>
+                            @if ($task->status == 'pending')
+                                <span class="badge badge-warning float-right">Pending</span>
+                            @elseif ($task->status == 'completed')
+                                <span class="badge badge-success float-right">Completed</span>
+                            @elseif ($task->status == 'cancelled')
+                                <span class="badge badge-danger float-right">Cancelled</span>
+                            @else
+                                <span class="badge badge-secondary float-right">In Progress</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+            <!-- PROPERTY VIEWINGS -->
+        @if ($property->viewings->count() > 0 )
+            <div class="col-md-6">
+                <ul class="list-group mb-3">
+                    @can('create property')
+                    <a href="{{ url('new.viewing', $property->id) }}"
+                        class="list-group-item list-group-item-action active">Viewings <span
+                            class="btn btn-default" style="float: right;">Add New</span></a>
+                    @else
+                    <a href="#" class="list-group-item list-group-item-action active">Viewings</a>
+                    @endcan
+                    @foreach ($property->viewings as $viewing)
+                        <li class="list-group-item list-group-item-action">
+                            <a href="{{ url('show.viewing', $viewing->id) }}">
+                                {{ $viewing->client_name ?? '' }}
+                            </a>
+                            <span class="small">{{ $viewing->scheduled_at->format('d F, Y h:i A') }} </span>
+                            @if ($viewing->status == 'scheduled')
+                                <span class="badge badge-warning float-right">Scheduled</span>
+                            @elseif ($viewing->status == 'completed')
+                                <span class="badge badge-success float-right">Completed</span>
+                            @elseif ($viewing->status == 'cancelled')
+                                <span class="badge badge-danger float-right">Cancelled</span>
+                            @else
+                                <span class="badge badge-secondary float-right">In Progress</span>
+                            @endif
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+    </div> <!-- /.row -->
+
     <!-- Modal for adding images -->
     <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

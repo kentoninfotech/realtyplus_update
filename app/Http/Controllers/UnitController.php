@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\PropertyUnit;
-use App\Models\Property; 
-use App\Models\PropertyImage; 
+use App\Models\Property;
+use App\Models\PropertyImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -31,7 +31,7 @@ class UnitController extends Controller
     public function newUnit($id)
     {
         // Pass properties to select from, or pre-select if property_id is provided
-        $propert = Property::findOrFail($id);
+        $property = Property::findOrFail($id);
         // You might want to filter properties here, e.g., only multi-unit properties
 
         $unitTypes = ['residential', 'commercial', 'land', 'other']; // Example static types
@@ -45,7 +45,7 @@ class UnitController extends Controller
      * @param  \App\Http\Requests\StoreUnitRequest  $request
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function createUnit(CreateUnitRequest $request) 
+    public function createUnit(CreateUnitRequest $request)
     {
         // The validated data is available via $request->validated()
         $validatedData = $request->validated();
@@ -173,7 +173,7 @@ class UnitController extends Controller
 
         return redirect()->back()->with('message', 'Images uploaded successfully for the unit!');
     }
-    
+
     /**
      * Set unit featured image.
      */

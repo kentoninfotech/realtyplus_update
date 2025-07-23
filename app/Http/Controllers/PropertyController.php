@@ -254,7 +254,35 @@ class PropertyController extends Controller
 
         return redirect()->route('properties')->with('message', 'Property updated successfully.');
     }
-
+    /**
+     * Show all Property Units
+     */
+    public function propertyUnit($propertyId)
+    {
+        $property = Property::findOrFail($propertyId);
+        $units = $property->units;
+        return view('properties.property-units', compact('property', 'units'));
+    }
+    /**
+     * Owner's Property
+     */
+    public function ownerProperty($id)
+    {
+        $owner = Owner::findOrFail($id);
+        $properties = $owner->properties;
+        return view('properties.owner-property', compact('properties', 'owner'));
+    }
+    /**
+     * Add Owner's Property
+     */
+    public function addOwnerProperty($id)
+    {
+        $owner = Owner::findOrFail($id);
+        $propertyTypes = PropertyType::all();
+        $amenities = Amenity::all();
+        $agents = Agent::all();
+        return view('properties.add-owner-property', compact('propertyTypes', 'amenities', 'owner', 'agents'));
+    }
     /**
      * Handle image uploads for a property.
      *

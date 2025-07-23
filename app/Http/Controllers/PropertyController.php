@@ -18,8 +18,8 @@ use Illuminate\Support\Facades\File;
 class PropertyController extends Controller
 {
     /**
-     * This controller will handle 
-     * Show Properties, 
+     * This controller will handle
+     * Show Properties,
      * create, update and delete properties.
      */
     public function __construct()
@@ -161,7 +161,7 @@ class PropertyController extends Controller
     public function updateProperty(UpdatePropertyRequest $request, $id)
     {
         $property = Property::findOrFail($id);
-        
+
         // The validated data is available via $request->validated()
         $validatedData = $request->validated();
 
@@ -253,7 +253,7 @@ class PropertyController extends Controller
         });
 
         return redirect()->route('properties')->with('message', 'Property updated successfully.');
-    }  
+    }
 
     /**
      * Handle image uploads for a property.
@@ -348,7 +348,7 @@ class PropertyController extends Controller
         $property = Property::findOrFail($id);
         $property->amenities()->detach(); // Detach amenities before deleting
 
-        
+
         // Before deleting the property, delete all associated image files
         foreach ($property->images as $image) {
             $filePath = public_path($image->image_path);
@@ -357,7 +357,7 @@ class PropertyController extends Controller
             }
             // The database record will be deleted by cascade on property deletion
         }
-        
+
         $property->delete();
         return redirect()->route('properties')->with('message', 'Property deleted successfully.');
     }

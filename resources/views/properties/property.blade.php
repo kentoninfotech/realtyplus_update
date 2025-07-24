@@ -148,7 +148,7 @@
                         <div class="card">
                             <div class="card-body">
                                 <h5 class="title">Overview</h5>
-                                <div class="container mt-3">
+                                <div class="container mt-4">
                                     <div class="row text-center">
                                         @if ($property->units()->sum('bedrooms') > 0)
                                             <div class="col-6 col-sm-4 col-md-2">
@@ -200,14 +200,14 @@
                                                 <div class="property-info-box">
                                                     <i class="fa fa-calendar"></i>
                                                     <div class="label">Date Acquired</div>
-                                                    <div class="value">{{ $property->date_acquired->format('F, Y')}}</div>
+                                                    <div class="value">{{ $property->date_acquired->format('M, Y')}}</div>
                                                 </div>
                                             </div>
                                         @endisset
 
                                     </div>
                                 </div>
-                                <h5 class="title">Additional Details</h5>
+                                <h5 class="title my-3">Additional Details</h5>
                                 @isset($property->description)
                                     <div class="card-text">
                                         <h6 class="title">Description: </h6>
@@ -249,7 +249,7 @@
                                             <tr>
                                                 <th>Listed At:</th>
                                                 <td>
-                                                    <span class="small">{{ $property->listed_at->format('d F, Y H:i')  }}</span>
+                                                    <span class="small">{{ $property->listed_at->format('d F, Y h:i A')  }}</span>
                                                 </td>
                                             </tr>
                                         @endisset
@@ -282,21 +282,44 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title"><i>Owner: </i>
-                            <a href=""><b>{{ $property->owner->full_name ?? '' }}</b></a>
-                           </h4>
-                            <p class="card-text small"><i class="nav-icon fas fa-map-marker-alt"></i>
-                                {{ $property->owner->address ?? '' }}
-                            </p>
-                            @if ($property->agent)
-                                <hr>
-                                <h4 class="lead"><i>Agent: </i>
-                                    <a href=""><b>{{ $property->agent->full_name ?? '' }}</b></a>
-                                </h4>
-                                <p class="card-text small"><i class="nav-icon fas fa-map-marker-alt"></i>
-                                {{ $property->agent->address ?? '' }}
-                            </p>
-                            @endif
+                            <div class="owner-agent">
+                                 <!-- PROPERTY OWNER  -->
+                                @isset($property->owner)
+                                    <div class="agent-card">
+                                        <div>
+                                            <div class="text-muted">Owner</div>
+                                            <div class="agent-name">{{ $property->owner->full_name ?? '' }}</div>
+                                            <a href="{{ route('owner.property', $property->owner->id) }}" class="listing-link">View Properties</a>
+                                            <div class="contact-item">
+                                                <i class="fa fa-email ml-auto mr-2"></i>
+                                                <span class="contact-value">{{ $property->owner->email ?? '' }}</span>
+                                            </div>
+                                            <div class="contact-item">
+                                                <i class="fa fa-phone ml-auto mr-2"></i>
+                                                <span class="contact-value">{{ $property->owner->phone_number ?? '' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endisset
+                                <!-- PROPERTY AGENT  -->
+                                @isset($property->agent)
+                                    <div class="agent-card">
+                                        <div>
+                                        <div class="text-muted">Agent</div>
+                                        <div class="agent-name">{{ $property->agent->full_name ?? '' }}</div>
+                                        <a href="#" class="listing-link">View Agent Listings</a>
+                                        <div class="contact-item">
+                                            <i class="fa fa-phone ml-auto mr-2"></i>
+                                            <span class="contact-value">{{ $property->agent->phone_number ?? '' }}</span>
+                                        </div>
+                                        <div class="contact-item">
+                                            <i class="fa fa-email ml-auto mr-2"></i>
+                                            <span class="contact-value">{{ $property->agent->email ?? '' }}</span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                @endisset
+                            </div>
 
                             <ul class="list-group">
                                 <li class="list-group-item d-flex justify-content-between align-items-center active small">
@@ -359,7 +382,7 @@
                                 @isset($property->listed_at)
                                    <li class="list-group-item d-flex justify-content-between align-items-center">
                                         Listed At
-                                        <span class="small">{{ $property->listed_at->format('d F, Y H:i')  }}</span>
+                                        <span class="small">{{ $property->listed_at->format('d F, Y H:i' ?? '')  }}</span>
                                    </li>
                                 @endisset
                                 @if (isset($property->latitude) && isset($property->longitude))
@@ -395,37 +418,55 @@
         @if ($property->units->count() > 1 || $property->has_units)
             <div class="col-md-6">
                     <div class="card">
-                        <div class="card-body">
-                            <ul class="list-group mb-3">
+                        <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                            <h5 class="mb-0">Units</h5>
+                            <div>
+                                <button type="button" class="btn btn-sm btn-light py-0 px-1 mr-1">&times</button>
+                                <button type="button" class="btn btn-sm btn-light py-0 px-1 mr-1">&boxH;</button>
                                 @can('create property')
-                                <a href="{{ route('new.unit', $property->id) }}"
-                                    class="list-group-item list-group-item-action active">Property Units <span
-                                        class="btn btn-default" style="float: right;">Add New</span></a>
-                                @else
-                                <a href="#" class="list-group-item list-group-item-action active">Units</a>
-                                @endcan
-
-                                @foreach ($property->units->take(5) as $unit)
-                                <li class="list-group-item list-group-item-action">
-                                    <a href="{{ route('show.unit', $unit->id) }}">
-                                        {{ $unit->unit_number ?? '' }}
+                                    <a href="{{ route('new.unit', $property->id) }}"
+                                        class="btn btn-primary" style="float: right;">Add New</span>
                                     </a>
-                                        @if ($unit->status == 'under_maintenance')
-                                            <span class="badge badge-warning float-right">Under Maintenance</span>
-                                        @elseif ($unit->status == 'available')
-                                            <span class="badge badge-primary float-right">Available</span>
-                                        @elseif ($unit->status == 'sold')
-                                            <span class="badge badge-danger float-right">Sold</span>
-                                        @elseif ($unit->status == 'leased')
-                                            <span class="badge badge-success float-right">Leased</span>
-                                        @elseif ($unit->status == 'vacant')
-                                            <span class="badge badge-info float-right">Vacant</span>
-                                        @else
-                                            <span class="badge badge-secondary float-right">Unavailable</span>
-                                        @endif
-                                </li>
-                                @endforeach
-                            </ul>
+                                @endcan
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-reposive">
+                                <table class="table table-borderless table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Unit</th>
+                                            <th scope="col">Type</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($property->units->take(5) as $unit)
+                                           <tr>
+                                                <td>
+                                                    <a href="{{ route('show.unit', $unit->id)}}">{{ $unit->unit_number }}</a>
+                                                </td>
+                                                <td>{{ $unit->unit_type }}</td>
+                                                <td>
+                                                    @if ($unit->status == 'under_maintenance')
+                                                        <span class="badge badge-warning">Under Maintenance</span>
+                                                    @elseif ($unit->status == 'available')
+                                                        <span class="badge badge-primary">Available</span>
+                                                    @elseif ($unit->status == 'sold')
+                                                        <span class="badge badge-danger">Sold</span>
+                                                    @elseif ($unit->status == 'leased')
+                                                        <span class="badge badge-success">Leased</span>
+                                                    @elseif ($unit->status == 'vacant')
+                                                        <span class="badge badge-info">Vacant</span>
+                                                    @else
+                                                        <span class="badge badge-secondary">Unavailable</span>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
             </div>
@@ -433,147 +474,293 @@
         <!-- PROPERTY DOCUMENTS -->
         @if ($property->documents->count() > 0)
             <div class="col-md-6">
-                <ul class="list-group mb-3">
-                @can('create property')
-                    <a href="{{ url('addp-file/' . $property->id) }}"
-                        class="list-group-item list-group-item-action active">Property Documents <span
-                            class="btn btn-default" style="float: right;">New File</span></a>
-                @else
-                    <a href="#" class="list-group-item list-group-item-action active">Property Files</a>
-                @endcan
-                    @foreach ($property->documents as $document)
-                        @php
-                            $file_ext = pathinfo($document->file_path, PATHINFO_EXTENSION);
-                            $file_ext = strtoupper($file_ext);
-                        @endphp
-                        <li class="list-group-item list-group-item-action">
-                            <a target="_blank"
-                                href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
-                                <span class="badge badge-info">{{ $file_ext }}</span></a>
-                            @can('edit property')
-                                <a href="/delete-file/{{ $document->id }}"
-                                class="btn btn-inline btn-xs btn-danger float-right">Del</a>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Documents</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('addp-file/' . $property->id) }}"
+                                    class="btn btn-primary" style="float: right;">New File</span>
+                                </a>
                             @endcan
-                        </li>
-                    @endforeach
-                </ul>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Document</th>
+                                        <th scope="col">Upload By</th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->documents->take(5) as $document)
+                                        <tr>
+                                            <td>
+                                                <a target="_blank"
+                                                    href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
+                                                <span class="badge badge-info float-right">{{ $document->file_type }}</span></a>
+                                            </td>
+                                            <td>{{ $document->uploader->name ?? '' }}</td>
+                                            <td>
+                                                @can('edit property')
+                                                    <a href="/delete/{{ $document->id }}"
+                                                    class="btn btn-inline btn-xs btn-danger float-right">Delete</a>
+                                                @endcan
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
             <!-- PROPERTY LEASES -->
             @if ($property->leases->count() > 0 )
             <div class="col-md-6">
-                <ul class="list-group mb-3">
-                    @can('create property')
-                    <a href="{{ url('new.lease', $property->id) }}"
-                        class="list-group-item list-group-item-action active">Leases <span
-                            class="btn btn-default" style="float: right;">Add New</span></a>
-                    @else
-                    <a href="#" class="list-group-item list-group-item-action active">Leases</a>
-                    @endcan
-                    @foreach ($property->leases as $lease)
-                        <li class="list-group-item list-group-item-action">
-                            <b>Tenant:</b> {{ $lease->tenant->first_name  }} <i>End on:</i>
-                            {{ $lease->end_date->format('F, Y') }}
-                        </li>
-                    @endforeach
-                </ul>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Leases</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('new.lease', $property->id) }}"
+                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Tenant</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Due Date</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->leases->take(5) as $lease)
+                                       <tr>
+                                            <td>
+                                                <a href="">
+                                                   {{ $lease->tenant->full_name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $lease->property->name ?? $property->propertyUnit->unit_number }}</td>
+                                            <td>{{ $lease->end_date->format('F, Y') ?? '' }}</td>
+                                            <td>
+                                                @if ($lease->status == 'pending')
+                                                    <span class="badge badge-warning float-right">Pending</span>
+                                                @elseif ($lease->status == 'active')
+                                                    <span class="badge badge-primary float-right">Active</span>
+                                                @elseif ($lease->status == 'expired')
+                                                    <span class="badge badge-danger float-right">Expired</span>
+                                                @elseif ($lease->status == 'renewed')
+                                                    <span class="badge badge-success float-right">Renewed</span>
+                                                @else
+                                                    <span class="badge badge-secondary float-right">{{ Str::headline($lease->status) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
         <!-- PROPERTY MAINTENANCE REQUESTS -->
         @if ($property->maintenanceRequests->count() > 0 )
             <div class="col-md-6">
-                <ul class="list-group mb-3">
-                    @can('create property')
-                    <a href="{{ url('new.maintenance-request', $property->id) }}"
-                        class="list-group-item list-group-item-action active">Maintenance Requests <span
-                            class="btn btn-default" style="float: right;">Add New</span></a>
-                    @else
-                    <a href="#" class="list-group-item list-group-item-action active">Maintenance Requests</a>
-                    @endcan
-
-                    @foreach ($property->maintenanceRequests as $maintenanceRequest)
-                        <li class="list-group-item list-group-item-
-                            {{ $maintenanceRequest->priority == 'urgent' ? 'list-group-item-danger' :
-                            ($maintenanceRequest->priority == 'hign' ? 'list-group-item-warning' : '') }}">
-                            <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
-                                {{ $maintenanceRequest->title ?? '' }}
-                            </a>
-                            @if ($maintenanceRequest->status == 'pending')
-                                <span class="badge badge-warning float-right">Pending</span>
-                            @elseif ($maintenanceRequest->status == 'completed')
-                                <span class="badge badge-success float-right">Completed</span>
-                            @elseif ($maintenanceRequest->status == 'cancelled')
-                                <span class="badge badge-danger float-right">Cancelled</span>
-                            @elseif ($maintenanceRequest->status == 'open')
-                                <span class="badge badge-primary float-right">Open</span>
-                            @else
-                                <span class="badge badge-secondary float-right">In Progress</span>
-                            @endif
-                        </li>
-                    @endforeach
-                    </ul>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Maintenance Requests</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('new.maintenance-request', $property->id) }}"
+                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Reporter</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->maintenanceRequests as $maintenanceRequest)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
+                                                   {{ $maintenanceRequest->title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $maintenanceRequest->property->name ?? $property->propertyUnit->unit_number }}</td>
+                                            <td>{{ $maintenanceRequest->reporter->name }}</td>
+                                            <td>{{ $maintenanceRequest->priority }}</td>
+                                            <td>
+                                                @if ($maintenanceRequest->status == 'pending')
+                                                    <span class="badge badge-warning float-right">Pending</span>
+                                                @elseif ($maintenanceRequest->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($maintenanceRequest->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($maintenanceRequest->status == 'open')
+                                                    <span class="badge badge-primary float-right">Open</span>
+                                                @else
+                                                    <span class="badge badge-info float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
         <!-- PROPERTY TASKS -->
         @if ($property->tasks->count() > 0 )
             <div class="col-md-6">
-                <ul class="list-group mb-3">
-                    @can('create property')
-                    <a href="{{ url('new.viewing', $property->id) }}"
-                        class="list-group-item list-group-item-action active">Tasks <span
-                            class="btn btn-default" style="float: right;">Add New</span></a>
-                    @else
-                    <a href="#" class="list-group-item list-group-item-action active">Tasks</a>
-                    @endcan
-                    @foreach ($property->tasks as $task)
-                        <li class="list-group-item list-group-item-action">
-                            <a href="{{ url('show.task', $task->id) }}">
-                                {{ $task->title ?? '' }}
-                            </a>
-                            <span class="small">To: {{ $task->assignee->name }} </span>
-                            @if ($task->status == 'pending')
-                                <span class="badge badge-warning float-right">Pending</span>
-                            @elseif ($task->status == 'completed')
-                                <span class="badge badge-success float-right">Completed</span>
-                            @elseif ($task->status == 'cancelled')
-                                <span class="badge badge-danger float-right">Cancelled</span>
-                            @else
-                                <span class="badge badge-secondary float-right">In Progress</span>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Tasks</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('new.task', $property->id) }}"
+                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Assignee</th>
+                                        <th scope="col">Due Date</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->tasks as $task)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url('show.task', $task->id) }}">
+                                                   {{ $task->title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $task->assignee->name }}</td>
+                                            <td>{{ $task->due_date }}</td>
+                                            <td>
+                                                @if ($task->priority == 'hign')
+                                                    <span class="badge badge-warning float-right">Hign</span>
+                                                @elseif ($task->priority == 'medium')
+                                                    <span class="badge badge-success float-right">Medium</span>
+                                                @elseif ($task->priority == 'low')
+                                                    <span class="badge badge-secondary float-right">Low</span>
+                                                @else
+                                                <span class="badge badge-info float-right">Urgent</span>
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($task->status == 'pending')
+                                                    <span class="badge badge-warning float-right">Pending</span>
+                                                @elseif ($task->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($task->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($task->status == 'open')
+                                                    <span class="badge badge-primary float-right">Open</span>
+                                                @else
+                                                    <span class="badge badge-info float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
-            <!-- PROPERTY VIEWINGS -->
+        <!-- PROPERTY VIEWINGS -->
         @if ($property->viewings->count() > 0 )
-            <div class="col-md-6">
-                <ul class="list-group mb-3">
-                    @can('create property')
-                    <a href="{{ url('new.viewing', $property->id) }}"
-                        class="list-group-item list-group-item-action active">Viewings <span
-                            class="btn btn-default" style="float: right;">Add New</span></a>
-                    @else
-                    <a href="#" class="list-group-item list-group-item-action active">Viewings</a>
-                    @endcan
-                    @foreach ($property->viewings as $viewing)
-                        <li class="list-group-item list-group-item-action">
-                            <a href="{{ url('show.viewing', $viewing->id) }}">
-                                {{ $viewing->client_name ?? '' }}
-                            </a>
-                            <span class="small">{{ $viewing->scheduled_at->format('d F, Y h:i A') }} </span>
-                            @if ($viewing->status == 'scheduled')
-                                <span class="badge badge-warning float-right">Scheduled</span>
-                            @elseif ($viewing->status == 'completed')
-                                <span class="badge badge-success float-right">Completed</span>
-                            @elseif ($viewing->status == 'cancelled')
-                                <span class="badge badge-danger float-right">Cancelled</span>
-                            @else
-                                <span class="badge badge-secondary float-right">In Progress</span>
-                            @endif
-                        </li>
-                    @endforeach
-                </ul>
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Viewings</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('new.viewing', $property->id) }}"
+                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Client</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Agent</th>
+                                        <th scope="col">Schedule</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->viewings as $viewing)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url('show.viewing', $viewing->id) }}">
+                                                   {{ $viewing->client_name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $viewing->property->name ?? $property->propertyUnit->unit_number }}</td>
+                                            <td>{{ $viewing->agent->full_name }}</td>
+                                            <td>{{ $viewing->scheduled_at->format('d F, Y h:i A') ?? '' }}</td>
+                                            <td>
+                                                @if ($viewing->status == 'scheduled')
+                                                    <span class="badge badge-warning float-right">Scheduled</span>
+                                                @elseif ($viewing->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($viewing->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($viewing->status == 'rescheduled')
+                                                    <span class="badge badge-info float-right">Rescheduled</span>
+                                                @else
+                                                    <span class="badge badge-secondary float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
     </div> <!-- /.row -->
@@ -678,6 +865,42 @@
     .property-info-box .value {
         font-size: 1.1rem;
         font-weight: bold;
+    }
+    .agent-card {
+        max-width: 400px;
+        border: 1px solid #eee;
+        padding: 20px;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 2px 10px rgb(0,0,0,0,05);
+    }
+    .agent-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    .contact-label {
+        color: #666;
+        font-weight: 500;
+    }
+    .contact-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .contact-item i {
+        color: #00aaf1;
+        text-align: center;
+        font-size: 0.7rem;
+    }
+    .contact-value {
+        color: #333;
+    }
+    .listing-link {
+        color: #00aaf1;
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 4px;
     }
     .amenity-box {
       border: 1px solid #ddd;

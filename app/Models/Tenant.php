@@ -20,6 +20,15 @@ class Tenant extends Model
         'emergency_contact_name',
         'emergency_contact_phone',
     ];
+    /**
+     * Get the user's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 
 
     public function user()
@@ -42,5 +51,5 @@ class Tenant extends Model
         return $this->hasMany(MaintenanceRequest::class, 'reported_by_user_id'); // If reported by tenant's user ID
     }
 
-    
+
 }

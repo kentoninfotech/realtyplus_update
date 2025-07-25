@@ -86,16 +86,17 @@ Route::delete('/property/images/{propertyImage}', [App\Http\Controllers\Property
 // PROPERTY UNITS, LEASES, VIEWINGS, TASKS, MAINTENANCE REQUEST, DOCUMENTS,
 
 // UNITS
-Route::get('new-unit/{propertyId}', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.unit');
-Route::post('create-unit', [App\Http\Controllers\UnitController::class, 'createUnit'])->name('create.unit');
-Route::get('edit-unit/{id}', [App\Http\Controllers\UnitController::class, 'editUnit'])->name('edit.unit');
-Route::put('update-unit/{id}', [App\Http\Controllers\UnitController::class, 'updateUnit'])->name('update.unit');
-Route::get('unit/{id}', [App\Http\Controllers\UnitController::class, 'showUnit'])->name('show.unit');
-Route::post('delete-unit/{id}', [App\Http\Controllers\UnitController::class, 'deleteUnit'])->name('delete.unit');
+Route::get('property/new-unit/', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.units');
+Route::get('property/new-unit/{propertyId}', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.unit');
+Route::post('property/create-unit', [App\Http\Controllers\UnitController::class, 'createUnit'])->name('create.unit');
+Route::get('property/edit-unit/{id}', [App\Http\Controllers\UnitController::class, 'editUnit'])->name('edit.unit');
+Route::put('property/update-unit/{id}', [App\Http\Controllers\UnitController::class, 'updateUnit'])->name('update.unit');
+Route::get('property/unit/{id}', [App\Http\Controllers\UnitController::class, 'showUnit'])->name('show.unit');
+Route::post('property/delete-unit/{id}', [App\Http\Controllers\UnitController::class, 'deleteUnit'])->name('delete.unit');
 // HANDLE UNIT IMAGES
-Route::post('/unit/{id}/upload-image', [App\Http\Controllers\UnitController::class, 'uploadUnitImage'])->name('unit.uploadImage');
-Route::post('/unit/{id}/featured-image/{image}', [App\Http\Controllers\UnitController::class, 'setFeaturedImage'])->name('unit.setFeaturedImage');
-Route::delete('/unit/images/{unitImage}', [App\Http\Controllers\UnitController::class, 'deleteImage'])->name('unit.deleteImage');
+Route::post('property/unit/{id}/upload-image', [App\Http\Controllers\UnitController::class, 'uploadUnitImage'])->name('unit.uploadImage');
+Route::post('property/unit/{id}/featured-image/{image}', [App\Http\Controllers\UnitController::class, 'setFeaturedImage'])->name('unit.setFeaturedImage');
+Route::delete('property/unit/images/{unitImage}', [App\Http\Controllers\UnitController::class, 'deleteImage'])->name('unit.deleteImage');
 
 
 // ROLES & PERMISSIONS

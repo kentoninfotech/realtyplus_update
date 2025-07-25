@@ -34,8 +34,6 @@ class PropertyUnitFactory extends Factory
             'status'           => $this->faker->randomElement(['available', 'vacant', 'sold', 'leased', 'under_maintenance', 'unavailable']),
             'square_footage'   => $this->faker->optional()->randomFloat(2, 200, 5000),
             'area_sqm'         => $this->faker->optional()->randomFloat(2, 200, 5000),
-            'zoning_type'      => $this->faker->randomElement(['Residential', 'Commercial', 'Mixed-Use']),
-            'floor_number'     => $this->faker->optional()->numberBetween(1, 20),
             'bedrooms'         => $this->faker->optional()->numberBetween(0, 5),
             'bathrooms'        => $this->faker->optional()->randomFloat(1, 1, 4),
             'sale_price'       => $salePrice,

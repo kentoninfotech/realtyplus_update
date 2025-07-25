@@ -433,6 +433,10 @@
                 // --- Further refine single_unit_fields based on Property Type slug ---
                 if (slug === 'land-parcel') {
                     singleLandFields.classList.remove('hidden-section');
+                    areaSqmSingleGroup.classList.remove('hidden-section');
+                    zoningTypeSingleGroup.classList.remove('hidden-section');
+                    cadastralIdSingleGroup.classList.remove('hidden-section');
+                    
                     areaSqmSingleInput.value = initialValues.area_sqm_single;
                     zoningTypeSingleInput.value = initialValues.zoning_type_single;
                     cadastralIdSingleInput.value = initialValues.cadastral_id_single;

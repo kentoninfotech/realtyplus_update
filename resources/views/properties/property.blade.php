@@ -415,6 +415,7 @@
 
     <div class="row mt-5">
         <!-- PROPERTY UNITS -->
+         <!-- FIX LOGIC TO USE AND(&&) COMPARISON INSTEAD OF OR(||)  -->
         @if ($property->units->count() > 1 || $property->has_units)
             <div class="col-md-6">
                     <div class="card">

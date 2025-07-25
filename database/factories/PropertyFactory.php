@@ -33,6 +33,8 @@ class PropertyFactory extends Factory
             'agent_id'           => $agent->id,
             'owner_id'           => $owner->id,
             'name'               => $this->faker->streetName . ' ' . $this->faker->buildingNumber,
+            'zoning_type'        => $this->faker->randomElement(['Residential', 'Commercial', 'Mixed-Use']),
+            'cadastral_id'       => 'RP'. $this->faker->uuid(),
             'address'            => $this->faker->address,
             'state'              => $this->faker->state,
             'country'            => 'Nigeria',

@@ -41,6 +41,8 @@ class UpdatePropertyRequest extends FormRequest
         $rules = [
             'property_type_id' => ['required', 'exists:property_types,id'],
             'name' => ['required', 'string', 'max:255'],
+            'zoning_type' => ['nullable', 'string', 'max:100'],
+            'cadastral_id' => ['nullable', 'string', 'max:255'],
             'owner_id' => ['required', 'exists:users,id'],
             'agent_id' => ['nullable', 'exists:users,id'],
             'description' => ['nullable', 'string'],

@@ -36,7 +36,7 @@ class UnitController extends Controller
 
         $unitTypes = ['residential', 'commercial', 'land', 'other']; // Example static types
 
-        return view('units.create', compact('properties', 'property', 'unitTypes'));
+        return view('properties.units.new-unit', compact('property', 'unitTypes'));
     }
 
     /**

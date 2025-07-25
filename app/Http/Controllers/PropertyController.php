@@ -74,6 +74,8 @@ class PropertyController extends Controller
                 'business_id' => $validatedData['business_id'],
                 'owner_id' => $validatedData['owner_id'],
                 'name' => $validatedData['name'],
+                'zoning_type' => $validatedData['zoning_type_single'] ?? null,
+                'cadastral_id' => $validatedData['cadastral_id_single'] ?? null,
                 'address' => $validatedData['address'],
                 'state' => $validatedData['state'],
                 'country' => $validatedData['country'],
@@ -109,7 +111,6 @@ class PropertyController extends Controller
                     // Specifics for a single land unit
                     $unitData['unit_number'] = $validatedData['cadastral_id_single'] ?? 'Plot 1';
                     $unitData['area_sqm'] = $validatedData['area_sqm_single'];
-                    $unitData['zoning_type'] = $validatedData['zoning_type_single'] ?? null;
                     $unitData['square_footage'] = null; // No built area for land
                     $unitData['bedrooms'] = null;
                     $unitData['bathrooms'] = null;
@@ -121,7 +122,6 @@ class PropertyController extends Controller
                     $unitData['bathrooms'] = $validatedData['bathrooms'] ?? null;
                     $unitData['square_footage'] = $validatedData['area_sqft'] ?? null; // Property's area_sqft is this unit's size
                     $unitData['area_sqm'] = null; // No land area for built unit
-                    $unitData['zoning_type'] = null; // Not applicable for residential
                     // Determine unit_type based on property type, e.g., 'Residential', 'Commercial'
                     $unitData['unit_type'] = $propertyType->is_residential ? 'Residential' : 'Commercial';
                 }
@@ -175,6 +175,8 @@ class PropertyController extends Controller
                 'agent_id' => $validatedData['agent_id'],
                 'owner_id' => $validatedData['owner_id'],
                 'name' => $validatedData['name'],
+                'zoning_type' => $validatedData['zoning_type_single'] ?? null,
+                'cadastral_id' => $validatedData['cadastral_id_single'] ?? null,
                 'address' => $validatedData['address'],
                 'state' => $validatedData['state'],
                 'country' => $validatedData['country'],
@@ -213,7 +215,6 @@ class PropertyController extends Controller
                     // Specifics for a single land unit
                     $unitData['unit_number'] = $validatedData['cadastral_id_single'] ?? 'Plot 1';
                     $unitData['area_sqm'] = $validatedData['area_sqm_single'];
-                    $unitData['zoning_type'] = $validatedData['zoning_type_single'] ?? null;
                     $unitData['square_footage'] = null; // No built area for land
                     $unitData['bedrooms'] = null;
                     $unitData['bathrooms'] = null;
@@ -225,7 +226,6 @@ class PropertyController extends Controller
                     $unitData['bathrooms'] = $validatedData['bathrooms'] ?? null;
                     $unitData['square_footage'] = $validatedData['area_sqft'] ?? null; // Property's area_sqft is this unit's size
                     $unitData['area_sqm'] = null;
-                    $unitData['zoning_type'] = null;
                     $unitData['unit_type'] = $propertyType->is_residential ? 'Residential' : 'Commercial';
                 }
                 $unit->fill($unitData)->save(); // Fill and save the unit

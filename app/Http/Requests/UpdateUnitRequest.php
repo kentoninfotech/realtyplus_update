@@ -29,16 +29,14 @@ class UpdateUnitRequest extends FormRequest
 
         return [
             'property_id' => ['required', 'exists:properties,id'],
-            'unit_number' => ['required', 'string', 'max:255', Rule::unique('units')->where(function ($query) {
+            'unit_number' => ['required', 'string', 'max:255', Rule::unique('property_units')->where(function ($query) {
                 return $query->where('property_id', $this->property_id);
             })->ignore($unitId)], // Ignore the current unit's ID for unique rule
             'unit_type' => ['required', 'string', Rule::in(['residential', 'commercial', 'land', 'other'])],
             'description' => ['nullable', 'string'],
             'square_footage' => ['nullable', 'numeric', 'min:0'],
             'area_sqm' => ['nullable', 'numeric', 'min:0'],
-            'zoning_type' => ['nullable', 'string', 'max:255'],
             'status' => ['required', 'string', Rule::in(['available', 'vacant', 'sold', 'under_maintenance', 'leased', 'rented'])],
-            'floor_number' => ['nullable', 'integer'],
             'bedrooms' => ['nullable', 'integer', 'min:0'],
             'bathrooms' => ['nullable', 'numeric', 'min:0'],
             'sale_price' => ['nullable', 'numeric', 'min:0'],

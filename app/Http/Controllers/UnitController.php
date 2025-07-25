@@ -42,28 +42,21 @@ class UnitController extends Controller
     /**
      * Store a newly created unit in storage.
      *
-     * @param  \App\Http\Requests\StoreUnitRequest  $request
-     * @return \Illuminate\Http\RedirectResponse
      */
     public function createUnit(CreateUnitRequest $request)
     {
         // The validated data is available via $request->validated()
         $validatedData = $request->validated();
 
-        DB::transaction(function () use ($validatedData) {
-            $unit = PropertyUnit::create($validatedData);
-
-            $unit->property->increment('total_units');
-        });
-
-        return redirect()->route('property', $unit->property->id)->with('message', 'Unit created successfully!');
+        $unit = PropertyUnit::create($validatedData);
+        //$unit->property->increment('total_units');
+        $unit->property->total_units + 1;
+        return redirect()->route('show.property', $unit->property->id)->with('message', 'Unit created successfully!');
     }
 
     /**
      * Display the specified unit.
      *
-     * @param  \App\Models\Unit  $unit
-     * @return \Illuminate\View\View
      */
     public function showUnit($id)
     {
@@ -85,15 +78,16 @@ class UnitController extends Controller
         $unitTypes = ['residential', 'commercial', 'land', 'other']; // Example static types
         $unit = PropertyUnit::with('images')->findOrFail($id); // Eager load images for the edit form
 
-        return view('units.edit', compact('unit', 'unitTypes'));
+        return view('properties.units.edit-unit', compact('unit', 'unitTypes'));
     }
 
     /**
      * Update the specified unit in storage.
      *
      */
-    public function updateUnit(UpdateUnitRequest $request, Unit $unit) // Type-hint the custom request
+    public function updateUnit(UpdateUnitRequest $request, $id) // Type-hint the custom request
     {
+        $unit = PropertyUnit::findOrFail($id);
         $validatedData = $request->validated();
 
         DB::transaction(function () use ($validatedData, $unit) {
@@ -191,22 +185,23 @@ class UnitController extends Controller
      * Remove a specific unit image from storage.
      *
      */
-    public function deleteImage(PropertyImage $propertyImage)
+    public function deleteImage($id)
     {
+        $unitImage = PropertyImage::findOrFail($id);
         // Ensure the image belongs to a unit (and not a property) before deleting
-        if (is_null($propertyImage->property_unit_id)) {
+        if (is_null($unitImage->property_unit_id)) {
             return redirect()->back()->with('error', 'Image does not belong to a unit.');
         }
 
-        DB::transaction(function () use ($propertyImage) {
+        DB::transaction(function () use ($unitImage) {
             // Delete the file from the public directory
-            $filePath = public_path($propertyImage->image_path);
+            $filePath = public_path($unitImage->image_path);
             if (File::exists($filePath)) {
                 File::delete($filePath);
             }
 
             // Delete the record from the database
-            $propertyImage->delete();
+            $unitImage->delete();
         });
 
         return redirect()->back()->with('message', 'Unit image deleted successfully!');

@@ -60,9 +60,10 @@
                 <!-- /.col -->
                 <div class="col-sm-4">
                     <div class="description-block">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <a href="#">View on</a> <br>
-                        <span class="description-text">MAP</span>
+                        <button class="btn btn-info" data-toggle="modal" data-target="#mapModal">
+                            <i class="fa fa-map"></i>
+                            View on MAP
+                        </button>
                     </div>
                     <!-- /.description-block -->
                 </div>
@@ -72,111 +73,7 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-md-3">
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h4 class="card-title"><i>Owner: </i>
-                            <a href=""><b>{{ $unit->owner->full_name ?? $unit->property->owner->full_name ?? '' }}</b></a>
-                            </h4>
-                            <p class="card-text small"><i class="nav-icon fas fa-map-marker-alt"></i>
-                                {{ $unit->owner->address ?? $unit->property->owner->address ?? '' }}</p>
-
-                            <ul class="list-group">
-                                <li class="list-group-item d-flex justify-content-between align-items-center active small">
-                                    Unit Details
-                                </li>
-                                @isset($units->bedrooms)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Bedrooms
-                                        <span class="small">{{ $units->bedrooms  }}</span>
-                                  </li>
-                                @endisset
-                                @isset($units->bedrooms)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Bathrooms
-                                        <span class="small">{{ $units->bathrooms  }}</span>
-                                  </li>
-                                @endisset
-                                <li
-                                    class="list-group-item d-flex justify-content-between align-items-center">
-                                    Unit Status
-                                    <span class="badge badge-{{ 
-                                        $unit->status == 'available' ? 'success' : 
-                                        ($unit->status == 'sold' ? 'danger' : 
-                                        ($unit->status == 'under_maintenance' ? 'warning' : 
-                                        ($unit->status == 'leased' ? 'danger' : 'info'))) 
-                                        }} badge-pill">
-                                        {{ ucwords(str_replace('_', ' ', $unit->status)) }}
-                                    </span>
-                                </li>
-                                @isset($unit->available_from)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Available From
-                                        <span class="small">{{ $unit->available_from->format('Y-m-d H:i') }}</span>
-                                    </li>
-                                @endisset
-                                @isset($unit->deposit_amount)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Deposit Amount
-                                        <span class="small">₦{{ number_format($unit->deposit_amount, 0, '.', ',') }}</span>
-                                    </li>
-                                @endisset
-                                @isset($unit->square_footage)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Square Footage
-                                        <span class="small">{{ $unit->square_footage  }}</span>
-                                  </li>
-                                @endisset
-                                @isset($unit->area_sqm)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Area SQM
-                                        <span class="small">{{ $unit->area_sqm  }}</span>
-                                  </li>
-                                @endisset
-                                @isset($unit->unit_type)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Unit Type
-                                        <span class="badge badge-info badge-pill small">{{ $unit->unit_type  }}</span>
-                                   </li>
-                                @endisset
-                                @isset($unit->zoning_type)
-                                   <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        Zoning Type
-                                        <span class="badge badge-info badge-pill small">{{ $unit->zoning_type  }}</span>
-                                   </li>
-                                @endisset
-                                @if (isset($unit->property->latitude) && isset($unit->property->longitude))
-                                   <li class="list-group-item d-flex justify-content-between align-items-center disabled small">
-                                        <i class="nav-icon fa fa-map"></i>Coordinates: 
-                                        <span class="small">{{ $unit->property->latitude }}, {{ $unit->property->longitude }}</span>
-                                   </li>
-                                @endif
-                            </ul>
-
-                            <hr>
-
-                            @if(!auth()->user()->hasrole('Client'))
-                               <div class="list-group">
-                                    <a href="#" class="list-group-item list-group-item-action active">Menu </a>                
-                                    <a href="/unit/{{ $unit->id }}/reports"
-                                        class="list-group-item list-group-item-action">Reports</a>
-                                    <a href="/unit/{{ $unit->id }}/tasks"
-                                        class="list-group-item list-group-item-action">Tasks</a>
-                                </div>
-                            @endif
-                            
-                        </div>
-                    </div>
-
-                </div>
                 <div class="col-md-9">
-
-                    <!-- <div class="row">
-                        <h5>Unit Description: </h5>
-                        <p style="text-align: left">{!! $unit->details !!} </p>
-                    </div> -->
-                    <!-- <hr> -->
 
                     <div class="row">
                         <div class="card">
@@ -247,63 +144,397 @@
                                 @endif
                             </div>
                         </div>
-                    </div>
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="title">Overview</h5>
+                                <div class="container mt-4">
+                                    <div class="row text-center">
+                                        @if ($unit->bedrooms)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="unit-info-box">
+                                                    <i class="fa fa-bed"></i>
+                                                    <div class="label">Bedrooms</div>
+                                                    <div class="value">{{ $unit->bedrooms }}</div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @if ($unit->bathrooms)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="unit-info-box">
+                                                    <i class="fa fa-bath"></i>
+                                                    <div class="label">Bathrooms</div>
+                                                    <div class="value">{{ $unit->bathrooms }}</div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                        @isset($unit->property->year_built)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="unit-info-box">
+                                                    <i class="fa fa-calendar"></i>
+                                                    <div class="label">Year Built</div>
+                                                    <div class="value">{{ $unit->property->year_built}}</div>
+                                                </div>
+                                            </div>
+                                        @endisset
+                                        @isset($unit->area_sqm)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="unit-info-box">
+                                                    <i class="fa fa-arrows-alt"></i>
+                                                    <div class="label">Area</div>
+                                                    <div class="value">{{ $unit->area_sqm }} sqm</div>
+                                                </div>
+                                            </div>
+                                        @endisset
+                                        @isset($unit->square_footage)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="unit-info-box">
+                                                    <i class="fa fa-square-o"></i>
+                                                    <div class="label">Lot Size</div>
+                                                    <div class="value">{{ $unit->square_footage}} sq ft</div>
+                                                </div>
+                                            </div>
+                                        @endisset
+                                        @isset($unit->available_from)
+                                            <div class="col-6 col-sm-4 col-md-2">
+                                                <div class="unit-info-box">
+                                                    <i class="fa fa-calendar"></i>
+                                                    <div class="label">Date Acquired</div>
+                                                    <div class="value">{{ $unit->available_from->format('M, Y')}}</div>
+                                                </div>
+                                            </div>
+                                        @endisset
 
-                    <hr>
-
-                    <div class="row">
-                        <div class="col-md-6">
-
-                            <div class="list-group">
-                                @can('create unit')
-                                <a href="{{ route('new.unit', $unit->id) }}"
-                                    class="list-group-item list-group-item-action active">Unit Something!!! <span
-                                        class="btn btn-default" style="float: right;">Add New</span></a>
-                                @else
-                                <a href="#" class="list-group-item list-group-item-action active">Units</a>
-                                @endcan
-
-                                {{--
-                                @foreach ($units as $unit)
-                                    <a href="{{ route('show.unit', $unit->id) }}"
-                                        class="list-group-item list-group-item-action">{{ $unit->unit_number ?? '' }}</a>
-                                @endforeach
-                                --}}
+                                    </div>
+                                </div>
+                                <h5 class="title my-3">Additional Details</h5>
+                                @isset($unit->description)
+                                    <div class="card-text">
+                                        <h6 class="title">Description: </h6>
+                                        <p style="text-align: left">{!! $unit->description !!} </p>
+                                    </div>
+                                @endisset
+                                <table class="table mb-4">
+                                    <tbody>
+                                        <tr>
+                                            <th>Unit Status:</th>
+                                            <td>
+                                                <span class="badge badge-{{
+                                                    $unit->status == 'available' ? 'success' :
+                                                    ($unit->status == 'sold' ? 'danger' :
+                                                    ($unit->status == 'under_maintenance' ? 'warning' :
+                                                    ($unit->status == 'leased' ? 'danger' : 'info')))
+                                                    }} badge-pill">
+                                                    {{ ucwords(str_replace('_', ' ', $unit->status)) }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        @isset($unit->deposit_amount)
+                                            <tr>
+                                                <th>Deposit Amount:</th>
+                                                <td>
+                                                    <span class="small">₦{{ number_format($unit->deposit_amount, 0, '.', ',') }}</span>
+                                                </td>
+                                            </tr>
+                                        @endisset
+                                        @isset($unit->available_from)
+                                            <tr>
+                                                <th>Available From:</th>
+                                                <td>
+                                                    <span class="small">{{ $unit->available_from->format('d F, Y h:i A')  }}</span>
+                                                </td>
+                                            </tr>
+                                        @endisset
+                                    </tbody>
+                                </table>
+                                
                             </div>
+                        </div>
+                    </div>    
+                </div> <!-- /.col-9 -->
+                <div class="col-md-3">
+
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="owner-agent">
+                                 <!-- PROPERTY OWNER  -->
+                                @if($unit->owner || $unit->property->owner)
+                                    <div class="agent-card">
+                                        <div>
+                                            <div class="text-muted">Owner</div>
+                                            <div class="agent-name">{{ $unit->owner->full_name ?? $unit->property->owner->full_name ?? '' }}</div>
+                                            <a href="{{ route('owner.property', $unit->owner->id ?? $unit->property->owner->id) }}" class="listing-link">View Properties</a>
+                                            <div class="contact-item">
+                                                <i class="fa fa-email ml-auto mr-2"></i>
+                                                <span class="contact-value">{{ $unit->owner->email ?? $unit->property->owner->email ?? '' }}</span>
+                                            </div>
+                                            <div class="contact-item">
+                                                <i class="fa fa-phone ml-auto mr-2"></i>
+                                                <span class="contact-value">{{ $unit->owner->phone_number ?? $unit->property->owner->phone_number ?? '' }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                <!-- PROPERTY AGENT  -->
+                                @isset($unit->property->agent)
+                                    <div class="agent-card">
+                                        <div>
+                                        <div class="text-muted">Agent</div>
+                                        <div class="agent-name">{{ $unit->property->agent->full_name ?? '' }}</div>
+                                        <a href="#" class="listing-link">View Agent Listings</a>
+                                        <div class="contact-item">
+                                            <i class="fa fa-phone ml-auto mr-2"></i>
+                                            <span class="contact-value">{{ $unit->property->agent->phone_number ?? '' }}</span>
+                                        </div>
+                                        <div class="contact-item">
+                                            <i class="fa fa-email ml-auto mr-2"></i>
+                                            <span class="contact-value">{{ $unit->property->agent->email ?? '' }}</span>
+                                        </div>
+                                        </div>
+                                    </div>
+                                @endisset
+                            </div>
+
+                            <ul class="list-group">
+                                <li class="list-group-item d-flex justify-content-between align-items-center active small">
+                                    Property Details
+                                </li>
+                                @isset($unit->bedrooms)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Bedrooms
+                                        <span class="small">{{ $unit->bedrooms  }}</span>
+                                  </li>
+                                @endisset
+                                <li
+                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                    Unit Status
+                                    <span class="badge badge-{{
+                                        $unit->status == 'available' ? 'success' :
+                                        ($unit->status == 'sold' ? 'danger' :
+                                        ($unit->status == 'under_maintenance' ? 'warning' :
+                                        ($unit->status == 'leased' ? 'danger' : 'info')))
+                                        }} badge-pill">
+                                        {{ ucwords(str_replace('_', ' ', $unit->status)) }}
+                                    </span>
+                                </li>
+                                @isset($unit->area_sqm)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Area SQM
+                                        <span class="small">{{ $unit->area_sqm  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($unit->square_footage)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Square Footage
+                                        <span class="small">{{ $unit->square_footage  }}</span>
+                                  </li>
+                                @endisset
+                                @isset($unit->available_from)
+                                   <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        Available From
+                                        <span class="small">{{ $unit->available_from->format('d F, Y H:i' ?? '')  }}</span>
+                                   </li>
+                                @endisset
+
+                            </ul>
+
+                            <hr>
+
+                            @if(!auth()->user()->hasrole('Client'))
+                               <div class="list-group">
+                                    <a href="#" class="list-group-item list-group-item-action active">Menu </a>
+                                    <a href="/property/{{ $unit->id }}/reports"
+                                        class="list-group-item list-group-item-action">Reports</a>
+                                    <a href="/property/{{ $unit->id }}/tasks"
+                                        class="list-group-item list-group-item-action">Tasks</a>
+                                </div>
+                            @endif
 
                         </div>
-                        <div class="col-md-6">
-                            <div class="list-group">
-                              @can('create unit')
-                                <a href="{{ url('addp-file/' . $unit->id) }}"
-                                    class="list-group-item list-group-item-action active">Unit Documents <span
-                                        class="btn btn-default" style="float: right;">New File</span></a>
-                              @else
-                                <a href="#" class="list-group-item list-group-item-action active">Unit Files</a>
-                              @endcan
+                    </div>
+                </div> <!-- /.col-3 -->
+            </div> <!-- /.row -->
+        </div> <!-- /.card-body -->
+    </div> <!-- /.card -->
 
-                                @foreach ($unit->images as $image)
-                                    @php
-                                        $file_ext = pathinfo($image->file_path, PATHINFO_EXTENSION);
-                                        $file_ext = strtoupper($file_ext);
-                                    @endphp
-                                    <li class="list-group-item list-group-item-action">
-                                        <a target="_blank"
-                                            href="{{ URL::to('public/documents/' . $image->file_path) }}">{{ $image->image_path }}
-                                            <span class="badge badge-info">{{ $file_ext }}</span></a>
-                                         @can('edit unit')
-                                            <a href="/delete-file/{{ $image->id }}"
-                                            class="btn btn-inline btn-xs btn-danger float-right">Del</a>
-                                         @endcan
-                                    </li>
-                                @endforeach
-                            </div>
+    <div class="row mt-5">
+            <!-- PROPERTY LEASES -->
+            @if ($unit->leases->count() > 0 )
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Leases</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('new.lease', $unit->id) }}"
+                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Tenant</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Due Date</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($unit->leases->take(5) as $lease)
+                                       <tr>
+                                            <td>
+                                                <a href="">
+                                                   {{ $lease->tenant->full_name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $lease->property->name ?? $unit->unit_number }}</td>
+                                            <td>{{ $lease->end_date->format('F, Y') ?? '' }}</td>
+                                            <td>
+                                                @if ($lease->status == 'pending')
+                                                    <span class="badge badge-warning float-right">Pending</span>
+                                                @elseif ($lease->status == 'active')
+                                                    <span class="badge badge-primary float-right">Active</span>
+                                                @elseif ($lease->status == 'expired')
+                                                    <span class="badge badge-danger float-right">Expired</span>
+                                                @elseif ($lease->status == 'renewed')
+                                                    <span class="badge badge-success float-right">Renewed</span>
+                                                @else
+                                                    <span class="badge badge-secondary float-right">{{ Str::headline($lease->status) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
+        @endif
+        <!-- PROPERTY MAINTENANCE REQUESTS -->
+        @if ($unit->maintenanceRequests->count() > 0 )
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Maintenance Requests</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('new.maintenance-request', $unit->id) }}"
+                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Reporter</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($unit->maintenanceRequests as $maintenanceRequest)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
+                                                   {{ $maintenanceRequest->title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $maintenanceRequest->property->name ?? $unit->unit_number }}</td>
+                                            <td>{{ $maintenanceRequest->reporter->name }}</td>
+                                            <td>{{ $maintenanceRequest->priority }}</td>
+                                            <td>
+                                                @if ($maintenanceRequest->status == 'pending')
+                                                    <span class="badge badge-warning float-right">Pending</span>
+                                                @elseif ($maintenanceRequest->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($maintenanceRequest->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($maintenanceRequest->status == 'open')
+                                                    <span class="badge badge-primary float-right">Open</span>
+                                                @else
+                                                    <span class="badge badge-info float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+        
+        <!-- PROPERTY VIEWINGS -->
+        @if ($unit->viewings->count() > 0 )
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+                        <h5 class="mb-0">Viewings</h5>
+                        <div>
+                            @can('create property')
+                                <a href="{{ url('new.viewing', $unit->id) }}"
+                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                </a>
+                            @endcan
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Client</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Agent</th>
+                                        <th scope="col">Schedule</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($unit->viewings as $viewing)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url('show.viewing', $viewing->id) }}">
+                                                   {{ $viewing->client_name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $viewing->property->name ?? $unit->unit_number }}</td>
+                                            <td>{{ $viewing->agent->full_name }}</td>
+                                            <td>{{ $viewing->scheduled_at->format('d F, Y h:i A') ?? '' }}</td>
+                                            <td>
+                                                @if ($viewing->status == 'scheduled')
+                                                    <span class="badge badge-warning float-right">Scheduled</span>
+                                                @elseif ($viewing->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($viewing->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($viewing->status == 'rescheduled')
+                                                    <span class="badge badge-info float-right">Rescheduled</span>
+                                                @else
+                                                    <span class="badge badge-secondary float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
+    </div> <!-- /.row -->
+
     <!-- Modal for adding images -->
     <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -368,6 +599,63 @@
     @keyframes fadeInRow {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: none; }
+    }
+    .unit-info-box {
+        background-color: #e6f5fd;
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        color: #007fae;
+        min-width: 120px;
+        margin-bottom: 15px;
+    }
+    .unit-info-box i {
+        font-size: 1.5rem;
+        margin-bottom: 5px;
+    }
+    .unit-info-box .label {
+        font-size: 0.85rem;
+        color: #666;
+    }
+    .unit-info-box .value {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+    .agent-card {
+        max-width: 400px;
+        border: 1px solid #eee;
+        padding: 20px;
+        border-radius: 10px;
+        background: #fff;
+        box-shadow: 0 2px 10px rgb(0,0,0,0,05);
+    }
+    .agent-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+    .contact-label {
+        color: #666;
+        font-weight: 500;
+    }
+    .contact-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+    .contact-item i {
+        color: #00aaf1;
+        text-align: center;
+        font-size: 0.7rem;
+    }
+    .contact-value {
+        color: #333;
+    }
+    .listing-link {
+        color: #00aaf1;
+        font-size: 0.95rem;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 4px;
     }
 </style>
 

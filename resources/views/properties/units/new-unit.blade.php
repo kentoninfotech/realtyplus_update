@@ -16,7 +16,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('units') }}">Units</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('show.property', $property->id) }}">Property</a></li>
                         <li class="breadcrumb-item active">Add New Unit</li>
                     </ol>
                 </div><!-- /.col -->
@@ -97,10 +97,11 @@
                             <label for="status">Status</label>
                             <select name="status" id="status" class="form-control" required>
                                 <option value="available" {{ old('status') == 'available' ? 'selected' : '' }}>Available</option>
-                                <option value="occupied" {{ old('status') == 'occupied' ? 'selected' : '' }}>Occupied</option>
+                                <option value="rented" {{ old('status') == 'rented' ? 'selected' : '' }}>Rented</option>
+                                <option value="leased" {{ old('status') == 'leased' ? 'selected' : '' }}>Leased</option>
                                 <option value="under_maintenance" {{ old('status') == 'under_maintenance' ? 'selected' : '' }}>Under Maintenance</option>
                                 <option value="sold" {{ old('status') == 'sold' ? 'selected' : '' }}>Sold</option>
-                                <option value="rented" {{ old('status') == 'rented' ? 'selected' : '' }}>Rented</option>
+                                <option value="vacant" {{ old('status') == 'vacant' ? 'selected' : '' }}>Vacant</option>
                             </select>
                         </div>
                     </div>
@@ -119,10 +120,6 @@
                                     <label for="square_footage">Square Footage (sqft)</label>
                                     <input type="number" step="0.01" name="square_footage" id="square_footage" class="form-control" value="{{ old('square_footage') }}">
                                     <small class="form-text text-muted">Built area of the unit in square feet.</small>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="floor_number">Floor Number</label>
-                                    <input type="number" name="floor_number" id="floor_number" class="form-control" value="{{ old('floor_number') }}">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -144,10 +141,6 @@
                                     <label for="area_sqm">Area (sqm)</label>
                                     <input type="number" step="0.01" name="area_sqm" id="area_sqm" class="form-control" value="{{ old('area_sqm') }}">
                                     <small class="form-text text-muted">Area of the land unit in square meters.</small>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <label for="zoning_type">Zoning Type</label>
-                                    <input type="text" name="zoning_type" id="zoning_type" class="form-control" value="{{ old('zoning_type') }}">
                                 </div>
                             </div>
                         </div>
@@ -197,11 +190,9 @@
         // Using old() directly to ensure values persist across validation errors
         const initialValues = {
             square_footage: "{{ old('square_footage') }}",
-            floor_number: "{{ old('floor_number') }}",
             bedrooms: "{{ old('bedrooms') }}",
             bathrooms: "{{ old('bathrooms') }}",
             area_sqm: "{{ old('area_sqm') }}",
-            zoning_type: "{{ old('zoning_type') }}",
         };
 
         function toggleUnitTypeFields() {
@@ -213,11 +204,9 @@
 
             // Reset values to initial state (important for old() values after validation)
             document.getElementById('square_footage').value = initialValues.square_footage;
-            document.getElementById('floor_number').value = initialValues.floor_number;
             document.getElementById('bedrooms').value = initialValues.bedrooms;
             document.getElementById('bathrooms').value = initialValues.bathrooms;
             document.getElementById('area_sqm').value = initialValues.area_sqm;
-            document.getElementById('zoning_type').value = initialValues.zoning_type;
 
             // Show relevant sections based on selected unit type
             if (selectedType === 'residential' || selectedType === 'commercial' || selectedType === 'other') {

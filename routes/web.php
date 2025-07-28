@@ -73,7 +73,7 @@ Route::post('create-property', [App\Http\Controllers\PropertyController::class, 
 Route::get('edit-property/{id}', [App\Http\Controllers\PropertyController::class, 'editProperty'])->name('edit.property');
 Route::put('update-property/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
 Route::get('property/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
-Route::get('property-units/{propertyId}', [App\Http\Controllers\PropertyController::class, 'propertyUnit'])->name('property-units');
+Route::get('property-units/{propertyId}', [App\Http\Controllers\PropertyController::class, 'propertyUnit'])->name('property.units');
 Route::post('delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
 // OWNERS PROPERTY
 Route::get('owner-property/{id}', [App\Http\Controllers\PropertyController::class, 'ownerProperty'])->name('owner.property');

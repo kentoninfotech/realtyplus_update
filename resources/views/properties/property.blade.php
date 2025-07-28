@@ -60,7 +60,7 @@
                     <div class="description-block">
                         <button class="btn btn-info" data-toggle="modal" data-target="#mapModal">
                             <i class="fa fa-map"></i>
-                            View on MAP
+                            Show on MAP
                         </button>
                     </div>
                     <!-- /.description-block -->
@@ -417,18 +417,23 @@
         <!-- PROPERTY UNITS -->
          <!-- FIX LOGIC TO USE AND(&&) COMPARISON INSTEAD OF OR(||)  -->
         @if ($property->units->count() > 1 || $property->has_units)
-            <div class="col-md-6">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                            <h5 class="mb-0">Units</h5>
-                            <div>
-                                <button type="button" class="btn btn-sm btn-light py-0 px-1 mr-1">&times</button>
-                                <button type="button" class="btn btn-sm btn-light py-0 px-1 mr-1">&boxH;</button>
-                                @can('create property')
-                                    <a href="{{ route('new.unit', $property->id) }}"
-                                        class="btn btn-primary" style="float: right;">Add New</span>
-                                    </a>
-                                @endcan
+            <div class="col-md-4">
+                    <div class="card card-height">
+                      @if($property->units->count() > 1)
+                        <div class="card-header border-0">
+                            <div class="d-flex justify-content-between align-items-center bg-white">
+                                <div>
+                                    <h5 class="mb-0">Units</h5>
+                                </div>
+                                <div class="mr-0">
+                                    <a href="{{ route('property.units', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->units->count() }})</a>
+                                    @can('create property')
+                                        <a href="{{ route('new.unit', $property->id) }}"
+                                            class="btn btn-primary btn-xs mr-2">Add New</span>
+                                        </a>
+                                    @endcan
+                                    <button type="button" class="btn btn-sm btn-light">&times</button>
+                                </div>
                             </div>
                         </div>
                         <div class="card-body">
@@ -443,7 +448,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach ($property->units->take(5) as $unit)
-                                           <tr>
+                                        <tr>
                                                 <td>
                                                     <a href="{{ route('show.unit', $unit->id)}}">{{ $unit->unit_number }}</a>
                                                 </td>
@@ -468,8 +473,87 @@
                                     </tbody>
                                 </table>
                             </div>
+                        </div>  
+                        @else
+                            <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                                <div class="text-center text-white p-4">
+                                    @can('create property')
+                                        <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Units</p>
+                                        <a href="{{ route('new.unit', $property->id) }}"
+                                            class="btn btn-primary mr-2">Add Unit</span>
+                                        </a>
+                                    @else
+                                        <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Units</p>
+                                    @endcan
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+            </div>
+        @endif
+        <!-- PROPERTY VIEWINGS -->
+        @if ($property->viewings->count() > 0 )
+            <div class="col-md-8">
+                <div class="card card-height">
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Viewings</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('property.viewings', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->viewings->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('new.viewing', $property->id) }}"
+                                        class="btn btn-primary btn-xs">Add New</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
                         </div>
                     </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Client</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Agent</th>
+                                        <th scope="col">Schedule</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->viewings as $viewing)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url('show.viewing', $viewing->id) }}">
+                                                   {{ $viewing->client_name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $viewing->property->name ?? $property->propertyUnit->unit_number }}</td>
+                                            <td>{{ $viewing->agent->full_name }}</td>
+                                            <td>{{ $viewing->scheduled_at->format('d F, Y h:i A') ?? '' }}</td>
+                                            <td>
+                                                @if ($viewing->status == 'scheduled')
+                                                    <span class="badge badge-warning float-right">Scheduled</span>
+                                                @elseif ($viewing->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($viewing->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($viewing->status == 'rescheduled')
+                                                    <span class="badge badge-info float-right">Rescheduled</span>
+                                                @else
+                                                    <span class="badge badge-secondary float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
         <!-- PROPERTY DOCUMENTS -->
@@ -705,65 +789,7 @@
                 </div>
             </div>
         @endif
-        <!-- PROPERTY VIEWINGS -->
-        @if ($property->viewings->count() > 0 )
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                        <h5 class="mb-0">Viewings</h5>
-                        <div>
-                            @can('create property')
-                                <a href="{{ url('new.viewing', $property->id) }}"
-                                    class="btn btn-primary" style="float: right;">Add New</span>
-                                </a>
-                            @endcan
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-reposive">
-                            <table class="table table-borderless table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Client</th>
-                                        <th scope="col">Property/Unit</th>
-                                        <th scope="col">Agent</th>
-                                        <th scope="col">Schedule</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($property->viewings as $viewing)
-                                        <tr>
-                                            <td>
-                                                <a href="{{ url('show.viewing', $viewing->id) }}">
-                                                   {{ $viewing->client_name }}
-                                                </a>
-                                            </td>
-                                            <td>{{ $viewing->property->name ?? $property->propertyUnit->unit_number }}</td>
-                                            <td>{{ $viewing->agent->full_name }}</td>
-                                            <td>{{ $viewing->scheduled_at->format('d F, Y h:i A') ?? '' }}</td>
-                                            <td>
-                                                @if ($viewing->status == 'scheduled')
-                                                    <span class="badge badge-warning float-right">Scheduled</span>
-                                                @elseif ($viewing->status == 'completed')
-                                                    <span class="badge badge-success float-right">Completed</span>
-                                                @elseif ($viewing->status == 'cancelled')
-                                                    <span class="badge badge-danger float-right">Cancelled</span>
-                                                @elseif ($viewing->status == 'rescheduled')
-                                                    <span class="badge badge-info float-right">Rescheduled</span>
-                                                @else
-                                                    <span class="badge badge-secondary float-right">In Progress</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
+        
     </div> <!-- /.row -->
 
     <!-- MAP MODAL -->
@@ -832,6 +858,17 @@
 @endsection
 
 <style>
+    .card-height {
+        min-height: 380px;
+    }
+    .no-records-bg {
+        background-image: url(' {{ asset('public/property_images/no-records.jpg') }} ');
+        background-size: cover;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-color: rgba(0, 0, 0, 0.5);
+        /* background-color: rgba(132, 132, 132, 0.5); */
+    }
     .featured-item:hover {
         border-color: #5f1d05ff !important;
         transform: scale(1.05);

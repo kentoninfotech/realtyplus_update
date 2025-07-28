@@ -62,7 +62,7 @@
                     <div class="description-block">
                         <button class="btn btn-info" data-toggle="modal" data-target="#mapModal">
                             <i class="fa fa-map"></i>
-                            View on MAP
+                            Show on MAP
                         </button>
                     </div>
                     <!-- /.description-block -->

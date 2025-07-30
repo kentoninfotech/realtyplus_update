@@ -357,18 +357,24 @@
     </div> <!-- /.card -->
 
     <div class="row mt-5">
-            <!-- PROPERTY LEASES -->
-            @if ($unit->leases->count() > 0 )
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                        <h5 class="mb-0">Leases</h5>
-                        <div>
-                            @can('create property')
-                                <a href="{{ url('new.lease', $unit->id) }}"
-                                    class="btn btn-primary" style="float: right;">Add New</span>
-                                </a>
-                            @endcan
+        <!-- PROPERTY LEASES -->
+        <div class="col-md-6">
+            <div class="card card-height">
+                @if ($unit->leases->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Leases</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('unit.leases', $unit->id) }}" class="btn btn-sm btn-light">view({{ $unit->leases->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('new.lease', $unit->id) }}"
+                                        class="btn btn-primary btn-xs">New File</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -384,10 +390,10 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($unit->leases->take(5) as $lease)
-                                       <tr>
+                                    <tr>
                                             <td>
                                                 <a href="">
-                                                   {{ $lease->tenant->full_name }}
+                                                {{ $lease->tenant->full_name }}
                                                 </a>
                                             </td>
                                             <td>{{ $lease->property->name ?? $unit->unit_number }}</td>
@@ -411,21 +417,40 @@
                             </table>
                         </div>
                     </div>
-                </div>
-            </div>
-        @endif
-        <!-- PROPERTY MAINTENANCE REQUESTS -->
-        @if ($unit->maintenanceRequests->count() > 0 )
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                        <h5 class="mb-0">Maintenance Requests</h5>
-                        <div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
                             @can('create property')
-                                <a href="{{ url('new.maintenance-request', $unit->id) }}"
-                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
+                                <a href="{{-- route('new.lease', $unit->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">Add Lease</span>
                                 </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Leases</p>
                             @endcan
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+        <!-- PROPERTY MAINTENANCE REQUESTS -->
+        <div class="col-md-6">
+            <div class="card card-height">
+                @if ($unit->maintenanceRequests->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Maintenance Requests</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('unit.maintenanceRequest', $unit->id) }}" class="btn btn-sm btn-light">view({{ $unit->maintenanceRequests->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('new.maintenanceRequest', $unit->id) }}"
+                                        class="btn btn-primary btn-xs">Add New</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -445,7 +470,7 @@
                                         <tr>
                                             <td>
                                                 <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
-                                                   {{ $maintenanceRequest->title }}
+                                                {{ $maintenanceRequest->title }}
                                                 </a>
                                             </td>
                                             <td>{{ $maintenanceRequest->property->name ?? $unit->unit_number }}</td>
@@ -470,15 +495,42 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
+                            @can('create property')
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Maintenance Requests</p>
+                                <a href="{{-- route('new.maintenanceRequest', $unit->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">New Maintenance Requests</span>
+                                </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Maintenance Requests</p>
+                            @endcan
+                        </div>
+                    </div>
+                @endif
             </div>
-        @endif
+        </div>
         
         <!-- PROPERTY VIEWINGS -->
-        @if ($unit->viewings->count() > 0 )
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
+        <div class="col-md-8">
+            <div class="card card-height">
+                @if ($unit->viewings->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Viewings</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('unit.viewings', $unit->id) }}" class="btn btn-sm btn-light">view({{ $unit->viewings->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('new.viewing', $unit->id) }}"
+                                        class="btn btn-primary btn-xs">Add New</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
+                        </div>
                         <h5 class="mb-0">Viewings</h5>
                         <div>
                             @can('create property')
@@ -505,7 +557,7 @@
                                         <tr>
                                             <td>
                                                 <a href="{{ url('show.viewing', $viewing->id) }}">
-                                                   {{ $viewing->client_name }}
+                                                {{ $viewing->client_name }}
                                                 </a>
                                             </td>
                                             <td>{{ $viewing->property->name ?? $unit->unit_number }}</td>
@@ -530,9 +582,22 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
+                            @can('create property')
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Viewings</p>
+                                <a href="{{-- route('new.viewing', $unit->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">Schdule Viewing</span>
+                                </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Viewings</p>
+                            @endcan
+                        </div>
+                    </div>
+                @endif
             </div>
-        @endif
+        </div>
     </div> <!-- /.row -->
 
     <!-- Modal for adding images -->
@@ -573,6 +638,21 @@
 @endsection
 
 <style>
+    .hidden {
+        display: none;
+    }
+    .card-height {
+        min-height: 380px;
+    }
+    .no-records-bg {
+        background-image: url(' {{ asset('public/property_images/no-records.jpg') }} ');
+        background-size: contain;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-blend-mode: multiply;
+        background-color: rgba(110, 109, 109, 0.5);
+        /* background-color: rgba(255, 255, 255, 0.5); */
+    }
     .featured-item:hover {
         border-color: #5f1d05ff !important;
         transform: scale(1.05);

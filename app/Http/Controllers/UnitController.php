@@ -49,8 +49,7 @@ class UnitController extends Controller
         $validatedData = $request->validated();
 
         $unit = PropertyUnit::create($validatedData);
-        //$unit->property->increment('total_units');
-        $unit->property->total_units + 1;
+        $unit->property->increment('total_units');
         return redirect()->route('show.property', $unit->property->id)->with('message', 'Unit created successfully!');
     }
 

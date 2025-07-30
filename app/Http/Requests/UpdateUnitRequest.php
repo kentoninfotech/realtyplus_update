@@ -25,7 +25,7 @@ class UpdateUnitRequest extends FormRequest
     public function rules()
     {
         // The 'unit' parameter from the route will be available as $this->unit
-        $unitId = $this->route('unit')->id;
+        $unitId = $this->route('id');
 
         return [
             'property_id' => ['required', 'exists:properties,id'],

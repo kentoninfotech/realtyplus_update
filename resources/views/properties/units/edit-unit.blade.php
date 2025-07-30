@@ -250,9 +250,13 @@
                                         <div class="image-caption">{{ $image->caption }}</div>
                                     @endif
                                     
-                                    <button form="delImage" type="submit" class="remove-image" onclick="return confirm('Are you sure you want to delete this image?')">&times;</button>
-
+                                    <!-- DELETE IMAGE FORM -->
+                                    <form action="{{ route('unit.deleteImage', $image->id) }}" method="POST" class="remove-image-form" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="remove-image" onclick="return confirm('Are you sure you want to delete this image?')">&times;</button>
                                     </form>
+                                    
                                 </div>
                             @empty
                                 <p class="text-muted">No images uploaded for this unit yet.</p>
@@ -265,11 +269,6 @@
             </form>
         </div>
     </div>
-    <!-- DELETE IMAGE FORM -->
-    <form action="{{ route('unit.deleteImage', $image->id) }}" id="delImage" method="POST" class="remove-image-form" style="display:inline;">
-        @csrf
-        @method('DELETE')
-    </form>
 
     {{-- Add Image Modal (for unit image upload) --}}
     <div class="modal fade" id="addImageModal" tabindex="-1" role="dialog" aria-labelledby="addImageModalLabel" aria-hidden="true">

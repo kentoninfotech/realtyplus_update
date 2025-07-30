@@ -30,7 +30,7 @@ class LeaseController extends Controller
     public function propertyLease($id)
     {
         $leases = Lease::where('property_id', $id)->paginate();
-        return view('properties.leases', compact('lease'));
+        return view('properties.leases', compact('leases'));
     }
 
 }

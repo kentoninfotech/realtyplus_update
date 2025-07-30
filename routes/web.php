@@ -68,35 +68,41 @@ Route::post('delete-agent/{id}', [App\Http\Controllers\AgentController::class, '
 
 // PROPERTIES
 Route::get('properties', [App\Http\Controllers\PropertyController::class, 'index'])->name('properties');
-Route::get('new-property', [App\Http\Controllers\PropertyController::class, 'newProperty'])->name('new.property');
-Route::post('create-property', [App\Http\Controllers\PropertyController::class, 'createProperty'])->name('create.property');
-Route::get('edit-property/{id}', [App\Http\Controllers\PropertyController::class, 'editProperty'])->name('edit.property');
-Route::put('update-property/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
-Route::get('property/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
-Route::get('property-units/{propertyId}', [App\Http\Controllers\PropertyController::class, 'propertyUnit'])->name('property.units');
-Route::post('delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
+Route::get('properties/create', [App\Http\Controllers\PropertyController::class, 'newProperty'])->name('new.property');
+Route::post('properties', [App\Http\Controllers\PropertyController::class, 'createProperty'])->name('create.property');
+Route::get('properties/{id}/edit', [App\Http\Controllers\PropertyController::class, 'editProperty'])->name('edit.property');
+Route::get('properties/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
+Route::put('properties/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
+Route::get('properties/{propertyId}/units', [App\Http\Controllers\PropertyController::class, 'propertyUnit'])->name('property.units');
+Route::post('properties/delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
 // OWNERS PROPERTY
-Route::get('owner-property/{id}', [App\Http\Controllers\PropertyController::class, 'ownerProperty'])->name('owner.property');
-Route::get('add-owner-property/{id}', [App\Http\Controllers\PropertyController::class, 'AddOwnerProperty'])->name('add.owner.property');
+Route::get('owner/{id}/properties', [App\Http\Controllers\PropertyController::class, 'ownerProperty'])->name('owner.property');
+Route::get('owner/{id}/new-property', [App\Http\Controllers\PropertyController::class, 'AddOwnerProperty'])->name('add.owner.property');
 // HANDLE PROPERTY IMAGES
-Route::post('/property/{id}/upload-image', [App\Http\Controllers\PropertyController::class, 'uploadPropertyImage'])->name('property.uploadImage');
-Route::post('/property/{id}/featured-image/{image}', [App\Http\Controllers\PropertyController::class, 'setFeaturedImage'])->name('property.setFeaturedImage');
-Route::delete('/property/images/{propertyImage}', [App\Http\Controllers\PropertyController::class, 'deleteImage'])->name('property.deleteImage');
+Route::post('/properties/{id}/upload-image', [App\Http\Controllers\PropertyController::class, 'uploadPropertyImage'])->name('property.uploadImage');
+Route::post('/properties/{id}/featured-image/{image}', [App\Http\Controllers\PropertyController::class, 'setFeaturedImage'])->name('property.setFeaturedImage');
+Route::delete('/properties/images/{propertyImage}', [App\Http\Controllers\PropertyController::class, 'deleteImage'])->name('property.deleteImage');
 
 // PROPERTY UNITS, LEASES, VIEWINGS, TASKS, MAINTENANCE REQUEST, DOCUMENTS,
 
 // UNITS
-Route::get('property/new-unit/', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.units');
-Route::get('property/new-unit/{propertyId}', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.unit');
-Route::post('property/create-unit', [App\Http\Controllers\UnitController::class, 'createUnit'])->name('create.unit');
-Route::get('property/edit-unit/{id}', [App\Http\Controllers\UnitController::class, 'editUnit'])->name('edit.unit');
-Route::put('property/update-unit/{id}', [App\Http\Controllers\UnitController::class, 'updateUnit'])->name('update.unit');
-Route::get('property/unit/{id}', [App\Http\Controllers\UnitController::class, 'showUnit'])->name('show.unit');
-Route::post('property/delete-unit/{id}', [App\Http\Controllers\UnitController::class, 'deleteUnit'])->name('delete.unit');
-// HANDLE UNIT IMAGES
-Route::post('property/unit/{id}/upload-image', [App\Http\Controllers\UnitController::class, 'uploadUnitImage'])->name('unit.uploadImage');
-Route::post('property/unit/{id}/featured-image/{image}', [App\Http\Controllers\UnitController::class, 'setFeaturedImage'])->name('unit.setFeaturedImage');
-Route::delete('property/unit/images/{unitImage}', [App\Http\Controllers\UnitController::class, 'deleteImage'])->name('unit.deleteImage');
+Route::prefix('properties')->group(function () {
+    Route::get('/units/', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.units');
+    Route::get('/{propertyId}/units/create', [App\Http\Controllers\UnitController::class, 'newUnit'])->name('new.unit');
+    Route::post('/units', [App\Http\Controllers\UnitController::class, 'createUnit'])->name('create.unit');
+    Route::get('/units/{id}', [App\Http\Controllers\UnitController::class, 'showUnit'])->name('show.unit');
+    Route::get('/units/{id}/edit', [App\Http\Controllers\UnitController::class, 'editUnit'])->name('edit.unit');
+    Route::put('/units/{id}', [App\Http\Controllers\UnitController::class, 'updateUnit'])->name('update.unit');
+    Route::post('/delete-unit/{id}', [App\Http\Controllers\UnitController::class, 'deleteUnit'])->name('delete.unit');
+    // HANDLE UNIT IMAGES
+    Route::post('/units/{id}/upload-image', [App\Http\Controllers\UnitController::class, 'uploadUnitImage'])->name('unit.uploadImage');
+    Route::post('/units/{id}/featured-image/{image}', [App\Http\Controllers\UnitController::class, 'setFeaturedImage'])->name('unit.setFeaturedImage');
+    Route::delete('/units/images/{unitImage}', [App\Http\Controllers\UnitController::class, 'deleteImage'])->name('unit.deleteImage');
+});
+// LEASES
+Route::get('properties/{id}/leases', [App\Http\Controllers\LeaseController::class, 'propertyLease'])->name('property.leases');
+Route::post('properties/leases', [App\Http\Controllers\LeaseController::class, 'createPropertyLease'])->name('create.property.lease');
+Route::put('properties/leases/{id}', [App\Http\Controllers\LeaseController::class, 'updateLease'])->name('update.lease');
 
 
 // ROLES & PERMISSIONS

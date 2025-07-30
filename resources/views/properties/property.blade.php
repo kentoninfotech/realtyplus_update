@@ -189,7 +189,7 @@
                                         @isset($property->lot_size_sqft)
                                             <div class="col-6 col-sm-4 col-md-2">
                                                 <div class="property-info-box">
-                                                    <i class="fa fa-square-o"></i>
+                                                    <i class="fa fa-arrows-alt"></i>
                                                     <div class="label">Lot Size</div>
                                                     <div class="value">{{ $property->lot_size_sqft}} sq ft</div>
                                                 </div>
@@ -417,7 +417,7 @@
         <!-- PROPERTY UNITS -->
          <!-- FIX LOGIC TO USE AND(&&) COMPARISON INSTEAD OF OR(||)  -->
         @if ($property->units->count() > 1 || $property->has_units)
-            <div class="col-md-4">
+            <div class="col-md-4" id="unitSection">
                     <div class="card card-height">
                       @if($property->units->count() > 1)
                         <div class="card-header border-0">
@@ -432,7 +432,7 @@
                                             class="btn btn-primary btn-xs mr-2">Add New</span>
                                         </a>
                                     @endcan
-                                    <button type="button" class="btn btn-sm btn-light">&times</button>
+                                    <button id="xUnit" type="button" class="btn btn-sm btn-light">&times</button>
                                 </div>
                             </div>
                         </div>
@@ -480,7 +480,7 @@
                                     @can('create property')
                                         <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Units</p>
                                         <a href="{{ route('new.unit', $property->id) }}"
-                                            class="btn btn-primary mr-2">Add Unit</span>
+                                            class="btn btn-primary btn-lg mr-2">Add Unit</span>
                                         </a>
                                     @else
                                         <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Units</p>
@@ -492,9 +492,9 @@
             </div>
         @endif
         <!-- PROPERTY VIEWINGS -->
-        @if ($property->viewings->count() > 0 )
-            <div class="col-md-8">
-                <div class="card card-height">
+        <div class="col-md-{{ ($property->units->count() > 1 || $property->has_units) ? '8' : '6' }}">
+            <div class="card card-height">
+                @if ($property->viewings->count() > 0 )
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between align-items-center bg-white">
                             <div>
@@ -528,7 +528,7 @@
                                         <tr>
                                             <td>
                                                 <a href="{{ url('show.viewing', $viewing->id) }}">
-                                                   {{ $viewing->client_name }}
+                                                {{ $viewing->client_name }}
                                                 </a>
                                             </td>
                                             <td>{{ $viewing->property->name ?? $property->propertyUnit->unit_number }}</td>
@@ -553,69 +553,41 @@
                             </table>
                         </div>
                     </div>
-                </div>
-            </div>
-        @endif
-        <!-- PROPERTY DOCUMENTS -->
-        @if ($property->documents->count() > 0)
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                        <h5 class="mb-0">Documents</h5>
-                        <div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
                             @can('create property')
-                                <a href="{{ url('addp-file/' . $property->id) }}"
-                                    class="btn btn-primary" style="float: right;">New File</span>
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Viewings</p>
+                                <a href="{{-- route('new.viewing', $property->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">Schdule Viewing</span>
                                 </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Viewings</p>
                             @endcan
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-reposive">
-                            <table class="table table-borderless table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Document</th>
-                                        <th scope="col">Upload By</th>
-                                        <th scope="col"></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($property->documents->take(5) as $document)
-                                        <tr>
-                                            <td>
-                                                <a target="_blank"
-                                                    href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
-                                                <span class="badge badge-info float-right">{{ $document->file_type }}</span></a>
-                                            </td>
-                                            <td>{{ $document->uploader->name ?? '' }}</td>
-                                            <td>
-                                                @can('edit property')
-                                                    <a href="/delete/{{ $document->id }}"
-                                                    class="btn btn-inline btn-xs btn-danger float-right">Delete</a>
-                                                @endcan
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
-        @endif
-            <!-- PROPERTY LEASES -->
-            @if ($property->leases->count() > 0 )
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                        <h5 class="mb-0">Leases</h5>
-                        <div>
-                            @can('create property')
-                                <a href="{{ url('new.lease', $property->id) }}"
-                                    class="btn btn-primary" style="float: right;">Add New</span>
-                                </a>
-                            @endcan
+        </div>
+        
+        <!-- PROPERTY LEASES -->
+        <div class="col-md-6">
+            <div class="card card-height">
+                @if ($property->leases->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Leases</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('property.lease', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->leases->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('new.lease', $property->id) }}"
+                                        class="btn btn-primary btn-xs">Add New</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -631,10 +603,10 @@
                                 </thead>
                                 <tbody>
                                     @foreach ($property->leases->take(5) as $lease)
-                                       <tr>
+                                    <tr>
                                             <td>
                                                 <a href="">
-                                                   {{ $lease->tenant->full_name }}
+                                                {{ $lease->tenant->full_name }}
                                                 </a>
                                             </td>
                                             <td>{{ $lease->property->name ?? $property->propertyUnit->unit_number }}</td>
@@ -658,80 +630,41 @@
                             </table>
                         </div>
                     </div>
-                </div>
-            </div>
-        @endif
-        <!-- PROPERTY MAINTENANCE REQUESTS -->
-        @if ($property->maintenanceRequests->count() > 0 )
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                        <h5 class="mb-0">Maintenance Requests</h5>
-                        <div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
                             @can('create property')
-                                <a href="{{ url('new.maintenance-request', $property->id) }}"
-                                    class="btn btn-primary" style="float: right;">Add New</span>
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
+                                <a href="{{-- route('new.Lease', $property->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">New Lease</span>
                                 </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Leases</p>
                             @endcan
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="table-reposive">
-                            <table class="table table-borderless table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Property/Unit</th>
-                                        <th scope="col">Reporter</th>
-                                        <th scope="col">Priority</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($property->maintenanceRequests as $maintenanceRequest)
-                                        <tr>
-                                            <td>
-                                                <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
-                                                   {{ $maintenanceRequest->title }}
-                                                </a>
-                                            </td>
-                                            <td>{{ $maintenanceRequest->property->name ?? $property->propertyUnit->unit_number }}</td>
-                                            <td>{{ $maintenanceRequest->reporter->name }}</td>
-                                            <td>{{ $maintenanceRequest->priority }}</td>
-                                            <td>
-                                                @if ($maintenanceRequest->status == 'pending')
-                                                    <span class="badge badge-warning float-right">Pending</span>
-                                                @elseif ($maintenanceRequest->status == 'completed')
-                                                    <span class="badge badge-success float-right">Completed</span>
-                                                @elseif ($maintenanceRequest->status == 'cancelled')
-                                                    <span class="badge badge-danger float-right">Cancelled</span>
-                                                @elseif ($maintenanceRequest->status == 'open')
-                                                    <span class="badge badge-primary float-right">Open</span>
-                                                @else
-                                                    <span class="badge badge-info float-right">In Progress</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
+                @endif
             </div>
-        @endif
+        </div>
+        
         <!-- PROPERTY TASKS -->
-        @if ($property->tasks->count() > 0 )
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center bg-white border-0">
-                        <h5 class="mb-0">Tasks</h5>
-                        <div>
-                            @can('create property')
-                                <a href="{{ url('new.task', $property->id) }}"
-                                    class="btn btn-primary" style="float: right;">Add New</span>
-                                </a>
-                            @endcan
+        <div class="col-md-6">
+            <div class="card card-height">
+                @if ($property->tasks->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Tasks</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('property.tasks', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->tasks->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('new.task', $property->id) }}"
+                                        class="btn btn-primary btn-xs">Add New</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -751,7 +684,7 @@
                                         <tr>
                                             <td>
                                                 <a href="{{ url('show.task', $task->id) }}">
-                                                   {{ $task->title }}
+                                                {{ $task->title }}
                                                 </a>
                                             </td>
                                             <td>{{ $task->assignee->name }}</td>
@@ -786,10 +719,161 @@
                             </table>
                         </div>
                     </div>
-                </div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
+                            @can('create property')
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Tasks</p>
+                                <a href="{{-- route('new.task', $property->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">New Task</span>
+                                </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Tasks</p>
+                            @endcan
+                        </div>
+                    </div>
+                @endif
             </div>
-        @endif
-        
+        </div> <!-- /.col-6 -->
+        <!-- PROPERTY MAINTENANCE REQUESTS -->
+        <div class="col-md-7">
+            <div class="card card-height">
+                @if ($property->maintenanceRequests->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Maintenance Requests</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('property.maintenanceRequest', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->maintenanceRequests->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('new.maintenanceRequest', $property->id) }}"
+                                        class="btn btn-primary btn-xs">Add New</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Title</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Reporter</th>
+                                        <th scope="col">Priority</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->maintenanceRequests as $maintenanceRequest)
+                                        <tr>
+                                            <td>
+                                                <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
+                                                {{ $maintenanceRequest->title }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $maintenanceRequest->property->name ?? $property->propertyUnit->unit_number }}</td>
+                                            <td>{{ $maintenanceRequest->reporter->name }}</td>
+                                            <td>{{ $maintenanceRequest->priority }}</td>
+                                            <td>
+                                                @if ($maintenanceRequest->status == 'pending')
+                                                    <span class="badge badge-warning float-right">Pending</span>
+                                                @elseif ($maintenanceRequest->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($maintenanceRequest->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($maintenanceRequest->status == 'open')
+                                                    <span class="badge badge-primary float-right">Open</span>
+                                                @else
+                                                    <span class="badge badge-info float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
+                            @can('create property')
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Maintenance Requests</p>
+                                <a href="{{-- route('new.maintenanceRequest', $property->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">New Maintenance Requests</span>
+                                </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Maintenance Requests</p>
+                            @endcan
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+        <!-- PROPERTY DOCUMENTS -->
+        <div class="col-md-5">
+            <div class="card card-height">
+                @if ($property->documents->count() > 0)
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Documents</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ url('property.viewing', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->documents->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ url('addp-file/' . $property->id) }}"
+                                        class="btn btn-primary btn-xs">New File</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Document</th>
+                                        <th scope="col">Upload By</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->documents->take(5) as $document)
+                                        <tr>
+                                            <td>
+                                                <a target="_blank"
+                                                    href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
+                                                <span class="badge badge-info float-right">{{ $document->file_type }}</span></a>
+                                            </td>
+                                            <td>{{ $document->uploader->name ?? '' }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
+                            @can('create property')
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Documents</p>
+                                <a href="{{-- route('new.document', $property->id) --}}"
+                                    class="btn btn-primary btn-lg mr-2">New Document</span>
+                                </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Documents</p>
+                            @endcan
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+
     </div> <!-- /.row -->
 
     <!-- MAP MODAL -->
@@ -858,16 +942,20 @@
 @endsection
 
 <style>
+    .hidden {
+        display: none;
+    }
     .card-height {
         min-height: 380px;
     }
     .no-records-bg {
         background-image: url(' {{ asset('public/property_images/no-records.jpg') }} ');
-        background-size: cover;
+        background-size: contain;
         background-position: center center;
         background-repeat: no-repeat;
-        background-color: rgba(0, 0, 0, 0.5);
-        /* background-color: rgba(132, 132, 132, 0.5); */
+        background-blend-mode: multiply;
+        background-color: rgba(110, 109, 109, 0.5);
+        /* background-color: rgba(255, 255, 255, 0.5); */
     }
     .featured-item:hover {
         border-color: #5f1d05ff !important;
@@ -1049,5 +1137,19 @@
         let style = document.createElement('style');
         style.innerHTML = `.main-img-anim { animation: mainImgFade 0.35s; } @keyframes mainImgFade { from { opacity: 0.5; transform: scale(0.97); } to { opacity: 1; transform: scale(1); } }`;
         document.head.appendChild(style);
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const unitSection = document.getElementById('unitSection');
+        
+        const xUnit = document.getElementById('xUnit');
+
+        // console.log(unitSection.value);
+        xUnit.addEventListener('click', function () {
+            unitSection.style.display = 'none';
+            unitSection.classList.toggle('hidden');
+        });
     });
 </script>

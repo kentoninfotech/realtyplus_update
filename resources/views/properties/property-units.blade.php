@@ -52,8 +52,8 @@
                               <td>{{ $unit->area_sqm }} SQM</td>
                             @endif
                             <td>{{ $unit->status ?? 'N/A' }}</td>
-                            <td>{{ $unit->rent_price ? '₦'. number_format($property->rent_price, 0, '.',',') : 'N/A' }}</td>
-                            <td>{{ $unit->sale_price ? '₦'. number_format($property->sale_price, 0, '.',',') : 'N/A' }}</td>
+                            <td>{{ $unit->rent_price ? '₦'. number_format($unit->rent_price, 0, '.',',') : 'N/A' }}</td>
+                            <td>{{ $unit->sale_price ? '₦'. number_format($unit->sale_price, 0, '.',',') : 'N/A' }}</td>
                             <td width="90">
 
 

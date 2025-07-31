@@ -93,7 +93,7 @@ class UnitController extends Controller
             $unit->update($validatedData);
         });
 
-        return redirect()->route('units.show', $unit->id)->with('message', 'Unit updated successfully!');
+        return redirect()->route('property.units', $unit->property->id)->with('message', 'Unit updated successfully!');
     }
 
     /**

@@ -100,9 +100,14 @@ Route::prefix('properties')->group(function () {
     Route::delete('/units/images/{unitImage}', [App\Http\Controllers\UnitController::class, 'deleteImage'])->name('unit.deleteImage');
 });
 // LEASES
+Route::get('leases/create', [App\Http\Controllers\LeaseController::class, 'newLease'])->name('new.lease');
+Route::get('leases/', [App\Http\Controllers\LeaseController::class, 'createLease'])->name('create.lease');
 Route::get('properties/{id}/leases', [App\Http\Controllers\LeaseController::class, 'propertyLease'])->name('property.leases');
 Route::post('properties/leases', [App\Http\Controllers\LeaseController::class, 'createPropertyLease'])->name('create.property.lease');
 Route::put('properties/leases/{id}', [App\Http\Controllers\LeaseController::class, 'updateLease'])->name('update.lease');
+Route::delete('leases/{id}', [App\Http\Controllers\LeaseController::class, 'deleteLease'])->name('delete.lease');
+// AJAX route for dynamic unit dropdown in lease forms
+Route::get('/get-units-by-property', [LeaseController::class, 'getUnitsByProperty'])->name('get.units.by.property');
 
 
 // ROLES & PERMISSIONS

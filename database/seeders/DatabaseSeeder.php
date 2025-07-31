@@ -34,6 +34,7 @@ class DatabaseSeeder extends Seeder
             PaymentsTableSeeder::class, // Payments depend on Leases, Transactions, Payers (Tenant, Client, Owner)
             MaintenanceRequestsTableSeeder::class, // Depends on Properties, PropertyUnits, Users, Personnel
             PropertyTasksTableSeeder::class, // Depends on various models including Users
+            UpdatePropertyFakeRecordSeeder::class, // Updates property total_units and has_units records
         ]);
         // \App\Models\User::factory(10)->create();
     }

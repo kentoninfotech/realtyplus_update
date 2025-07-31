@@ -35,15 +35,16 @@ class LeaseController extends Controller
      */
     public function propertyLease($id)
     {
-        $leases = Lease::where('property_id', $id)->paginate(10);
-        return view('properties.property-leases', compact('leases'));
+        $property = Property::findOrFail($id);
+        $leases = Lease::where('property_id', $property->id)->paginate(10);
+        return view('properties.property-leases', compact('leases','property'));
     }
 
     /**
      * Show the form for creating a new lease.
      *
      */
-    public function newLease(Unit $unit = null)
+    public function newLease(PropertyUnit $unit = null)
     {
         $properties = Property::all();
         $tenants = Tenant::all();
@@ -100,7 +101,7 @@ class LeaseController extends Controller
     public function getUnitsByProperty(Request $request)
     {
         $propertyId = $request->input('property_id');
-        $units = Unit::where('property_id', $propertyId)->get(['id', 'unit_number']);
+        $units = PropertyUnit::where('property_id', $propertyId)->get(['id', 'unit_number']);
         return response()->json($units);
     }
 

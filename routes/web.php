@@ -107,8 +107,16 @@ Route::post('properties/leases', [App\Http\Controllers\LeaseController::class, '
 Route::put('properties/leases/{id}', [App\Http\Controllers\LeaseController::class, 'updateLease'])->name('update.lease');
 Route::delete('leases/{id}', [App\Http\Controllers\LeaseController::class, 'deleteLease'])->name('delete.lease');
 // AJAX route for dynamic unit dropdown in lease forms
-Route::get('/get-units-by-property', [LeaseController::class, 'getUnitsByProperty'])->name('get.units.by.property');
+Route::get('/get-units-by-property', [App\Http\Controllers\LeaseController::class, 'getUnitsByProperty'])->name('get.units.by.property');
 
+// VIEWINGS
+Route::get('properties/{id}/viewings', [App\Http\Controllers\ViewingController::class, 'propertyViewing'])->name('property.viewing');
+// TASKS
+Route::get('properties/{id}/tasks', [App\Http\Controllers\PropertyTaskController::class, 'propertyTask'])->name('property.tasks');
+// MAINTENANCE REQUESTS
+Route::get('properties/{id}/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'propertyMaintenanceRequest'])->name('property.maintenanceRequest');
+// DOCUMENTS
+Route::get('properties/{id}/documents', [App\Http\Controllers\DocumentController::class, 'propertyDocument'])->name('property.document');
 
 // ROLES & PERMISSIONS
 Route::resource('role', App\Http\Controllers\RoleController::class);

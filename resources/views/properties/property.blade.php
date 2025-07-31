@@ -416,10 +416,10 @@
     <div class="row mt-5">
         <!-- PROPERTY UNITS -->
          <!-- FIX LOGIC TO USE AND(&&) COMPARISON INSTEAD OF OR(||)  -->
-        @if ($property->units->count() > 1 || $property->has_units)
+        @if ($property->has_units)
             <div class="col-md-4" id="unitSection">
                     <div class="card card-height">
-                      @if($property->units->count() > 1)
+                      @if($property->units->count() > 0)
                         <div class="card-header border-0">
                             <div class="d-flex justify-content-between align-items-center bg-white">
                                 <div>
@@ -492,7 +492,7 @@
             </div>
         @endif
         <!-- PROPERTY VIEWINGS -->
-        <div class="col-md-{{ ($property->units->count() > 1 || $property->has_units) ? '8' : '6' }}">
+        <div class="col-md-{{ $property->has_units ? '8' : '6' }}">
             <div class="card card-height">
                 @if ($property->viewings->count() > 0 )
                     <div class="card-header border-0">
@@ -501,7 +501,7 @@
                                 <h5 class="mb-0">Viewings</h5>
                             </div>
                             <div class="mr-0">
-                                <a href="{{ url('property.viewings', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->viewings->count() }})</a>
+                                <a href="{{ route('property.viewing', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->viewings->count() }})</a>
                                 @can('create property')
                                     <a href="{{ url('new.viewing', $property->id) }}"
                                         class="btn btn-primary btn-xs">Add New</span>
@@ -582,7 +582,7 @@
                             <div class="mr-0">
                                 <a href="{{ route('property.leases', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->leases->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ url('new.lease', $property->id) }}"
+                                    <a href="{{ route('new.lease', $property->id) }}"
                                         class="btn btn-primary btn-xs">Add New</span>
                                     </a>
                                 @endcan
@@ -695,7 +695,7 @@
                                                 @elseif ($task->priority == 'medium')
                                                     <span class="badge badge-success float-right">Medium</span>
                                                 @elseif ($task->priority == 'low')
-                                                    <span class="badge badge-secondary float-right">Low</span>
+                                                    <span class="badge badge-primary float-right">Low</span>
                                                 @else
                                                 <span class="badge badge-info float-right">Urgent</span>
                                                 @endif
@@ -745,7 +745,7 @@
                                 <h5 class="mb-0">Maintenance Requests</h5>
                             </div>
                             <div class="mr-0">
-                                <a href="{{ url('property.maintenanceRequest', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->maintenanceRequests->count() }})</a>
+                                <a href="{{ route('property.maintenanceRequest', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->maintenanceRequests->count() }})</a>
                                 @can('create property')
                                     <a href="{{ url('new.maintenanceRequest', $property->id) }}"
                                         class="btn btn-primary btn-xs">Add New</span>
@@ -787,8 +787,10 @@
                                                     <span class="badge badge-danger float-right">Cancelled</span>
                                                 @elseif ($maintenanceRequest->status == 'open')
                                                     <span class="badge badge-primary float-right">Open</span>
+                                                @elseif ($maintenanceRequest->status == 'in_progress')
+                                                    <span class="badge badge-primary float-right">In Progress</span>
                                                 @else
-                                                    <span class="badge badge-info float-right">In Progress</span>
+                                                    <span class="badge badge-info float-right">{{ $maintenanceRequest->status }}</span>
                                                 @endif
                                             </td>
                                         </tr>
@@ -823,7 +825,7 @@
                                 <h5 class="mb-0">Documents</h5>
                             </div>
                             <div class="mr-0">
-                                <a href="{{ url('property.viewing', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->documents->count() }})</a>
+                                <a href="{{ route('property.document', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->documents->count() }})</a>
                                 @can('create property')
                                     <a href="{{ url('addp-file/' . $property->id) }}"
                                         class="btn btn-primary btn-xs">New File</span>

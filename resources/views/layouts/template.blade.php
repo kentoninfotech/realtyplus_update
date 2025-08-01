@@ -726,6 +726,9 @@
 
     <!-- User role permission select  -->
     <script src="{{ asset('plugins/js/permissions-select.js') }}" defer></script>
+    <!-- Property Scripts -->
+    <!-- @stack('scripts') -->
+    <!-- <script src="{{ asset('plugins/js/property-scripts.js') }}" defer></script> -->
 
     @if (isset($pagetype) && $pagetype == 'Dashboard')
         <!-- ChartJS -->

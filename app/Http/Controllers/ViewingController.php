@@ -37,8 +37,50 @@ class ViewingController extends Controller
     public function propertyViewing($id)
     {
         $property = Property::findOrFail($id);
-        $viewings = Viewing::where('property_id', $property->id)->paginate(10);
-        return view('properties.property-viewings', compact('viewings','property'));
+        $agents = Agent::all();
+        $viewingStatus = ['scheduled', 'cancelled', 'completed', 'rescheduled'];
+        $viewings = Viewing::where('property_id', $property->id)
+                           ->with(['agent', 'lead', 'property', 'propertyUnit'])
+                           ->orderBy('scheduled_at', 'asc')
+                           ->paginate(10);
+        return view('properties.property-viewings', compact('viewings','property', 'agents', 'viewingStatus'));
+    }
+    /**
+     * Store a newly created viewing in storage.
+     */
+    public function createViewing(CreateViewingRequest $request)
+    {
+        $validatedData = $request->validated();
+
+        $viewing = Viewing::create($validatedData);
+
+        return redirect()->route('property.viewing', $viewing->property_id)
+            ->with('message', 'Viewing scheduled successfully!');
+    }
+
+    /**
+     * Update the specified viewing.
+     */
+    public function updateViewing(UpdateViewingRequest $request, $id)
+    {
+        $validatedData = $request->validated();
+
+        $viewing = Viewing::findOrFail($id);
+        $viewing->update($validatedData);
+
+        return redirect()->route('property.viewing', $viewing->property_id)
+            ->with('message', 'Viewing updated successfully!');
+    }
+    /**
+     * Remove the specified viewing.
+     */
+    public function deleteViewing($id)
+    {
+        $viewing = Viewing::findOrFail($id);
+        $viewing->delete();
+
+        return redirect()->route('property.viewing', $viewing->property_id)
+            ->with('message', 'Viewing deleted successfully!');
     }
 
 }

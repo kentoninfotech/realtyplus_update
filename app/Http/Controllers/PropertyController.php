@@ -42,7 +42,9 @@ class PropertyController extends Controller
         $property = Property::with(['propertyType', 'agent', 'owner', 'amenities', 'images'])->findOrFail($id);
         $featuredImage = $property->images->firstWhere('is_featured', 1);
         $displayImage = $featuredImage ? $featuredImage->image_path : ($property->images->count() > 0 ? $property->images->first()->image_path : null);
-        return view('properties.property', compact('property', 'displayImage', 'featuredImage'));
+        $agents = Agent::all();
+        $viewingStatus = ['scheduled', 'cancelled', 'completed', 'rescheduled'];
+        return view('properties.property', compact('property', 'displayImage', 'featuredImage', 'viewingStatus', 'agents'));
     }
     /**
      * Show the form for creating a new property.

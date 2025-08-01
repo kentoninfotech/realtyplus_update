@@ -503,8 +503,9 @@
                             <div class="mr-0">
                                 <a href="{{ route('property.viewing', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->viewings->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ url('new.viewing', $property->id) }}"
-                                        class="btn btn-primary btn-xs">Add New</span>
+                                    <!-- <a href="{{ route('property.viewing', $property->id) }}" -->
+                                    <a href="{{ route('property.viewing', ['id' => $property->id, 'modal' => 'viewings']) }}"
+                                        class="btn btn-primary btn-xs">Scheduled Viewings</span>
                                     </a>
                                 @endcan
                                 <button type="button" class="btn btn-sm btn-light">&times</button>
@@ -557,12 +558,12 @@
                     <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
                         <div class="text-center text-white p-4">
                             @can('create property')
-                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Viewings</p>
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No viewings have been scheduled for this property yet.</p>
                                 <a href="{{-- route('new.viewing', $property->id) --}}"
-                                    class="btn btn-primary btn-lg mr-2">Schdule Viewing</span>
+                                    class="btn btn-primary btn-lg mr-2">Scheduled Viewings</span>
                                 </a>
                             @else
-                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Viewings</p>
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No viewings have been scheduled for this property yet.</p>
                             @endcan
                         </div>
                     </div>
@@ -941,7 +942,73 @@
             </div>
         </div>
     </div>
+
+    <!-- Viewing Modal -->
+    <div class="modal fade" id="viewing-modal" tabindex="-1" role="dialog" aria-labelledby="viewingModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-primary">
+                    <h5 class="modal-title" id="viewingModalLabel">Schedule New Viewing</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="viewing-form" action="{{ route('create.viewing') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="property_id" value="{{ $property->id }}">
+                    <input type="hidden" id="viewing-method" name="_method" value="POST">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="client_name">Client Name</label>
+                            <input type="text" id="client_name" name="client_name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_email">Client Email</label>
+                            <input type="email" id="client_email" name="client_email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="client_phone">Client Phone</label>
+                            <input type="tel" id="client_phone" name="client_phone" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="scheduled_at">Scheduled At</label>
+                            <input type="datetime-local" id="scheduled_at" name="scheduled_at" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="agent_id">Agent</label>
+                            <select id="agent_id" name="agent_id" class="form-control" required>
+                                @foreach($agents as $agent)
+                                    <option value="{{ $agent->id }}">{{ $agent->full_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select id="status" name="status" class="form-control" required>
+                                @foreach($viewingStatus as $status)
+                                    <option value="{{ $status }}">{{ Str::headline($status) }}</option>
+                                @endforeach
+                                <!-- <option value="scheduled">Scheduled</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option> -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="notes">Notes</label>
+                            <textarea id="notes" name="notes" rows="3" class="form-control"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" id="modal-submit-btn" class="btn btn-primary">Save Viewing</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
+
+<script src="{{ asset('plugins/js/property-scripts.js') }}" ></script>
 
 <style>
     .hidden {

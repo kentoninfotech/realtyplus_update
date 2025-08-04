@@ -7,12 +7,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ $property->name }}' Viewing</h1>
+                    <h1 class="m-0">{{ $unit->unit_number }}' Viewing</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">{{ $property->name }}' Viewing</li>
+                        <li class="breadcrumb-item active">{{ $unit->unit_number }}' Viewing</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -87,7 +87,7 @@
                                         @endcan
                                         @can('delete property')
                                             <div class="dropdown-divider"></div>
-                                            <form class="d-inline" action="{{ route('delete.viewing', ['id' => $viewing->id, 'redir_to' => 'property']) }}" method="post">
+                                            <form class="d-inline" action="{{ route('delete.viewing', ['id' => $viewing->id, 'redir_to' => 'unit']) }}" method="post">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this viewing?');">
@@ -119,9 +119,10 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="viewing-form" action="{{ route('create.viewing', 'property') }}" method="POST">
+            <form id="viewing-form" action="{{ route('create.viewing', 'unit') }}" method="POST">
                 @csrf
-                <input type="hidden" name="property_id" value="{{ $property->id }}">
+                <input type="hidden" name="property_id" value="{{ $unit->property->id }}">
+                <input type="hidden" name="property_unit_id" value="{{ $unit->id }}">
                 <input type="hidden" id="viewing-method" name="_method" value="POST">
                 <div class="modal-body">
                     <div class="form-group">
@@ -155,6 +156,9 @@
                             @foreach($viewingStatus as $status)
                                 <option value="{{ $status }}">{{ Str::headline($status) }}</option>
                             @endforeach
+                            <!-- <option value="scheduled">Scheduled</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option> -->
                         </select>
                     </div>
                     <div class="form-group">
@@ -205,7 +209,7 @@
         window.openCreateModal = function() {
             form.reset();
             modalTitle.textContent = 'Schedule New Viewing';
-            form.action = `{{ route('create.viewing', 'property') }}`;
+            form.action = `{{ route('create.viewing', 'unit') }}`;
             viewingMethodInput.value = 'POST';
             modalSubmitBtn.textContent = 'Save Viewing';
             viewingModal.show();
@@ -227,7 +231,7 @@
 
             // Update modal title and form action
             modalTitle.textContent = 'Edit Viewing';
-            form.action = `{{ route('update.viewing', ['id' => 'VIEWING_ID', 'redir_to' => 'property']) }}`.replace('VIEWING_ID', viewingId);
+            form.action = `{{ route('update.viewing', ['id' => 'VIEWING_ID', 'redir_to' => 'unit']) }}`.replace('VIEWING_ID', viewingId);
             viewingMethodInput.value = 'PUT';
             modalSubmitBtn.textContent = 'Update Viewing';
 

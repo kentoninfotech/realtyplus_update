@@ -111,9 +111,10 @@ Route::get('/get-units-by-property', [App\Http\Controllers\LeaseController::clas
 
 // VIEWINGS
 Route::get('properties/{id}/viewings', [App\Http\Controllers\ViewingController::class, 'propertyViewing'])->name('property.viewing');
-Route::post('/viewings', [App\Http\Controllers\ViewingController::class, 'createViewing'])->name('create.viewing');
-Route::put('/viewings/{id}', [App\Http\Controllers\ViewingController::class, 'updateViewing'])->name('update.viewing');
-Route::delete('/viewings/{id}', [App\Http\Controllers\ViewingController::class, 'deleteViewing'])->name('delete.viewing');
+Route::get('units/{id}/viewings', [App\Http\Controllers\ViewingController::class, 'unitViewing'])->name('unit.viewing');
+Route::post('/viewings/{redir_to}', [App\Http\Controllers\ViewingController::class, 'createViewing'])->name('create.viewing'); // 'redir_to' redirect location 
+Route::put('/viewings/{id}/{redir_to}', [App\Http\Controllers\ViewingController::class, 'updateViewing'])->name('update.viewing'); // 'redir_to' redirect location 
+Route::delete('/viewings/{id}/{redir_to}', [App\Http\Controllers\ViewingController::class, 'deleteViewing'])->name('delete.viewing');
 // TASKS
 Route::get('properties/{id}/tasks', [App\Http\Controllers\PropertyTaskController::class, 'propertyTask'])->name('property.tasks');
 // MAINTENANCE REQUESTS

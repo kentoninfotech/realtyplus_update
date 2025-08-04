@@ -503,7 +503,6 @@
                             <div class="mr-0">
                                 <a href="{{ route('property.viewing', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->viewings->count() }})</a>
                                 @can('create property')
-                                    <!-- <a href="{{ route('property.viewing', $property->id) }}" -->
                                     <a href="{{ route('property.viewing', ['id' => $property->id, 'modal' => 'viewings']) }}"
                                         class="btn btn-primary btn-xs">Scheduled Viewings</span>
                                     </a>

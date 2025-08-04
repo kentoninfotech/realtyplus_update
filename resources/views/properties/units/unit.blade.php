@@ -357,7 +357,7 @@
     </div> <!-- /.card -->
 
     <div class="row mt-5">
-        <!-- PROPERTY LEASES -->
+        <!-- UNIT LEASES -->
         <div class="col-md-6">
             <div class="card card-height">
                 @if ($unit->leases->count() > 0 )
@@ -433,7 +433,7 @@
                 @endif
             </div>
         </div>
-        <!-- PROPERTY MAINTENANCE REQUESTS -->
+        <!-- UNIT MAINTENANCE REQUESTS -->
         <div class="col-md-6">
             <div class="card card-height">
                 @if ($unit->maintenanceRequests->count() > 0 )
@@ -512,7 +512,7 @@
             </div>
         </div>
         
-        <!-- PROPERTY VIEWINGS -->
+        <!-- UNIT VIEWINGS -->
         <div class="col-md-8">
             <div class="card card-height">
                 @if ($unit->viewings->count() > 0 )
@@ -522,22 +522,14 @@
                                 <h5 class="mb-0">Viewings</h5>
                             </div>
                             <div class="mr-0">
-                                <a href="{{ url('unit.viewings', $unit->id) }}" class="btn btn-sm btn-light">view({{ $unit->viewings->count() }})</a>
+                                <a href="{{ route('unit.viewing', $unit->id) }}" class="btn btn-sm btn-light">view({{ $unit->viewings->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ url('new.viewing', $unit->id) }}"
-                                        class="btn btn-primary btn-xs">Add New</span>
+                                    <a href="{{ route('unit.viewing', ['id' => $unit->id, 'modal' => 'viewings']) }}"
+                                        class="btn btn-primary btn-xs">Scheduled Viewings</span>
                                     </a>
                                 @endcan
                                 <button type="button" class="btn btn-sm btn-light">&times</button>
                             </div>
-                        </div>
-                        <h5 class="mb-0">Viewings</h5>
-                        <div>
-                            @can('create property')
-                                <a href="{{ url('new.viewing', $unit->id) }}"
-                                    class="btn btn-primary" style="float: right;">Add New</span>
-                                </a>
-                            @endcan
                         </div>
                     </div>
                     <div class="card-body">
@@ -546,7 +538,7 @@
                                 <thead>
                                     <tr>
                                         <th scope="col">Client</th>
-                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Property</th>
                                         <th scope="col">Agent</th>
                                         <th scope="col">Schedule</th>
                                         <th scope="col">Status</th>

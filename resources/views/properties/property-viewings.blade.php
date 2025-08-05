@@ -37,6 +37,7 @@
                         <th>Scheduled</th>
                         <th>Status</th>
                         <th>Action</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>

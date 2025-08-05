@@ -579,7 +579,7 @@
                         <div class="text-center text-white p-4">
                             @can('create property')
                                 <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Viewings</p>
-                                <a href="{{-- route('new.viewing', $unit->id) --}}"
+                                <a href="{{ route('unit.viewing', ['id' => $unit->id, 'modal' => 'viewings']) }}"
                                     class="btn btn-primary btn-lg mr-2">Schdule Viewing</span>
                                 </a>
                             @else

@@ -942,72 +942,9 @@
         </div>
     </div>
 
-    <!-- Viewing Modal -->
-    <div class="modal fade" id="viewing-modal" tabindex="-1" role="dialog" aria-labelledby="viewingModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header bg-primary">
-                    <h5 class="modal-title" id="viewingModalLabel">Schedule New Viewing</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form id="viewing-form" action="{{ route('create.viewing') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="property_id" value="{{ $property->id }}">
-                    <input type="hidden" id="viewing-method" name="_method" value="POST">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="client_name">Client Name</label>
-                            <input type="text" id="client_name" name="client_name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="client_email">Client Email</label>
-                            <input type="email" id="client_email" name="client_email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="client_phone">Client Phone</label>
-                            <input type="tel" id="client_phone" name="client_phone" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="scheduled_at">Scheduled At</label>
-                            <input type="datetime-local" id="scheduled_at" name="scheduled_at" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="agent_id">Agent</label>
-                            <select id="agent_id" name="agent_id" class="form-control" required>
-                                @foreach($agents as $agent)
-                                    <option value="{{ $agent->id }}">{{ $agent->full_name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Status</label>
-                            <select id="status" name="status" class="form-control" required>
-                                @foreach($viewingStatus as $status)
-                                    <option value="{{ $status }}">{{ Str::headline($status) }}</option>
-                                @endforeach
-                                <!-- <option value="scheduled">Scheduled</option>
-                                <option value="completed">Completed</option>
-                                <option value="cancelled">Cancelled</option> -->
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="notes">Notes</label>
-                            <textarea id="notes" name="notes" rows="3" class="form-control"></textarea>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" id="modal-submit-btn" class="btn btn-primary">Save Viewing</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 @endsection
 
-<script src="{{ asset('plugins/js/property-scripts.js') }}" ></script>
+<!-- <script src="{{ asset('plugins/js/property-scripts.js') }}" ></script> -->
 
 <style>
     .hidden {

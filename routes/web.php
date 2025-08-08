@@ -117,6 +117,9 @@ Route::put('/viewings/{id}/{redir_to}', [App\Http\Controllers\ViewingController:
 Route::delete('/viewings/{id}/{redir_to}', [App\Http\Controllers\ViewingController::class, 'deleteViewing'])->name('delete.viewing');
 // TASKS
 Route::get('properties/{id}/tasks', [App\Http\Controllers\PropertyTaskController::class, 'propertyTask'])->name('property.tasks');
+Route::post('properties/tasks', [App\Http\Controllers\PropertyTaskController::class, 'createTask'])->name('create.task');
+Route::put('properties/tasks/{id}', [App\Http\Controllers\PropertyTaskController::class, 'updateTask'])->name('update.task');
+Route::delete('properties/tasks/{id}', [App\Http\Controllers\PropertyTaskController::class, 'deleteTask'])->name('delete.task');
 // MAINTENANCE REQUESTS
 Route::get('properties/{id}/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'propertyMaintenanceRequest'])->name('property.maintenanceRequest');
 // DOCUMENTS

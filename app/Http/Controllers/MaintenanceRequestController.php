@@ -8,9 +8,10 @@ use App\Models\Property;
 use App\Models\PropertyUnit;
 use App\Models\Agent;
 use App\Models\Lead;
-use Illuminate\Support\Facades\DB;
-use App\Http\Requests\CreateMaintenanceRequestRequest;
-use App\Http\Requests\UpdateMaintenanceRequestRequest;
+use App\Models\User;
+use App\Models\Personnel;
+use App\Http\Requests\CreateMaintenanceRequest;
+use App\Http\Requests\UpdateMaintenanceRequest;
 
 class MaintenanceRequestController extends Controller
 {
@@ -37,8 +38,81 @@ class MaintenanceRequestController extends Controller
     public function propertyMaintenanceRequest($id)
     {
         $property = Property::findOrFail($id);
+        $users = User::where('user_type', 'tenant')->get();
+        $personnel = User::where('user_type', 'staff')->with('roles')->get();
+        $requestStatus = ['open','on_hold', 'in_progress', 'completed', 'cancelled'];
+        $priorities = ['low', 'medium', 'high', 'urgent'];
         $maintenanceRequests = MaintenanceRequest::where('property_id', $property->id)->paginate(10);
-        return view('properties.property-maintenance-requests', compact('maintenanceRequests','property'));
+
+        return view('properties.property-maintenance-requests', compact('maintenanceRequests','property', 'users', 'personnel', 'requestStatus', 'priorities'));
+    }
+    /**
+     * Store a newly created maintenance request.
+     */
+    public function createMaintenanceRequest(CreateMaintenanceRequest $request, $redir_to)
+    {
+        $validatedData = $request->validated();
+        dd($validatedData);
+
+        $maintenanceRequest = MaintenanceRequest::create($validatedData);
+
+        // $maintenanceRequest = MaintenanceRequest::create([
+        //     'property_id' => $request->property_id,
+        //     'property_unit_id' => $request->property_unit_id,
+        //     'reported_by_user_id' => $request->reported_by_user_id,
+        //     'title' => $request->title,
+        //     'description' => $request->description,
+        //     'priority' => $request->priority,
+        //     'status' => $request->status,
+        //     'assigned_to_personnel_id' => $request->assigned_to_personnel_id,
+        //     'reported_at' => $request->reported_at,
+        //     'completed_at' => $request->completed_at,
+        // ]);
+
+        if ($redir_to == 'property'){
+            return redirect()->route('property.maintenanceRequest', $maintenanceRequest->property_id)
+                         ->with('message', 'Maintenance request created successfully.');
+        }else{
+            return redirect()->route('unit.maintenanceRequest', $maintenanceRequest->property_unit_id)
+                         ->with('message', 'Maintenance request created successfully.');
+        }
+
+    }
+
+    /**
+     * Update the specified maintenance request.
+     */
+    public function updateMaintenanceRequest(UpdateMaintenanceRequest $request, $id, $redir_to)
+    {
+        $maintenanceRequest = MaintenanceRequest::findOrFail($id);
+        $maintenanceRequest->update($request->all());
+
+        if ($redir_to == 'property'){
+            return redirect()->route('property.maintenanceRequest', $maintenanceRequest->property_id)
+                         ->with('message', 'Maintenance request updated successfully.');
+        }else{
+            return redirect()->route('unit.maintenanceRequest', $maintenanceRequest->property_unit_id)
+                         ->with('message', 'Maintenance request updated successfully.');
+        }
+
+    }
+
+    /**
+     * Remove the specified maintenance request.
+     */
+    public function deleteMaintenanceRequest($id, $redir_to)
+    {
+        $maintenanceRequest = MaintenanceRequest::findOrFail($id);
+        $maintenanceRequest->delete();
+
+        if ($redir_to == 'property'){
+            return redirect()->route('property.maintenanceRequest', $maintenanceRequest->property_id)
+                         ->with('message', 'Maintenance request deleted successfully.');
+        }else{
+            return redirect()->route('unit.maintenanceRequest', $maintenanceRequest->property_unit_id)
+                         ->with('message', 'Maintenance request deleted successfully.');
+        }
+
     }
 
 }

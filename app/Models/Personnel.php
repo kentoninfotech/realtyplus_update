@@ -40,6 +40,15 @@ class Personnel extends Model
         'salary' => 'decimal:2',
     ];
 
+    /**
+     * Get the Agent's full name.
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return "{$this->first_name} {$this->last_name}";
+    }
 
     protected static function booted()
     {

@@ -54,7 +54,7 @@ class PropertyTaskController extends Controller
 
         $taskable->tasks()->create($validated);
 
-        return redirect()->back()->with('success', 'Task created successfully.');
+        return redirect()->back()->with('message', 'Task created successfully.');
     }
 
     /**
@@ -67,7 +67,7 @@ class PropertyTaskController extends Controller
 
         $task->update($validated);
 
-        return redirect()->back()->with('success', 'Task updated successfully.');
+        return redirect()->back()->with('message', 'Task updated successfully.');
     }
 
     /**
@@ -78,7 +78,7 @@ class PropertyTaskController extends Controller
         $task = PropertyTask::findOrFail($id);
         $task->delete();
 
-        return Redirect::back()->with('success', 'Task deleted successfully.');
+        return Redirect::back()->with('message', 'Task deleted successfully.');
     }
 
 }

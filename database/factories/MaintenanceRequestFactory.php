@@ -23,7 +23,7 @@ class MaintenanceRequestFactory extends Factory
         $property = Property::inRandomOrder()->first() ?? Property::factory()->create();
         $propertyUnit = $this->faker->boolean(70) ? (PropertyUnit::where('property_id', $property->id)->inRandomOrder()->first() ?? PropertyUnit::factory()->create(['property_id' => $property->id])) : null;
         $reporter = User::inRandomOrder()->first() ?? User::factory()->create();
-        $personnel = Personnel::inRandomOrder()->first() ?? Personnel::factory()->create();
+        $personnel = User::where('user_type', 'staff')->inRandomOrder()->first() ?? User::factory()->create();
 
         $reportedAt = $this->faker->dateTimeBetween('-6 months', 'now');
         $completedAt = $this->faker->boolean(60) ? $this->faker->dateTimeBetween($reportedAt, 'now') : null;

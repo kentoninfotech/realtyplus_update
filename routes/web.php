@@ -122,6 +122,10 @@ Route::put('properties/tasks/{id}', [App\Http\Controllers\PropertyTaskController
 Route::delete('properties/tasks/{id}', [App\Http\Controllers\PropertyTaskController::class, 'deleteTask'])->name('delete.task');
 // MAINTENANCE REQUESTS
 Route::get('properties/{id}/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'propertyMaintenanceRequest'])->name('property.maintenanceRequest');
+Route::get('units/{id}/maintenance-requests', [App\Http\Controllers\MaintenanceRequestController::class, 'unitMaintenanceRequest'])->name('unit.maintenanceRequest');
+Route::post('maintenance-requests/{redir_to}', [App\Http\Controllers\MaintenanceRequestController::class, 'createMaintenanceRequest'])->name('create.maintenanceRequest');
+Route::put('maintenance-requests/{id}/{redir_to}', [App\Http\Controllers\MaintenanceRequestController::class, 'updateMaintenanceRequest'])->name('update.maintenanceRequest');
+Route::delete('maintenance-requests/{id}/{redir_to}', [App\Http\Controllers\MaintenanceRequestController::class, 'deleteMaintenanceRequest'])->name('delete.maintenanceRequest');
 // DOCUMENTS
 Route::get('properties/{id}/documents', [App\Http\Controllers\DocumentController::class, 'propertyDocument'])->name('property.document');
 

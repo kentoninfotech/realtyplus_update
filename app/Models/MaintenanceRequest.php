@@ -45,7 +45,7 @@ class MaintenanceRequest extends Model
 
     public function assignedPersonnel()
     {
-        return $this->belongsTo(Personnel::class, 'assigned_to_personnel_id');
+        return $this->belongsTo(User::class, 'assigned_to_personnel_id');
     }
 
     public function tasks()

@@ -23,7 +23,7 @@ class CreateMaintenanceRequestsTable extends Migration
             $table->text('description');
             $table->enum('priority', ['low', 'medium', 'high', 'urgent'])->default('medium');
             $table->enum('status', ['open', 'in_progress', 'completed', 'cancelled'])->default('open');
-            $table->foreignId('assigned_to_personnel_id')->nullable()->constrained('personnels')->onDelete('set null'); // Assigned to specific personnel
+            $table->foreignId('assigned_to_personnel_id')->nullable()->constrained('users')->onDelete('set null'); // Assigned to specific personnel
             $table->timestamp('reported_at')->useCurrent();
             $table->timestamp('completed_at')->nullable();
             $table->timestamps();

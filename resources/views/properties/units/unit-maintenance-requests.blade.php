@@ -9,12 +9,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ $property->name }}' Maintenance Requests</h1>
+                    <h1 class="m-0">{{ $unit->unit_number }}' Maintenance Requests</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">{{ $property->name }}' Maintenance Requests</li>
+                        <li class="breadcrumb-item active">{{ $unit->unit_number }}' Maintenance Requests</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -104,7 +104,7 @@
                                             @endcan
                                             @can('delete property')
                                                 <div class="dropdown-divider"></div>
-                                                <button type="button" class="dropdown-item text-danger" onclick="openDeleteConfirmModal('{{ route('delete.maintenanceRequest', ['id' => $request->id, 'redir_to' => 'property']) }}')">
+                                                <button type="button" class="dropdown-item text-danger" onclick="openDeleteConfirmModal('{{ route('delete.maintenanceRequest', ['id' => $request->id, 'redir_to' => 'unit']) }}')">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
                                                     Delete
                                                 </button>
@@ -144,7 +144,8 @@
                     <input type="hidden" id="maintenance-request-method" name="_method" value="POST">
                     <div class="modal-body">
                         {{-- The property_id is now passed as part of the URL in the JS, so we'll remove it here --}}
-                        <input type="hidden" name="property_id" value="{{ $property->id }}">
+                        <input type="hidden" name="property_id" value="{{ $unit->property->id }}">
+                        <input type="hidden" name="property_unit_id" value="{{ $unit->id }}">
                         <div class="form-group">
                             <label for="title">Title</label>
                             <input type="text" class="form-control" id="title" name="title" required>
@@ -153,18 +154,6 @@
                             <label for="description">Description</label>
                             <textarea class="form-control" id="description" name="description" rows="3"></textarea>
                         </div>
-                        @if($property->has_units)
-                           <div class="form-group">
-                                <label for="property_unit_id">Unit</label>
-                                <select id="property_unit_id" name="property_unit_id" class="form-control">
-                                    <option value="">Select a unit</option>
-                                    @foreach($property->units as $unit)
-                                        <option value="{{ $unit->id }}">{{ $unit->unit_number }}</option>
-                                    @endforeach
-                                </select>
-                                <small class="form-text text-muted">Select a unit for specific unit maintenance or leave blank.</small>
-                            </div>
-                        @endif
                         <div class="form-row">
                             <div class="form-group col-md-6">
                                 <label for="reported_by_user_id">Reported By</label>
@@ -282,8 +271,8 @@
         const modalSubmitBtn = document.getElementById('modal-submit-btn');
 
         // --- Blade-generated routes (These are strings in JS) ---
-        const createRoute = '{{ route('create.maintenanceRequest', ['id' => $property->id, 'redir_to' => 'property']) }}';
-        const updateRouteTemplate = '{{ route('update.maintenanceRequest', ['id' => 'MAINTENANCE_REQUEST_ID', 'redir_to' => 'property']) }}';
+        const createRoute = '{{ route('create.maintenanceRequest', ['id' => $unit->id, 'redir_to' => 'unit']) }}';
+        const updateRouteTemplate = '{{ route('update.maintenanceRequest', ['id' => 'MAINTENANCE_REQUEST_ID', 'redir_to' => 'unit']) }}';
         const deleteForm = document.getElementById('delete-form');
         
         /**

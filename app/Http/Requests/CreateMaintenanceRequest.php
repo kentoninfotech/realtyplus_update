@@ -31,7 +31,7 @@ class CreateMaintenanceRequest extends FormRequest
             'description' => 'nullable|string',
             'priority' => 'required|in:low,normal,high,urgent',
             'status' => 'required|in:open,in_progress,on_hold,completed,cancelled',
-            'assigned_to_personnel_id' => 'nullable|exists:personnels,id',
+            'assigned_to_personnel_id' => 'nullable|exists:users,id',
             'reported_at' => 'nullable|date',
             'completed_at' => 'nullable|date',
         ];

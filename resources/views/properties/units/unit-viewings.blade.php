@@ -156,9 +156,6 @@
                             @foreach($viewingStatus as $status)
                                 <option value="{{ $status }}">{{ Str::headline($status) }}</option>
                             @endforeach
-                            <!-- <option value="scheduled">Scheduled</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option> -->
                         </select>
                     </div>
                     <div class="form-group">

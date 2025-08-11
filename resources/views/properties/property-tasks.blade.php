@@ -120,7 +120,7 @@
             <div class="modal-content">
                 <div class="modal-header bg-primary">
                     <h5 class="modal-title" id="modal-title">Create New Task</h5>
-                    <button type="button" class="close" id="close-modal-btn" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
@@ -193,47 +193,25 @@
 
 @endsection
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const taskModal = document.getElementById('taskModal');
+        const taskModalElement = document.getElementById('taskModal');
         const openModalBtn = document.getElementById('open-modal-btn');
-        const closeModalBtn = document.getElementById('close-modal-btn');
-        const closeModalFooterBtn = document.getElementById('close-modal-footer-btn');
         const taskForm = document.getElementById('task-form');
         const modalTitle = document.getElementById('modal-title');
         const editTaskBtns = document.querySelectorAll('.edit-task-btn');
 
+        // Initialize the Bootstrap modal instance
+        const taskModal = new bootstrap.Modal(taskModalElement);
+
         const urlStore = "{{ route('create.task') }}";
         const urlUpdate = (id) => "{{ route('update.task', ['id' => ':id']) }}".replace(':id', id);
 
-        function openModal() {
-            taskModal.classList.add('show');
-            taskModal.style.display = 'block';
-            taskModal.setAttribute('aria-modal', 'true');
-            taskModal.removeAttribute('aria-hidden');
-            document.body.classList.add('modal-open');
-            const backdrop = document.createElement('div');
-            backdrop.classList.add('modal-backdrop', 'fade', 'show');
-            document.body.appendChild(backdrop);
-        }
-
-        function closeModal() {
-            taskModal.classList.remove('show');
-            taskModal.style.display = 'none';
-            taskModal.setAttribute('aria-hidden', 'true');
-            taskModal.removeAttribute('aria-modal');
-            document.body.classList.remove('modal-open');
-            const backdrop = document.querySelector('.modal-backdrop');
-            if (backdrop) {
-                backdrop.remove();
-            }
-        }
-
+        // Event listener for opening the modal to create a new task
         openModalBtn.addEventListener('click', function() {
             modalTitle.textContent = 'Create New Task';
             taskForm.action = urlStore;
-            
+
             // Remove the PUT method input if it exists
             const putInput = taskForm.querySelector('input[name="_method"][value="PUT"]');
             if (putInput) {
@@ -244,12 +222,10 @@
             taskForm.reset();
             document.getElementById('taskable_type').value = 'App\\Models\\Property';
             
-            openModal();
+            taskModal.show();
         });
 
-        closeModalBtn.addEventListener('click', closeModal);
-        closeModalFooterBtn.addEventListener('click', closeModal);
-
+        // Event listeners for editing a task
         editTaskBtns.forEach(btn => {
             btn.addEventListener('click', function() {
                 const taskRow = this.closest('tr');
@@ -277,8 +253,15 @@
                 document.getElementById('status').value = taskData.status;
                 document.getElementById('priority').value = taskData.priority;
 
-                openModal();
+                taskModal.show();
             });
         });
+
+        // The initial script block to show the modal on page load when tasks request exist
+        @if(request('modal') == 'tasks')
+            setTimeout(function() {
+                taskModal.show();
+            }, 600);
+        @endif
     });
 </script>

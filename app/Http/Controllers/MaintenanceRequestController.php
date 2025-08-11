@@ -47,27 +47,28 @@ class MaintenanceRequestController extends Controller
         return view('properties.property-maintenance-requests', compact('maintenanceRequests','property', 'users', 'personnel', 'requestStatus', 'priorities'));
     }
     /**
+     * Display a maintenanceRequests of the property.
+     *
+     */
+    public function unitMaintenanceRequest($id)
+    {
+        $unit = PropertyUnit::findOrFail($id);
+        $users = User::where('user_type', 'tenant')->get();
+        $personnel = User::where('user_type', 'staff')->with('roles')->get();
+        $requestStatus = ['open','on_hold', 'in_progress', 'completed', 'cancelled'];
+        $priorities = ['low', 'medium', 'high', 'urgent'];
+        $maintenanceRequests = MaintenanceRequest::where('property_unit_id', $unit->id)->paginate(10);
+
+        return view('properties.units.unit-maintenance-requests', compact('maintenanceRequests','unit', 'users', 'personnel', 'requestStatus', 'priorities'));
+    }
+    /**
      * Store a newly created maintenance request.
      */
     public function createMaintenanceRequest(CreateMaintenanceRequest $request, $redir_to)
     {
         $validatedData = $request->validated();
-        dd($validatedData);
 
         $maintenanceRequest = MaintenanceRequest::create($validatedData);
-
-        // $maintenanceRequest = MaintenanceRequest::create([
-        //     'property_id' => $request->property_id,
-        //     'property_unit_id' => $request->property_unit_id,
-        //     'reported_by_user_id' => $request->reported_by_user_id,
-        //     'title' => $request->title,
-        //     'description' => $request->description,
-        //     'priority' => $request->priority,
-        //     'status' => $request->status,
-        //     'assigned_to_personnel_id' => $request->assigned_to_personnel_id,
-        //     'reported_at' => $request->reported_at,
-        //     'completed_at' => $request->completed_at,
-        // ]);
 
         if ($redir_to == 'property'){
             return redirect()->route('property.maintenanceRequest', $maintenanceRequest->property_id)

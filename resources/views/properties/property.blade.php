@@ -558,7 +558,7 @@
                         <div class="text-center text-white p-4">
                             @can('create property')
                                 <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No viewings have been scheduled for this property yet.</p>
-                                <a href="{{-- route('new.viewing', $property->id) --}}"
+                                <a href="{{ route('property.viewing', ['id' => $property->id, 'modal' => 'viewings']) }}"
                                     class="btn btn-primary btn-lg mr-2">Scheduled Viewings</span>
                                 </a>
                             @else
@@ -657,9 +657,9 @@
                                 <h5 class="mb-0">Tasks</h5>
                             </div>
                             <div class="mr-0">
-                                <a href="{{ url('property.tasks', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->tasks->count() }})</a>
+                                <a href="{{ route('property.tasks', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->tasks->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ url('new.task', $property->id) }}"
+                                    <a href="{{ route('property.tasks', ['id' => $property->id, 'modal' => 'tasks']) }}"
                                         class="btn btn-primary btn-xs">Add New</span>
                                     </a>
                                 @endcan
@@ -724,7 +724,7 @@
                         <div class="text-center text-white p-4">
                             @can('create property')
                                 <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Tasks</p>
-                                <a href="{{-- route('new.task', $property->id) --}}"
+                                <a href="{{ route('property.tasks', ['id' => $property->id, 'modal' => 'tasks']) }}"
                                     class="btn btn-primary btn-lg mr-2">New Task</span>
                                 </a>
                             @else
@@ -747,7 +747,7 @@
                             <div class="mr-0">
                                 <a href="{{ route('property.maintenanceRequest', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->maintenanceRequests->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ url('new.maintenanceRequest', $property->id) }}"
+                                    <a href="{{ route('property.maintenanceRequest', ['id' => $property->id, 'modal' => 'requests']) }}"
                                         class="btn btn-primary btn-xs">Add New</span>
                                     </a>
                                 @endcan
@@ -804,7 +804,7 @@
                         <div class="text-center text-white p-4">
                             @can('create property')
                                 <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Maintenance Requests</p>
-                                <a href="{{-- route('new.maintenanceRequest', $property->id) --}}"
+                                <a href="{{ route('property.maintenanceRequest', ['id' => $property->id, 'modal' => 'requests']) }}"
                                     class="btn btn-primary btn-lg mr-2">New Maintenance Requests</span>
                                 </a>
                             @else
@@ -1145,16 +1145,3 @@
     });
 </script>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const unitSection = document.getElementById('unitSection');
-        
-        const xUnit = document.getElementById('xUnit');
-
-        // console.log(unitSection.value);
-        xUnit.addEventListener('click', function () {
-            unitSection.style.display = 'none';
-            unitSection.classList.toggle('hidden');
-        });
-    });
-</script>

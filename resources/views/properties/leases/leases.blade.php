@@ -7,12 +7,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ $property->name }}' Leases</h1>
+                    <h1 class="m-0">Leases</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">{{ $property->name }}' Leases</li>
+                        <li class="breadcrumb-item active">Leases</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -24,7 +24,7 @@
 
         <div class="card-body" style="overflow: auto;">
           @can('create property')
-            <a href="{{ route('new.lease') }}" class="btn btn-primary" style="float: right;">Add New</a>
+            <a href="{{ route('new.lease') }}" class="btn btn-primary mb-2" style="float: right;">Add New</a>
           @endcan
             <br>
             <table class="table responsive-table" id="products">
@@ -47,7 +47,7 @@
                             <td>{{ $lease->tenant->full_name }}</td>
                             <td>{{ $lease->start_date->format('M, Y') }} / {{ $lease->end_date->format('M, Y') }}</td>
                             <td>{{ $lease->payment_frequency }}</td>
-                            <td>{{ $lease->renewal_date->format('M, Y') }}</td>
+                            <td>{{ optional($lease->renewal_date)->format('M, Y') ?? 'N/A' }}</td>
                             <td>₦{{ number_format($lease->rent_amount, 0, '.', ',') }}</td>
                             <td>
                                 @if ($lease->status == 'pending')

@@ -27,7 +27,8 @@ class LeaseController extends Controller
      */
     public function index()
     {
-        //
+        $leases = Lease::with(['property', 'propertyUnit', 'tenant'])->paginate(20);
+        return view('properties.leases.leases', compact('leases'));
     }
     /**
      * Display a leases of the property and units.
@@ -36,7 +37,7 @@ class LeaseController extends Controller
     public function propertyLease($id)
     {
         $property = Property::findOrFail($id);
-        $leases = Lease::where('property_id', $property->id)->paginate(10);
+        $leases = Lease::where('property_id', $property->id)->paginate(20);
         return view('properties.property-leases', compact('leases','property'));
     }
 
@@ -85,18 +86,15 @@ class LeaseController extends Controller
             if ($lease->property_unit_id && ($lease->status === 'active' || $lease->status === 'pending')) {
                 $unit = PropertyUnit::find($lease->property_unit_id);
                 if ($unit) {
-                    $unit->update(['status' => 'Occupied']);
+                    $unit->update(['status' => 'occupied']);
                 }
             }
         });
 
-        return redirect()->route('properties.leases')->with('success', 'Lease created successfully!');
+        return redirect()->route('properties.leases')->with('message', 'Lease created successfully!');
     }
     /**
-     * Get units by property ID (for dynamic dropdowns in forms).
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * Get units by property ID (for dynamic dropdowns in forms)
      */
     public function getUnitsByProperty(Request $request)
     {

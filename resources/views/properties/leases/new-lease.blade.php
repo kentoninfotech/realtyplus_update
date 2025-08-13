@@ -16,7 +16,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ url('leases') }}">Leases</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('leases') }}">Leases</a></li>
                         <li class="breadcrumb-item active">Create New Lease</li>
                     </ol>
                 </div><!-- /.col -->

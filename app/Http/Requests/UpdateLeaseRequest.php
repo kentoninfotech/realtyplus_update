@@ -51,7 +51,7 @@ class UpdateLeaseRequest extends FormRequest
                 Rule::requiredIf(empty($this->property_unit_id)), // Required if no unit is selected
                 'exists:properties,id',
             ],
-            'property_unit_id' => ['nullable', 'exists:units,id'], // Nullable if lease is for entire property
+            'property_unit_id' => ['nullable', 'exists:property_units,id'], // Nullable if lease is for entire property
             'tenant_id' => ['required', 'exists:tenants,id'],
             'start_date' => ['required', 'date'],
             'end_date' => ['required', 'date', 'after:start_date'],

@@ -367,9 +367,9 @@
                                 <h5 class="mb-0">Leases</h5>
                             </div>
                             <div class="mr-0">
-                                <a href="{{ url('unit.leases', $unit->id) }}" class="btn btn-sm btn-light">view({{ $unit->leases->count() }})</a>
+                                <a href="{{ route('unit.leases', $unit->id) }}" class="btn btn-sm btn-light">view({{ $unit->leases->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ url('new.lease', $unit->id) }}"
+                                    <a href="{{ route('new.property.lease', $unit->property->id) }}"
                                         class="btn btn-primary btn-xs">New File</span>
                                     </a>
                                 @endcan
@@ -422,7 +422,7 @@
                         <div class="text-center text-white p-4">
                             @can('create property')
                                 <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
-                                <a href="{{-- route('new.lease', $unit->id) --}}"
+                                <a href="{{ route('new.property.lease', $unit->property->id) }}"
                                     class="btn btn-primary btn-lg mr-2">Add Lease</span>
                                 </a>
                             @else

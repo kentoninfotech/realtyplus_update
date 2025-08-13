@@ -635,7 +635,7 @@
                         <div class="text-center text-white p-4">
                             @can('create property')
                                 <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
-                                <a href="{{-- route('new.Lease', $property->id) --}}"
+                                <a href="{{ route('new.property.lease', $property->id) }}"
                                     class="btn btn-primary btn-lg mr-2">New Lease</span>
                                 </a>
                             @else

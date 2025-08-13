@@ -27,20 +27,29 @@ class LeaseController extends Controller
      */
     public function index()
     {
-        $leases = Lease::with(['property', 'propertyUnit', 'tenant'])->paginate(20);
+        $leases = Lease::with(['property', 'propertyUnit', 'tenant'])->paginate(50);
         return view('properties.leases.leases', compact('leases'));
     }
     /**
-     * Display a leases of the property and units.
+     * Display leases of the property.
      *
      */
     public function propertyLease($id)
     {
         $property = Property::findOrFail($id);
         $leases = Lease::where('property_id', $property->id)->paginate(20);
-        return view('properties.property-leases', compact('leases','property'));
+        return view('properties.leases.property-leases', compact('leases','property'));
     }
-
+    /**
+     * Display leases of the units.
+     *
+     */
+    public function unitLease($id)
+    {
+        $unit = PropertyUnit::findOrFail($id);
+        $leases = Lease::where('property_unit_id', $unit->id)->paginate(20);
+        return view('properties.leases.unit-leases', compact('leases','unit'));
+    }
     /**
      * Show the form for creating a new lease.
      *
@@ -71,6 +80,37 @@ class LeaseController extends Controller
             'unitsForDropdown' // Pass units related to the selected property (or empty)
         ));
     }
+    /**
+     * Show the form for creating a new lease.
+     *
+     */
+    public function newPropertyLease($id)
+    {
+        $property = Property::findOrFail($id);
+        $units = $property->units;
+        $tenants = Tenant::all();
+        $paymentFrequencies = ['monthly', 'quarterly', 'annually', 'bi-annually'];
+        $leaseStatuses = ['active', 'pending', 'terminated', 'renewed', 'expired'];
+
+        // If a unit is pre-selected, fetch its property for display and filter units
+        $selectedProperty = null;
+        $unitsForDropdown = collect(); // Initialize as empty collection
+
+        // if ($unit) {
+        //     $selectedProperty = $unit->property;
+        //     $unitsForDropdown = $selectedProperty->units; // Only units of the pre-selected property
+        // }
+
+        return view('properties.leases.new-property-lease', compact(
+            'property',
+            'tenants',
+            'paymentFrequencies',
+            'leaseStatuses',
+            'units', // Pass the pre-selected unit if available
+            'selectedProperty', // Pass the selected property
+            'unitsForDropdown' // Pass units related to the selected property (or empty)
+        ));
+    }
      /**
      * Store a newly created lease in storage.
      *
@@ -91,7 +131,7 @@ class LeaseController extends Controller
             }
         });
 
-        return redirect()->route('properties.leases')->with('message', 'Lease created successfully!');
+        return redirect()->route('leases')->with('message', 'Lease created successfully!');
     }
     /**
      * Get units by property ID (for dynamic dropdowns in forms)

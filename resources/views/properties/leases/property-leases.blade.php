@@ -24,7 +24,7 @@
 
         <div class="card-body" style="overflow: auto;">
           @can('create property')
-            <a href="{{ route('new.lease') }}" class="btn btn-primary" style="float: right;">Add New</a>
+            <a href="{{ route('new.property.lease', $property->id) }}" class="btn btn-primary" style="float: right;">Add New</a>
           @endcan
             <br>
             <table class="table responsive-table" id="products">

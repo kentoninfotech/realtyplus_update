@@ -21,11 +21,14 @@ class CreatePropertyTransactionsTable extends Migration
             
             $table->index(['transactionable_type', 'transactionable_id'], 'ptx_type_id_idx'); // For polymorphic relations
 
-            $table->enum('type', ['payment', 'expense', 'refund']);
+            $table->enum('type', ['credit', 'debit']);
+            $table->string('purpose')->nullable(); // full_payment, partial_payment, deposit, maintenance_expense, refund
+            $table->string('payer_type')->nullable(); // For polymorphic payer (Tenant, Client, Owner)
+            $table->unsignedBigInteger('payer_id')->nullable();
             $table->decimal('amount', 15, 2);
             $table->date('transaction_date');
             $table->text('description')->nullable();
-            $table->enum('status', ['completed', 'pending', 'failed', 'cancelled'])->default('pending');
+            $table->string('status')->nullable()->default('pending'); // pending, completed, failed, reversed
             $table->string('payment_method')->nullable(); // e.g., 'Bank Transfer', 'Cash', 'Credit Card'
             $table->string('reference_number')->nullable()->unique();
             $table->timestamps();

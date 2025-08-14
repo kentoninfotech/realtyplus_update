@@ -10,15 +10,18 @@ class PropertyTransaction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'transactionable_type', 
-        'transactionable_id', 
-        'type', 
+        'transactionable_type',
+        'transactionable_id',
+        'payer_type',
+        'payer_id',
+        'type', // credit or debit
+        'purpose', // full_payment, partial_payment, deposit, maintenance_expense, refund
         'amount',
-        'transaction_date', 
-        'description', 
-        'status', 
-        'payment_method', 
+        'transaction_date',
+        'payment_method',
         'reference_number',
+        'status',
+        'description',
     ];
 
     protected $casts = [
@@ -35,9 +38,14 @@ class PropertyTransaction extends Model
         return $this->morphMany(Document::class, 'documentable');
     }
 
-    public function payments()
+    public function payer()
     {
-        return $this->hasMany(Payment::class);
+        return $this->morphTo();
     }
+
+    // public function payments()
+    // {
+    //     return $this->hasMany(Payment::class);
+    // }
     
 }

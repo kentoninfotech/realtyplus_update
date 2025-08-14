@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Property;
 use App\Models\PropertyType;
+use App\Models\PropertyUnit;
 use App\Models\Amenity;
 use App\Models\Agent;
 use App\Models\Owner;
+use App\Models\Tenant;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\CreatePropertyRequest;
 use App\Http\Requests\UpdatePropertyRequest;
@@ -32,7 +34,9 @@ class PropertyController extends Controller
     public function index()
     {
         $properties = Property::with(['propertyType', 'agent', 'owner'])->paginate(30);
-        return view('properties.index', compact('properties'));
+        $units = PropertyUnit::all();
+        $tenants = Tenant::with(['user', 'leases'])->get();
+        return view('properties.index', compact('properties', 'units', 'tenants'));
     }
     /**
      * Show property.

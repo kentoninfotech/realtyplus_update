@@ -184,10 +184,14 @@
     </div> <!-- END CARD/BOX -->
 
     <div class="card">
+        <div class="card-header">
+            <div class="float-right">
+                @can('create property')
+                    <a href="{{ route('new.property') }}" class="btn btn-primary mb-2 float-right">New Property</a>
+                @endcan
+           </div>
+        </div>
         <div class="card-body" style="overflow: auto;">
-            @can('create property')
-                <a href="{{ route('new.property') }}" class="btn btn-primary m-2" style="float: right;">Add New</a>
-            @endcan
             <table class="table responsive-table" id="products">
                 <thead>
                     <tr>

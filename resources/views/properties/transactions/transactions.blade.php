@@ -7,12 +7,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">{{ $property->name }}' Leases</h1>
+                    <h1 class="m-0">Transactions</h1>
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">{{ $property->name }}' Leases</li>
+                        <li class="breadcrumb-item active">Transactions</li>
                     </ol>
                 </div><!-- /.col -->
             </div><!-- /.row -->
@@ -24,30 +24,30 @@
 
         <div class="card-body" style="overflow: auto;">
           @can('create property')
-            <a href="{{ route('new.property.lease', $property->id) }}" class="btn btn-primary" style="float: right;">Add New</a>
+            <a href="{{-- route('new.lease') --}}" class="btn btn-primary mb-2" style="float: right;">Make Payment</a>
           @endcan
             <br>
             <table class="table responsive-table" id="products">
                 <thead>
                     <tr>
                         <th width="20">#</th>
-                        <th>Tenant</th>
-                        <th>Start/End</th>
-                        <th>Frequency</th>
-                        <th>Renewal Date</th>
+                        <th>Purpose</th>
+                        <th>For</th>
+                        <th>Type</th>
+                        <th>Renewal</th>
                         <th>Amount</th>
                         <th>Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($leases as $lease)
+                    @foreach ($transactions as $lease)
                         <tr @if ($lease->status == 'active') style="background-color: azure !important;" @endif>
                             <td>{{ $lease->id }}</td>
                             <td>{{ $lease->tenant->full_name }}</td>
                             <td>{{ $lease->start_date->format('M, Y') }} / {{ $lease->end_date->format('M, Y') }}</td>
                             <td>{{ $lease->payment_frequency }}</td>
-                            <td>{{ $lease->renewal_date->format('M, Y') }}</td>
+                            <td>{{ optional($lease->renewal_date)->format('M, Y') ?? 'N/A' }}</td>
                             <td>₦{{ number_format($lease->rent_amount, 0, '.', ',') }}</td>
                             <td>
                                 @if ($lease->status == 'pending')
@@ -77,7 +77,7 @@
                                             <a class="dropdown-item" href="{{-- route('edit.lease', $lease->id) --}}"><i class="fa fa-edit"></i> Edit</a>
                                         @endcan
                                         @can('create property')
-                                            <a class="dropdown-item btn btn-sm btn-success" href="{{ route('add.lease.transaction', $lease->id) }}"><i class="fa fa-credit-card"></i> Make Payment</a>
+                                            <a class="dropdown-item btn btn-primary" href="{{ route('add.lease.transaction', $lease->id) }}"><i class="fa fa-credit-card"></i> Make Payment</a>
                                         @endcan
                                         @can('delete property')
                                             <div class="dropdown-divider"></div>

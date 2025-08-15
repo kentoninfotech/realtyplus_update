@@ -582,7 +582,7 @@
                             <div class="mr-0">
                                 <a href="{{ route('property.leases', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->leases->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ route('new.lease', $property->id) }}"
+                                    <a href="{{ route('new.property.lease', $property->id) }}"
                                         class="btn btn-primary btn-xs">Add New</span>
                                     </a>
                                 @endcan

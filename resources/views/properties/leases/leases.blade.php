@@ -76,6 +76,9 @@
                                         @can('edit property')
                                             <a class="dropdown-item" href="{{-- route('edit.lease', $lease->id) --}}"><i class="fa fa-edit"></i> Edit</a>
                                         @endcan
+                                        @can('create property')
+                                            <a class="dropdown-item btn btn-primary" href="{{ route('add.lease.transaction', $lease->id) }}"><i class="fa fa-credit-card"></i> Make Payment</a>
+                                        @endcan
                                         @can('delete property')
                                             <div class="dropdown-divider"></div>
                                             <form class="d-inline" action="{{ route('delete.lease', $lease->id) }}" method="post">

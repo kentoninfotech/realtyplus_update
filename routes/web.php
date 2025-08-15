@@ -111,6 +111,11 @@ Route::delete('properties/leases/{id}', [App\Http\Controllers\LeaseController::c
 // AJAX route for dynamic unit dropdown in lease forms
 Route::get('/get-units-by-property', [App\Http\Controllers\LeaseController::class, 'getUnitsByProperty'])->name('get.units.by.property');
 
+// PROPERTY TRANSACTIONS
+Route::get('/leases/{id}/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'addLeaseTransaction'])->name('add.lease.transaction');
+Route::post('/leases/{id}/transactions', [App\Http\Controllers\PropertyTransactionController::class, 'createLeaseTransaction'])->name('create.lease.transaction');
+Route::get('/properties/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'showTransaction'])->name('show.transaction');
+
 // VIEWINGS
 Route::get('properties/{id}/viewings', [App\Http\Controllers\ViewingController::class, 'propertyViewing'])->name('property.viewing');
 Route::get('units/{id}/viewings', [App\Http\Controllers\ViewingController::class, 'unitViewing'])->name('unit.viewing');

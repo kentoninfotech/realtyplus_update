@@ -96,11 +96,6 @@ class LeaseController extends Controller
         $selectedProperty = null;
         $unitsForDropdown = collect(); // Initialize as empty collection
 
-        // if ($unit) {
-        //     $selectedProperty = $unit->property;
-        //     $unitsForDropdown = $selectedProperty->units; // Only units of the pre-selected property
-        // }
-
         return view('properties.leases.new-property-lease', compact(
             'property',
             'tenants',

@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Business;
 use App\Models\businessgroups;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Relations\Relation;
 // use Auth;
 
 class AppServiceProvider extends ServiceProvider
@@ -29,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // View composer (variable that becomes available in all blade view)
         view()->composer('*',function($view) {
 
             if (Auth::check())

@@ -112,9 +112,14 @@ Route::delete('properties/leases/{id}', [App\Http\Controllers\LeaseController::c
 Route::get('/get-units-by-property', [App\Http\Controllers\LeaseController::class, 'getUnitsByProperty'])->name('get.units.by.property');
 
 // PROPERTY TRANSACTIONS
-Route::get('/leases/{id}/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'addLeaseTransaction'])->name('add.lease.transaction');
-Route::post('/leases/{id}/transactions', [App\Http\Controllers\PropertyTransactionController::class, 'createLeaseTransaction'])->name('create.lease.transaction');
-Route::get('/properties/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'showTransaction'])->name('show.transaction');
+Route::get('property/transactions', [App\Http\Controllers\PropertyTransactionController::class, 'index'])->name('transactions');
+Route::get('properties/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'newTransaction'])->name('new.transaction');
+Route::post('properties/transaction', [App\Http\Controllers\PropertyTransactionController::class, 'createTransaction'])->name('create.transaction');
+Route::get('property/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'showTransaction'])->name('show.transaction');
+Route::get('properties/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'editTransaction'])->name('edit.transaction');
+Route::get('leases/{id}/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'addLeaseTransaction'])->name('add.lease.transaction');
+Route::post('leases/{id}/transactions', [App\Http\Controllers\PropertyTransactionController::class, 'createLeaseTransaction'])->name('create.lease.transaction');
+Route::delete('/properties/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'deleteTransaction'])->name('delete.transaction');
 
 // VIEWINGS
 Route::get('properties/{id}/viewings', [App\Http\Controllers\ViewingController::class, 'propertyViewing'])->name('property.viewing');

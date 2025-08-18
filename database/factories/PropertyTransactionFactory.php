@@ -51,7 +51,7 @@ class PropertyTransactionFactory extends Factory
             'transaction_date'      => $this->faker->date(),
             'description'           => $this->faker->optional()->sentence,
             'status'                => $this->faker->randomElement(['completed', 'pending', 'failed', 'reversed']),
-            'payment_method'        => $this->faker->optional()->randomElement(['Bank Transfer', 'Cash', 'Credit Card', 'Cheque']),
+            'payment_method'        => $this->faker->randomElement(['Bank Transfer', 'Cash', 'Credit Card', 'Cheque']),
             'reference_number'      => strtoupper($this->faker->unique()->bothify('TXN#######')),
         ];
     }

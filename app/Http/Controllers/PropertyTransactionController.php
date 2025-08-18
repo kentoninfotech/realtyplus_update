@@ -24,6 +24,27 @@ class PropertyTransactionController extends Controller
         $this->middleware('auth');
     }
     /**
+     * Show all transactions,
+     */
+    public function index()
+    {
+        $transactions = PropertyTransaction::with('payer', 'transactionable')->paginate(20);
+        return view('properties.transactions.transactions', compact('transactions'));
+    }
+    /**
+     * Show form to create transactions,
+     */
+    public function newTransaction()
+    {
+
+        $payerType = ['\App\Models\Tenant::class', '\App\Models\Owner::class', '\App\Models\Personnel::class'];
+        $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\MaintenanceRequest'];
+        $status = ['pending', 'completed', 'failed', 'reversed'];
+        $purposes = TransactionService::PURPOSES;
+
+        return view('properties.transactions.new-transaction', compact('status', 'purposes', 'payerType', 'transactionable'));
+    }
+    /**
      * Show form to create transactions,
      */
     public function addLeaseTransaction($id)

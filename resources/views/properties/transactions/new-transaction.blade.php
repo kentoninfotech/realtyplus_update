@@ -16,7 +16,7 @@
                 </div><!-- /.col -->
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="{{ route('transactions') }}">Transactions</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('property.transaction') }}">Transactions</a></li>
                         <li class="breadcrumb-item active">Make Payment</li>
                     </ol>
                 </div><!-- /.col -->
@@ -44,21 +44,37 @@
 
                 {{-- Hidden: transactionable --}}
                 <div class="form-row">
-                    <div class="form-group">
+                    <div class="form-group col-md-6">
                         <label for="transactionable_type">Transaction For</label>
-                        <select name="transactionable_type" id="transactionable_type">
+                        <select name="transactionable_type" id="transactionable_type" class="form-control">
+                            <option value="">-- Select Transaction Type --</option>
                             @foreach($transactionable as $tr)
-                               <option value="{{ $tr }}">{{ $tr }}</option>
+                               <option value="{{ $tr }}">{{ class_basename($tr) }}</option>
                             @endforeach
                         </select>
                     </div>
+                    <div class="form-group col-md-6">
+                        <label>Transactionable ID</label>
+                        <input type="number" name="transactionable_id" class="form-control">
+                    </div>
                 </div>
-                <input type="hidden" name="transactionable_type" value="App\Models\Lease">
-                <input type="hidden" name="transactionable_id" value="{{ '1' }}">
-
-                {{-- Hidden: payer --}}
-                <input type="hidden" name="payer_type" value="{{ $payerType }}">
-                <input type="hidden" name="payer_id" value="{{ '1' }}">
+                {{-- Payer Type --}}
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label>Payer Type</label>
+                        <select id="payer_type" name="payer_type" class="form-control">
+                            <option value="">-- Select Payer Type --</option>
+                            @foreach($payerType as $py)
+                                <option value="{{ $py }}">{{ class_basename($py) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    {{-- Payer Selector (AJAX) --}}
+                    <div class="form-group col-md-6">
+                        <label>Payer</label>
+                        <select id="payer_id" name="payer_id" class="form-control"></select>
+                    </div>
+                </div>
 
                 <div class="form-row">
                     <div class="form-group col-md-4">
@@ -130,6 +146,36 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        //
+        $(document).ready(function() {
+            // Initialize empty select2 for payer_id
+            $('#payer_id').select2({
+                placeholder: 'Select payer...',
+                ajax: {
+                    url: '{{ route("payers.search") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, // search term
+                            type: $('#payer_type').val() // payer type
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                return { id: item.id, text: item.first_name + ' ' + item.last_name }
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Reload payer_id select2 when payer_type changes
+            $('#payer_type').on('change', function() {
+                $('#payer_id').val(null).trigger('change');
+            });
+        });
     });
 </script>
+

@@ -54,7 +54,7 @@
                                     <span class="badge badge-danger">-</span>
                                 @endif
                             </td>
-                            <td>{{ $transaction->payer->name }}</td>
+                            <td>{{ $transaction->payer->full_name }}</td>
                             <td>{{ $transaction->transaction_date->format('d M, Y') }} </td>
                             <td>{{ $transaction->payment_method }}</td>
                             <td>{{ $transaction->reference_number }}</td>
@@ -93,7 +93,7 @@
                                                 @method('DELETE')
                                                 <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this transaction?');">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/><path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/></svg>
-                                                Delete
+                                                 Delete
                                                 </button>
                                             </form>
                                         @endcan
@@ -108,6 +108,9 @@
 
                 </tbody>
             </table>
+            <div style="text-align: right">
+                {{$transactions->links("pagination::bootstrap-4")}}
+            </div>
         </div>
     </div>
 @endsection

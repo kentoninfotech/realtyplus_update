@@ -50,13 +50,13 @@ class TransactionService
                 'transactionable_type', 'transactionable_id',
                 'payer_type', 'payer_id',
                 'type', 'purpose', 'amount', 'transaction_date',
-                'payment_method', 'reference', 'status', 'description',
+                'payment_method', 'reference_number', 'status', 'description',
             ]));
             $transaction->save();
 
-            // if (!empty($files)) {
-            //     $this->attachDocuments($transaction, $files);
-            // }
+            if (!empty($files)) {
+                $this->attachDocuments($transaction, $files);
+            }
 
             return $transaction->load(['transactionable', 'payer', 'documents']);
         });
@@ -77,15 +77,18 @@ class TransactionService
             }
 
             // Store under public disk: storage/app/public/transactions/{id}/...
-            $path = $file->store("transactions/{$transaction->id}", 'public');
+            $filename = $file->getClientOriginalName();
+            $path = $file->move(public_path('documents/transactions/'), $filename);
+            // $path = $file->move(public_path('documents/transactions/{$transaction->id}'), $filename);
+            // $path = $file->store("documents/transactions/{$transaction->id}", 'public');
 
             // Adjust these fields to match your Document schema
             $transaction->documents()->create([
-                'title' => $file->getClientOriginalName(),
-                'file_path'          => $path,
-                'file_type'          => $file->getClientMimeType(),
-                'size'               => $file->getSize(),
-                'description'        => 'Payment receipt ' . $file->getClientOriginalName(),
+                'title'                 => $file->getClientOriginalName(),
+                'file_path'             => $path,
+                'file_type'             => $file->getClientMimeType(),
+                'description'           => 'Transaction document ' . $file->getClientOriginalName(),
+                'uploaded_by_user_id'   => auth()->user()->id,
             ]);
         }
     }

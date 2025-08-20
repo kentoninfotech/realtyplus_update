@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\PropertyTransaction;
 use App\Services\TransactionService;
 use App\Models\Lease;
+use App\Models\Owner;
+use App\Models\Agent;
 use App\Models\Tenant;
 use App\Models\Property;
 use App\Models\PropertyUnit;
@@ -19,8 +21,10 @@ class PropertyTransactionController extends Controller
      * Show transactions,
      * create, update and delete transactions.
      */
-    public function __construct()
+    public function __construct(TransactionService $transactionService)
     {
+        $this->transactionService = $transactionService;
+
         $this->middleware('auth');
     }
     /**
@@ -37,7 +41,8 @@ class PropertyTransactionController extends Controller
     public function newTransaction()
     {
 
-        $payerType = ['\App\Models\Tenant::class', '\App\Models\Owner::class', '\App\Models\Personnel::class'];
+        $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent'];
+        // $payerType = ['tenant', 'owner', 'agent'];
         $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\MaintenanceRequest'];
         $status = ['pending', 'completed', 'failed', 'reversed'];
         $purposes = TransactionService::PURPOSES;
@@ -54,9 +59,10 @@ class PropertyTransactionController extends Controller
         $payerType = '\App\Models\Tenant::class';
         $payerId = $lease->tenant->id;
         $status = ['pending', 'completed', 'failed', 'reversed'];
+        $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
         $purposes = TransactionService::PURPOSES;
 
-        return view('properties.transactions.new-lease-transaction', compact('lease', 'status', 'purposes', 'payerType','payerId'));
+        return view('properties.transactions.new-lease-transaction', compact('lease', 'method', 'status', 'purposes', 'payerType','payerId'));
     }
     /**
      * store transactions record,
@@ -75,7 +81,7 @@ class PropertyTransactionController extends Controller
 
         $files = $request->file('documents', []);
 
-        $transaction = $service->create($validated, $files);
+        $transaction = $this->transactionService->create($validated, $files);
 
         return redirect()->route('show.transaction', $transaction->id)
             ->with('message', 'Transaction for lease created successfully.');
@@ -87,6 +93,37 @@ class PropertyTransactionController extends Controller
     {
         $transaction = PropertyTransaction::findOrFail($id);
         return view('properties.transactions.show-transaction', compact('transaction'));
+    }
+    /**
+     * search for payers,
+     */
+    public function search(Request $request)
+    {
+        $type = $request->query('type');
+        $term = $request->query('q');
+
+        // Check if the requested type corresponds to a valid model class
+        if (class_exists($type)) {
+            $model = new $type;
+
+            $results = $model->where('first_name', 'like', "%{$term}%")
+                ->orWhere('last_name', 'like', "%{$term}%")
+                ->limit(10)
+                ->get(['id', 'first_name', 'last_name']);
+        } else {
+            $results = []; // Return an empty array if the model type is invalid
+        }
+
+        return response()->json($results);
+    }
+    /**
+     * delete transaction records
+     */
+    public function deleteTransaction($id)
+    {
+        $transaction = PropertyTransaction::findOrFail($id);
+        $transaction->delete();
+        return redirect()->route('property.transaction')->with('message', 'Transaction deleted successful!');
     }
 
 }

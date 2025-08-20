@@ -47,8 +47,8 @@
             <ul>
                 @forelse ($transaction->documents as $doc)
                     <li>
-                        <a href="{{ Storage::disk('public')->url($doc->path) }}" target="_blank">
-                            {{ $doc->original_name ?? basename($doc->path) }}
+                        <a href="{{ asset('public/'. $doc->file_path) }}" target="_blank">
+                            {{ $doc->title ?? basename($doc->file_type) }}
                         </a>
                     </li>
                 @empty

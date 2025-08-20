@@ -63,7 +63,7 @@
                         <label for="purpose">Purpose</label>
                         <select id="purpose" name="purpose" class="form-control" required>
                             @foreach($purposes as $p)
-                                <option value="{{ $p }}">{{ str_replace('_', ' ', $p) }}</option>
+                                <option value="{{ $p }}">{{ Str::headline($p) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -83,6 +83,9 @@
 
                     <div class="form-group col-md-4">
                         <label for="payment_method">Payment Method</label>
+                        <!-- <select name="payment_method" id="payment_method">
+                            //
+                        </select> -->
                         <input type="text" value="{{ old('payment_method') }}" class="form-control" id="payment_method" name="payment_method" required>
                     </div>
 

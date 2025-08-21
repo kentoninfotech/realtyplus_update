@@ -11,6 +11,7 @@ use App\Models\Agent;
 use App\Models\Tenant;
 use App\Models\Property;
 use App\Models\PropertyUnit;
+use App\Models\MaintenanceRequest;
 use App\Http\Requests\CreatePropertyTransactionRequest;
 use App\Http\Requests\UpdatePropertyTransactionRequest;
 
@@ -107,18 +108,29 @@ class PropertyTransactionController extends Controller
     {
         $type = $request->query('type');
         $term = $request->query('q');
+        $results = collect();
 
-        // Check if the requested type corresponds to a valid model class
-        if (class_exists($type)) {
-            $model = new $type;
-
-            $results = $model->where('first_name', 'like', "%{$term}%")
-                ->orWhere('last_name', 'like', "%{$term}%")
-                ->orWhere('email', 'like', "%{$term}%")
-                ->limit(10)
-                ->get(['id', 'first_name', 'last_name', 'email']);
-        } else {
-            $results = []; // Return an empty array if the model type is invalid
+        switch ($type) {
+            case \App\Models\Tenant::class:
+            case \App\Models\Owner::class:
+            case \App\Models\Agent::class:
+                $model = new $type;
+                $results = $model->where(function ($q) use ($term) {
+                        $q->where('first_name', 'like', "%{$term}%")
+                        ->orWhere('last_name', 'like', "%{$term}%")
+                        ->orWhere('email', 'like', "%{$term}%");
+                    })
+                    ->limit(10)
+                    ->get()
+                    ->map(function ($item) {
+                        $name = trim(($item->first_name ?? '') . ' ' . ($item->last_name ?? ''));
+                        $text = $name !== '' ? $name : $item->email;
+                        return [
+                            'id' => $item->id,
+                            'text' => $text,
+                        ];
+                    });
+                break;
         }
 
         return response()->json($results);
@@ -130,26 +142,39 @@ class PropertyTransactionController extends Controller
     {
         $type = $request->query('type');
         $term = $request->query('q');
-        $results = [];
+        $results = collect();
 
         switch ($type) {
             case 'App\Models\Lease':
                 $results = Lease::where('reference_no', 'like', "%{$term}%")
                     ->limit(10)
-                    ->get(['id', 'reference_no']);
+                    ->get()
+                    ->map(fn($lease) => [
+                        'id' => $lease->id,
+                        'text' => 'Lease Ref: ' . $lease->reference_no,
+                    ]);
                 break;
 
             case 'App\Models\Property':
                 $results = Property::where('name', 'like', "%{$term}%")
                     ->orWhere('address', 'like', "%{$term}%")
                     ->limit(10)
-                    ->get(['id', 'name', 'address']);
+                    ->get()
+                    ->map(fn($property) => [
+                        'id' => $property->id,
+                        'text' => $property->name ?? $property->address,
+                    ]);
                 break;
 
             case 'App\Models\MaintenanceRequest':
                 $results = MaintenanceRequest::where('title', 'like', "%{$term}%")
+                    ->orWhere('status', 'like', "%{$term}%")
                     ->limit(10)
-                    ->get(['id', 'title']);
+                    ->get()
+                    ->map(fn($mr) => [
+                        'id' => $mr->id,
+                        'text' => $mr->title,
+                    ]);
                 break;
         }
 

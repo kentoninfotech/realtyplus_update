@@ -153,7 +153,6 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         $(document).ready(function() {
-            // Initialize select2 for payer_id
             $('#payer_id').select2({
                 placeholder: 'Select payer...',
                 ajax: {
@@ -162,44 +161,21 @@
                     delay: 250,
                     data: function(params) {
                         return {
-                            q: params.term, // search term
-                            type: $('#payer_type').val() // payer type
+                            q: params.term,
+                            type: $('#payer_type').val()
                         };
                     },
                     processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                let textValue = '';
-
-                                // First check: Prioritize showing the full name
-                                if (item.first_name || item.last_name) {
-                                    textValue = (item.first_name || '') + ' ' + (item.last_name || '');
-                                    // Trim any leading/trailing spaces
-                                    textValue = textValue.trim();
-                                }
-
-                                // If the name is empty, fall back to the email
-                                if (textValue === '' && item.email) {
-                                    textValue = item.email;
-                                }
-
-                                return {
-                                    id: item.id,
-                                    text: textValue
-                                };
-                            })
-                        };
+                        return { results: data }; // already in {id, text} format
                     },
                     cache: true
                 }
             });
 
-            // Reload payer_id select2 when payer_type changes
             $('#payer_type').on('change', function() {
                 $('#payer_id').val(null).trigger('change');
             });
 
-            // Transactionable select2
             $('#transactionable_id').select2({
                 placeholder: 'Select transactionable...',
                 ajax: {
@@ -208,39 +184,110 @@
                     delay: 250,
                     data: function(params) {
                         return {
-                            q: params.term, 
+                            q: params.term,
                             type: $('#transactionable_type').val()
                         };
                     },
                     processResults: function(data) {
-                        return {
-                            results: $.map(data, function(item) {
-                                let textValue = '';
-
-                                if (item.reference_no) {
-                                    textValue = 'Lease Ref: ' + item.reference_no;
-                                } else if (item.name) {
-                                    textValue = item.name;
-                                } else if (item.address) {
-                                    textValue = item.address;
-                                } else if (item.title) {
-                                    textValue = item.title;
-                                } else {
-                                    textValue = 'ID: ' + item.id;
-                                }
-
-                                return { id: item.id, text: textValue };
-                            })
-                        };
+                        return { results: data }; // already in {id, text} format
                     },
                     cache: true
                 }
             });
 
-            // Reset dropdown when type changes
             $('#transactionable_type').on('change', function() {
                 $('#transactionable_id').val(null).trigger('change');
             });
+
+
+            // // Initialize select2 for payer_id
+            // $('#payer_id').select2({
+            //     placeholder: 'Select payer...',
+            //     ajax: {
+            //         url: '{{ route("payers.search") }}',
+            //         dataType: 'json',
+            //         delay: 250,
+            //         data: function(params) {
+            //             return {
+            //                 q: params.term, // search term
+            //                 type: $('#payer_type').val() // payer type
+            //             };
+            //         },
+            //         processResults: function(data) {
+            //             return {
+            //                 results: $.map(data, function(item) {
+            //                     let textValue = '';
+
+            //                     // First check: Prioritize showing the full name
+            //                     if (item.first_name || item.last_name) {
+            //                         textValue = (item.first_name || '') + ' ' + (item.last_name || '');
+            //                         // Trim any leading/trailing spaces
+            //                         textValue = textValue.trim();
+            //                     }
+
+            //                     // If the name is empty, fall back to the email
+            //                     if (textValue === '' && item.email) {
+            //                         textValue = item.email;
+            //                     }
+
+            //                     return {
+            //                         id: item.id,
+            //                         text: textValue
+            //                     };
+            //                 })
+            //             };
+            //         },
+            //         cache: true
+            //     }
+            // });
+
+            // // Reload payer_id select2 when payer_type changes
+            // $('#payer_type').on('change', function() {
+            //     $('#payer_id').val(null).trigger('change');
+            // });
+
+            // // Transactionable select2
+            // $('#transactionable_id').select2({
+            //     placeholder: 'Select transactionable...',
+            //     ajax: {
+            //         url: '{{ route("transactionables.search") }}',
+            //         dataType: 'json',
+            //         delay: 250,
+            //         data: function(params) {
+            //             return {
+            //                 q: params.term, 
+            //                 type: $('#transactionable_type').val()
+            //             };
+            //         },
+            //         processResults: function(data) {
+            //             return {
+            //                 results: $.map(data, function(item) {
+            //                     let textValue = '';
+
+            //                     if (item.reference_no) {
+            //                         textValue = 'Lease Ref: ' + item.reference_no;
+            //                     } else if (item.name) {
+            //                         textValue = item.name;
+            //                     } else if (item.address) {
+            //                         textValue = item.address;
+            //                     } else if (item.title) {
+            //                         textValue = item.title;
+            //                     } else {
+            //                         textValue = 'ID: ' + item.id;
+            //                     }
+
+            //                     return { id: item.id, text: textValue };
+            //                 })
+            //             };
+            //         },
+            //         cache: true
+            //     }
+            // });
+
+            // // Reset dropdown when type changes
+            // $('#transactionable_type').on('change', function() {
+            //     $('#transactionable_id').val(null).trigger('change');
+            // });
 
         });
     });

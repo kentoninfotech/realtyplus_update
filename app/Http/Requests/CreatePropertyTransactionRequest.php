@@ -24,6 +24,10 @@ class CreatePropertyTransactionRequest extends FormRequest
     public function rules()
     {
         return [
+            'transactionable_type' => ['required'],
+            'transactionable_id'   => ['required'],
+            'payer_type'           => ['required'],
+            'payer_id'             => ['required'],
             'type'                 => ['required', 'in:credit,debit'],
             'purpose'              => ['required'],
             'amount'               => ['required', 'numeric', 'min:0.01'],

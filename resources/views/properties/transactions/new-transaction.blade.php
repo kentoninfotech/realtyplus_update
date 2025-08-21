@@ -49,13 +49,14 @@
                         <select name="transactionable_type" id="transactionable_type" class="form-control">
                             <option value="">-- Select Transaction Type --</option>
                             @foreach($transactionable as $tr)
-                               <option value="{{ $tr }}">{{ class_basename($tr) }}</option>
+                               <option value="{{ $tr }}" {{ old('transactionable_type') == $tr ? 'selected' : '' }}>{{ class_basename($tr) }}</option>
                             @endforeach
                         </select>
                     </div>
+                     {{-- Transactionable ID Selector (AJAX) --}}
                     <div class="form-group col-md-6">
                         <label>Transactionable ID</label>
-                        <input type="number" name="transactionable_id" class="form-control">
+                        <select id="transactionable_id" name="transactionable_id" class="form-control"></select>
                     </div>
                 </div>
                 {{-- Payer Type --}}
@@ -65,7 +66,7 @@
                         <select id="payer_type" name="payer_type" class="form-control">
                             <option value="">-- Select Payer Type --</option>
                             @foreach($payerType as $py)
-                                <option value="{{ $py }}">{{ class_basename($py) }}</option>
+                                <option value="{{ $py }}" {{ old('payer_type') == $py ? 'selected' : '' }}>{{ class_basename($py) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -89,7 +90,7 @@
                         <label for="purpose">Purpose</label>
                         <select id="purpose" name="purpose" class="form-control" required>
                             @foreach($purposes as $p)
-                                <option value="{{ $p }}">{{ str_replace('_', ' ', $p) }}</option>
+                                <option value="{{ $p }}" {{ old('purpose') == $p ? 'selected' : '' }}>{{ Str::headline($p) }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -97,7 +98,6 @@
                     <div class="form-group col-md-4">
                         <label for="amount">Amount</label>
                         <input type="number" value="{{ old('amount') }}" step="0.01" min="0.01" class="form-control" id="amount" name="amount" required>
-                        <small class="form-text text-muted">Amount (₦)</small>
                     </div>
                 </div>
 
@@ -109,7 +109,11 @@
 
                     <div class="form-group col-md-4">
                         <label for="payment_method">Payment Method</label>
-                        <input type="text" value="{{ old('payment_method') }}" class="form-control" id="payment_method" name="payment_method" required>
+                        <select name="payment_method" id="payment_method" class="form-control">
+                            @foreach($method as $m)
+                                 <option value="{{ $m }}" {{ old('payment_method') == $m ? 'selected' : '' }}>{{ Str::headline($m) }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="form-group col-md-4">
@@ -118,23 +122,25 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="status">Status </label>
-                    <select name="status" id="status" class="form-control">
-                        @foreach($status as $st)
-                           <option value="{{ $st }}">{{ Str::headline($st) }}</option>
-                        @endforeach
-                    </select>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="status">Status </label>
+                        <select name="status" id="status" class="form-control">
+                            @foreach($status as $st)
+                            <option value="{{ $st }}" {{ old('status') == $st ? 'selected' : '' }}>{{ Str::headline($st) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="documents">Attach Documents (optional)</label>
+                        <input type="file" class="form-control-file" id="documents" name="documents[]" multiple>
+                        <small class="form-text text-muted">e.g Evidence of payment</small>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="description">Description (optional)</label>
                     <textarea class="form-control" id="description" name="description" rows="3">{{ old('description') }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="documents">Attach Documents (optional)</label>
-                    <input type="file" class="form-control-file" id="documents" name="documents[]" multiple>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Save Payment</button>
@@ -147,7 +153,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         $(document).ready(function() {
-            // Initialize empty select2 for payer_id
+            // Initialize select2 for payer_id
             $('#payer_id').select2({
                 placeholder: 'Select payer...',
                 ajax: {
@@ -163,7 +169,24 @@
                     processResults: function(data) {
                         return {
                             results: $.map(data, function(item) {
-                                return { id: item.id, text: item.first_name + ' ' + item.last_name }
+                                let textValue = '';
+
+                                // First check: Prioritize showing the full name
+                                if (item.first_name || item.last_name) {
+                                    textValue = (item.first_name || '') + ' ' + (item.last_name || '');
+                                    // Trim any leading/trailing spaces
+                                    textValue = textValue.trim();
+                                }
+
+                                // If the name is empty, fall back to the email
+                                if (textValue === '' && item.email) {
+                                    textValue = item.email;
+                                }
+
+                                return {
+                                    id: item.id,
+                                    text: textValue
+                                };
                             })
                         };
                     },
@@ -175,6 +198,50 @@
             $('#payer_type').on('change', function() {
                 $('#payer_id').val(null).trigger('change');
             });
+
+            // Transactionable select2
+            $('#transactionable_id').select2({
+                placeholder: 'Select transactionable...',
+                ajax: {
+                    url: '{{ route("transactionables.search") }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term, 
+                            type: $('#transactionable_type').val()
+                        };
+                    },
+                    processResults: function(data) {
+                        return {
+                            results: $.map(data, function(item) {
+                                let textValue = '';
+
+                                if (item.reference_no) {
+                                    textValue = 'Lease Ref: ' + item.reference_no;
+                                } else if (item.name) {
+                                    textValue = item.name;
+                                } else if (item.address) {
+                                    textValue = item.address;
+                                } else if (item.title) {
+                                    textValue = item.title;
+                                } else {
+                                    textValue = 'ID: ' + item.id;
+                                }
+
+                                return { id: item.id, text: textValue };
+                            })
+                        };
+                    },
+                    cache: true
+                }
+            });
+
+            // Reset dropdown when type changes
+            $('#transactionable_type').on('change', function() {
+                $('#transactionable_id').val(null).trigger('change');
+            });
+
         });
     });
 </script>

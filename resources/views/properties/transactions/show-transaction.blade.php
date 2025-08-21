@@ -7,6 +7,9 @@
             <h1>Transaction #{{ $transaction->id }}</h1>
         </div>
         <div class="card-body">
+            <div class="card-header">
+                <a href="{{ route('property.transaction') }}" class="float-right">Transactions</a>
+            </div>
             <dl class="row">
                 <dt class="col-sm-3">Type</dt>
                 <dd class="col-sm-9">{{ $transaction->type }}</dd>
@@ -24,7 +27,7 @@
                 <dd class="col-sm-9">{{ $transaction->payment_method }}</dd>
 
                 <dt class="col-sm-3">Reference</dt>
-                <dd class="col-sm-9">{{ $transaction->reference }}</dd>
+                <dd class="col-sm-9">{{ $transaction->reference_number }}</dd>
 
                 <dt class="col-sm-3">Status</dt>
                 <dd class="col-sm-9">{{ $transaction->status }}</dd>

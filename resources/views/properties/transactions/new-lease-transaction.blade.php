@@ -29,7 +29,7 @@
             <h4 class="card-title">Add Payment for Lease #{{ $lease->id }}</h4>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('create.lease.transaction', $lease->id) }}" enctype="multipart/form-data" class="card card-body">
+            <form method="POST" action="{{ route('create.lease.transaction') }}" enctype="multipart/form-data" class="card card-body">
                 @csrf
 
                 @if ($errors->any())
@@ -63,14 +63,14 @@
                         <label for="purpose">Purpose</label>
                         <select id="purpose" name="purpose" class="form-control" required>
                             @foreach($purposes as $p)
-                                <option value="{{ $p }}">{{ Str::headline($p) }}</option>
+                                <option value="{{ $p }}" {{ old('purpose') == $p ? 'selected' : '' }}>{{ Str::headline($p) }}</option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="form-group col-md-4">
                         <label for="amount">Amount</label>
-                        <input type="number" value="{{ old('amount') }}" step="0.01" min="0.01" class="form-control" id="amount" name="amount" required>
+                        <input type="number" value="{{ old('amount') }}" step="0.01" min="0.01" class="form-control" id="amount" name="amount" >
                         <small class="form-text text-muted">(Due amount ₦{{ number_format($lease->rent_amount, 0, '.', ',') }} for rent related payment)</small>
                     </div>
                 </div>
@@ -83,10 +83,12 @@
 
                     <div class="form-group col-md-4">
                         <label for="payment_method">Payment Method</label>
-                        <!-- <select name="payment_method" id="payment_method">
-                            //
-                        </select> -->
-                        <input type="text" value="{{ old('payment_method') }}" class="form-control" id="payment_method" name="payment_method" required>
+                        <select name="payment_method" id="payment_method" class="form-control" required>
+                            <option value="">Select Payment Method</option>
+                            @foreach($method as $m)
+                                 <option value="{{ $m }}" {{ old('payment_method') == $m ? 'selected' : '' }}>{{ Str::headline($m) }}</option>
+                            @endforeach
+                        </select>
                     </div>
 
                     <div class="form-group col-md-4">
@@ -95,23 +97,24 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="status">Status </label>
-                    <select name="status" id="status" class="form-control">
-                        @foreach($status as $st)
-                           <option value="{{ $st }}">{{ Str::headline($st) }}</option>
-                        @endforeach
-                    </select>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="status">Status </label>
+                        <select name="status" id="status" class="form-control">
+                            @foreach($status as $st)
+                            <option value="{{ $st }}" {{ old('status') == $st ? 'selected' : '' }}>{{ Str::headline($st) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="documents">Attach Documents (optional)</label>
+                        <input type="file" class="form-control-file" id="documents" name="documents[]" multiple>
+                    </div>
                 </div>
 
                 <div class="form-group">
                     <label for="description">Description (optional)</label>
                     <textarea class="form-control" id="description" name="description" rows="3">{{ old('description') }}</textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="documents">Attach Documents (optional)</label>
-                    <input type="file" class="form-control-file" id="documents" name="documents[]" multiple>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Save Payment</button>

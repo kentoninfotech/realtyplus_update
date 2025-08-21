@@ -42,21 +42,35 @@ class PropertyTransactionController extends Controller
     {
 
         $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent'];
-        // $payerType = ['tenant', 'owner', 'agent'];
         $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\MaintenanceRequest'];
         $status = ['pending', 'completed', 'failed', 'reversed'];
+        $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
         $purposes = TransactionService::PURPOSES;
 
-        return view('properties.transactions.new-transaction', compact('status', 'purposes', 'payerType', 'transactionable'));
+        return view('properties.transactions.new-transaction', compact('status', 'method', 'purposes', 'payerType', 'transactionable'));
     }
     /**
-     * Show form to create transactions,
+     * store transaction records
+     */
+    public function createTransaction(CreatePropertyTransactionRequest $request)
+    {
+        $validated = $request->validated();
+
+        $files = $request->file('documents', []); // array of UploadedFile
+        
+        $transaction = $this->transactionService->create($validated, $files);
+
+        return redirect()->route('show.transaction', $transaction->id)
+            ->with('message', 'Transaction created successfully.');
+    }
+    /**
+     * Show form to create lease transactions,
      */
     public function addLeaseTransaction($id)
     {
         $lease = Lease::findOrFail($id);
 
-        $payerType = '\App\Models\Tenant::class';
+        $payerType = 'App\Models\Tenant';
         $payerId = $lease->tenant->id;
         $status = ['pending', 'completed', 'failed', 'reversed'];
         $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
@@ -67,17 +81,9 @@ class PropertyTransactionController extends Controller
     /**
      * store transactions record,
      */
-    public function createLeaseTransaction(CreatePropertyTransactionRequest $request, $id, TransactionService $service)
+    public function createLeaseTransaction(CreatePropertyTransactionRequest $request)
     {
-        $lease = Lease::findOrFail($id);
-
         $validated = $request->validated();
-
-        $validated['transactionable_type'] = 'App\Models\Lease'; 
-        $validated['transactionable_id'] = $lease->id;
-
-        $validated['payer_type'] = 'App\Models\Tenant'; 
-        $validated['payer_id'] = $lease->tenant_id;
 
         $files = $request->file('documents', []);
 
@@ -97,7 +103,7 @@ class PropertyTransactionController extends Controller
     /**
      * search for payers,
      */
-    public function search(Request $request)
+    public function searchPayers(Request $request)
     {
         $type = $request->query('type');
         $term = $request->query('q');
@@ -108,10 +114,43 @@ class PropertyTransactionController extends Controller
 
             $results = $model->where('first_name', 'like', "%{$term}%")
                 ->orWhere('last_name', 'like', "%{$term}%")
+                ->orWhere('email', 'like', "%{$term}%")
                 ->limit(10)
-                ->get(['id', 'first_name', 'last_name']);
+                ->get(['id', 'first_name', 'last_name', 'email']);
         } else {
             $results = []; // Return an empty array if the model type is invalid
+        }
+
+        return response()->json($results);
+    }
+    /**
+     * Search for transactionables
+     */
+    public function searchTransactionables(Request $request)
+    {
+        $type = $request->query('type');
+        $term = $request->query('q');
+        $results = [];
+
+        switch ($type) {
+            case 'App\Models\Lease':
+                $results = Lease::where('reference_no', 'like', "%{$term}%")
+                    ->limit(10)
+                    ->get(['id', 'reference_no']);
+                break;
+
+            case 'App\Models\Property':
+                $results = Property::where('name', 'like', "%{$term}%")
+                    ->orWhere('address', 'like', "%{$term}%")
+                    ->limit(10)
+                    ->get(['id', 'name', 'address']);
+                break;
+
+            case 'App\Models\MaintenanceRequest':
+                $results = MaintenanceRequest::where('title', 'like', "%{$term}%")
+                    ->limit(10)
+                    ->get(['id', 'title']);
+                break;
         }
 
         return response()->json($results);

@@ -118,10 +118,11 @@ Route::post('properties/transaction', [App\Http\Controllers\PropertyTransactionC
 Route::get('property/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'showTransaction'])->name('show.transaction');
 Route::get('properties/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'editTransaction'])->name('edit.transaction');
 Route::get('leases/{id}/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'addLeaseTransaction'])->name('add.lease.transaction');
-Route::post('leases/{id}/transactions', [App\Http\Controllers\PropertyTransactionController::class, 'createLeaseTransaction'])->name('create.lease.transaction');
+Route::post('leases/transactions', [App\Http\Controllers\PropertyTransactionController::class, 'createLeaseTransaction'])->name('create.lease.transaction');
 Route::delete('/properties/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'deleteTransaction'])->name('delete.transaction');
-// AJAX search for payers
-Route::get('/payers/search', [App\Http\Controllers\PropertyTransactionController::class, 'search'])->name('payers.search');
+// AJAX search for payers & transactionables
+Route::get('/payers/search', [App\Http\Controllers\PropertyTransactionController::class, 'searchPayers'])->name('payers.search');
+Route::get('/transactionables/search', [App\Http\Controllers\PropertyTransactionController::class, 'searchTransactionables'])->name('transactionables.search');
 
 // VIEWINGS
 Route::get('properties/{id}/viewings', [App\Http\Controllers\ViewingController::class, 'propertyViewing'])->name('property.viewing');

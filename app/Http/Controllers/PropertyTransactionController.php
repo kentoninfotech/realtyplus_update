@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\PropertyTransaction;
 use App\Services\TransactionService;
+use App\Services\MorphSearchService;
+use App\Models\PropertyTransaction;
 use App\Models\Lease;
 use App\Models\Owner;
 use App\Models\Agent;
@@ -22,9 +23,13 @@ class PropertyTransactionController extends Controller
      * Show transactions,
      * create, update and delete transactions.
      */
-    public function __construct(TransactionService $transactionService)
+    protected $transactionService;
+    protected $morphSearch;
+
+    public function __construct(TransactionService $transactionService, MorphSearchService $morphSearch)
     {
         $this->transactionService = $transactionService;
+        $this->morphSearch = $morphSearch;
 
         $this->middleware('auth');
     }
@@ -46,7 +51,7 @@ class PropertyTransactionController extends Controller
         $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\MaintenanceRequest'];
         $status = ['pending', 'completed', 'failed', 'reversed'];
         $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
-        $purposes = TransactionService::PURPOSES;
+        $purposes = $this->transactionService::PURPOSES;
 
         return view('properties.transactions.new-transaction', compact('status', 'method', 'purposes', 'payerType', 'transactionable'));
     }
@@ -104,34 +109,12 @@ class PropertyTransactionController extends Controller
     /**
      * search for payers,
      */
-    public function searchPayers(Request $request)
+    public function searchPayers(Request $request, MorphSearchService $morphSearch)
     {
-        $type = $request->query('type');
-        $term = $request->query('q');
-        $results = collect();
-
-        switch ($type) {
-            case \App\Models\Tenant::class:
-            case \App\Models\Owner::class:
-            case \App\Models\Agent::class:
-                $model = new $type;
-                $results = $model->where(function ($q) use ($term) {
-                        $q->where('first_name', 'like', "%{$term}%")
-                        ->orWhere('last_name', 'like', "%{$term}%")
-                        ->orWhere('email', 'like', "%{$term}%");
-                    })
-                    ->limit(10)
-                    ->get()
-                    ->map(function ($item) {
-                        $name = trim(($item->first_name ?? '') . ' ' . ($item->last_name ?? ''));
-                        $text = $name !== '' ? $name : $item->email;
-                        return [
-                            'id' => $item->id,
-                            'text' => $text,
-                        ];
-                    });
-                break;
-        }
+        $results = $this->morphSearch->search(
+            $request->query('type'),
+            $request->query('q'),
+        );
 
         return response()->json($results);
     }
@@ -140,47 +123,10 @@ class PropertyTransactionController extends Controller
      */
     public function searchTransactionables(Request $request)
     {
-        $type = $request->query('type');
-        $term = $request->query('q');
-        $results = collect();
-
-        switch ($type) {
-            case 'App\Models\Lease':
-                $results = Lease::whereHas('tenant', function ($q) use ($term) {
-                        $q->where('first_name', 'like', "%{$term}%")
-                        ->orWhere('last_name', 'like', "%{$term}%");
-                    })
-                    ->orWhere('status', 'like', "%{$term}%")
-                    ->limit(10)
-                    ->get()
-                    ->map(fn($lease) => [
-                        'id' => $lease->id,
-                        'text' => 'Lease #: ' . $lease->id . ' (Tenant: ' . $lease->tenant->full_name . ')',
-                    ]);
-                break;
-
-            case 'App\Models\Property':
-                $results = Property::where('name', 'like', "%{$term}%")
-                    ->orWhere('address', 'like', "%{$term}%")
-                    ->limit(10)
-                    ->get()
-                    ->map(fn($property) => [
-                        'id' => $property->id,
-                        'text' => $property->name ?? $property->address,
-                    ]);
-                break;
-
-            case 'App\Models\MaintenanceRequest':
-                $results = MaintenanceRequest::where('title', 'like', "%{$term}%")
-                    ->orWhere('status', 'like', "%{$term}%")
-                    ->limit(10)
-                    ->get()
-                    ->map(fn($mr) => [
-                        'id' => $mr->id,
-                        'text' => $mr->title,
-                    ]);
-                break;
-        }
+        $results = $this->morphSearch->search(
+            $request->query('type'),
+            $request->query('q'),
+        );
 
         return response()->json($results);
     }

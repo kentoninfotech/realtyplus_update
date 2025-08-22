@@ -146,12 +146,16 @@ class PropertyTransactionController extends Controller
 
         switch ($type) {
             case 'App\Models\Lease':
-                $results = Lease::where('reference_no', 'like', "%{$term}%")
+                $results = Lease::whereHas('tenant', function ($q) use ($term) {
+                        $q->where('first_name', 'like', "%{$term}%")
+                        ->orWhere('last_name', 'like', "%{$term}%");
+                    })
+                    ->orWhere('status', 'like', "%{$term}%")
                     ->limit(10)
                     ->get()
                     ->map(fn($lease) => [
                         'id' => $lease->id,
-                        'text' => 'Lease Ref: ' . $lease->reference_no,
+                        'text' => 'Lease #: ' . $lease->id . ' (Tenant: ' . $lease->tenant->full_name . ')',
                     ]);
                 break;
 

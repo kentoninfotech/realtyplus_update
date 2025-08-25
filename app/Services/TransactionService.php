@@ -62,7 +62,31 @@ class TransactionService
             return $transaction->load(['transactionable', 'payer', 'documents']);
         });
     }
+    /**
+     * Update a PropertyTransaction and (optionally) attach uploaded documents.
+     */
+    public function update(PropertyTransaction $transaction, array $data, array $files = []): PropertyTransaction
+    {
+        $data = $this->prepareAndValidate($data);
 
+        return DB::transaction(function () use ($transaction, $data, $files) {
+            $transaction->fill(Arr::only($data, [
+                'transactionable_type', 'transactionable_id',
+                'payer_type', 'payer_id',
+                'type', 'purpose', 'amount', 'transaction_date',
+                'payment_method', 'reference_number', 'status', 'description',
+            ]));
+            $transaction->save();
+
+            if (!empty($files)) {
+                // optional: clear old documents first
+                // $transaction->documents()->delete();
+                $this->attachDocuments($transaction, $files);
+            }
+
+            return $transaction->load(['transactionable', 'payer', 'documents']);
+        });
+    }
     /**
      * Attach uploaded files to a transaction as Document records.
      *

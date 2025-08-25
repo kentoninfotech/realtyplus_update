@@ -70,6 +70,26 @@ class PropertyTransactionController extends Controller
             ->with('message', 'Transaction created successfully.');
     }
     /**
+     * show edit transaction form
+     */
+    public function editTransaction()
+    {
+        $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent'];
+        $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\MaintenanceRequest'];
+        $status = ['pending', 'processing', 'completed', 'failed', 'reversed', 'cancelled', 'refunded'];
+        $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
+        $purposes = $this->transactionService::PURPOSES;
+
+        return view('properties.transactions.edit-transaction', compact('status', 'method', 'purposes', 'payerType', 'transactionable'));
+    }
+    /**
+     * update transaction records
+     */
+    public function updateTransaction(UpdatePropertyTransactionRequest $request, $id)
+    {
+        //
+    }
+    /**
      * Show form to create lease transactions,
      */
     public function addLeaseTransaction($id)
@@ -78,7 +98,7 @@ class PropertyTransactionController extends Controller
 
         $payerType = 'App\Models\Tenant';
         $payerId = $lease->tenant->id;
-        $status = ['pending', 'completed', 'failed', 'reversed'];
+        $status = ['pending', 'processing', 'completed', 'failed', 'reversed', 'cancelled', 'refunded'];
         $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
         $purposes = TransactionService::PURPOSES;
 

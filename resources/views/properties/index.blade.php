@@ -86,9 +86,9 @@
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>{{ '0' }}</h3>
+                        <h3>{{ '6' }}</h3>
 
-                        <p>PLACEHOLDER</p>
+                        <p>Pending Payment</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
@@ -101,7 +101,7 @@
             </div>
             <!-- ./col -->
         </div> <!-- End Of /row -->
-        <div class="row">
+        {{-- <div class="row">
             @can('view client')
             <div class="col-lg-3 col-6">
                 <!-- small box -->
@@ -166,9 +166,9 @@
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>{{ '0' }}</h3>
+                        <h3>{{ '6' }}</h3>
 
-                        <p>PLACEHOLDER</p>
+                        <p>Pending Payment</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
@@ -180,7 +180,7 @@
                 </div>
             </div>
             <!-- ./col -->
-        </div>
+        </div> --}}
     </div> <!-- END CARD/BOX -->
 
     <div class="card">

@@ -33,12 +33,12 @@ class ProjectsController extends Controller
         $this->authorize('viewAny', projects::class);
 
         if (Auth()->user()->hasRole('Client')){
-            $projects = projects::where('client_id',Auth()->user()->id)->get();
-            return view('projects')->with(['projects'=>$projects]);
+            $projects = projects::where('client_id', Auth()->user()->id)->get();
+            return view('projects')->with(['projects' => $projects]);
         }
 
         $projects = projects::all();
-        return view('projects')->with(['projects'=>$projects]);
+        return view('projects')->with(['projects' => $projects]);
     }
 
 
@@ -86,9 +86,11 @@ class ProjectsController extends Controller
     {
         $project = projects::where('id',$pid)->first();
 
+        $totalAmount = transactions::where('project_id', $pid)->sum('amount');
+
         $this->authorize('view', $project);
         
-        return view('project-dashboard')->with(['project'=>$project]);
+        return view('project-dashboard')->with(['project' => $project, 'totalAmount' => $totalAmount]);
 
     }
 

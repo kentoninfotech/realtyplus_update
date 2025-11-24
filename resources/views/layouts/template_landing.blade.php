@@ -71,6 +71,7 @@
                     <a href="#about" class="nav-item nav-link">About</a>
                     <a href="#services" class="nav-item nav-link">Services</a>
                     <a href="#contact" class="nav-item nav-link">Contact</a>
+                    <a href="{{ route('home') }}" class="nav-item nav-link">Dashboard</a>
                 </div>
                 <div class="d-none d-lg-flex ms-2">
                     <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://facebook.com/stridderr">

@@ -50,7 +50,7 @@
                 <!-- /.col -->
                 <div class="col-sm-4">
                     <div class="description-block">
-                        <h5 class="description-header">35</h5>
+                        <h5 class="description-header">₦ {{ number_format($totalAmount, 2) }}</h5>
                         <span class="description-text">TOTAL EXPENDITURE</span>
                     </div>
                     <!-- /.description-block -->

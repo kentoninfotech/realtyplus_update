@@ -48,7 +48,7 @@
                                     <td>{{ $transact->title ?? 'N/A'}} <br> <i
                                             style="color: green;"><small>{{ $transact->project_id != '' ? $transact->project->title : '' }}</small></i>
                                     </td>
-                                    <td>{{ $transact->amount }}</td>
+                                    <td>₦{{ number_format($transact->amount, 2) }}</td>
                                     <td>{{ $transact->account_head ?? 'N/A'}}</td>
                                     <td>{{ $transact->date ?? 'N/A'}}</td>
                                     <td>{{ $transact->reference_no ?? 'N/A'}}</td>

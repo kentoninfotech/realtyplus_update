@@ -312,6 +312,15 @@
                                     </a>
                                 </li>
                             @endcan
+                            @can('create property')
+                                <li class="nav-item">
+                                    <a href="{{ route('property.transaction') }}" class="nav-link">
+                                    <p>    
+                                    <i class="nav-icon fas fa-credit-card"></i>
+                                     Property Transaction</p>
+                                    </a>
+                                </li>
+                            @endcan
 
                             </ul>
                         </li>

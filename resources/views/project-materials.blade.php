@@ -47,7 +47,8 @@
                                 <tr>
                                     <td>{{$mtc->material->name}}</td>
                                     <td><b>{{$mtc->task_id}}</b></td>
-                                    <td><b>{{$mtc->quantity}}{{$mtc->material->measurement_unit}}</b></td>
+                                    <td><b>{{$mtc->quantity}}</b></td>
+                                    <!-- <td><b>{{$mtc->quantity}}{{$mtc->material->measurement_unit}}</b></td> -->
                                     <td>{{$mtc->details}}</td>
                                     <td>{{$mtc->checkoutby->name}}</td>
                                     <td>{{$mtc->approvedby->name}}</td>

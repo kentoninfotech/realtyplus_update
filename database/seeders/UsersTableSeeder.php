@@ -49,7 +49,7 @@ class UsersTableSeeder extends Seeder
             'email' => 'client@example.com',
             'password' => Hash::make('12345'),
             'status' => 'active',
-        ]);//->assignRole('Owner');
+        ]);//->assignRole('Client');
 
         User::factory()->personnel()->create([
             'name' => 'Manager Manuel',

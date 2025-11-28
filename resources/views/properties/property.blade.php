@@ -396,16 +396,6 @@
 
                             <hr>
 
-                            @if(!auth()->user()->hasrole('Client'))
-                               <div class="list-group">
-                                    <a href="#" class="list-group-item list-group-item-action active">Menu </a>
-                                    <a href="/property/{{ $property->id }}/reports"
-                                        class="list-group-item list-group-item-action">Reports</a>
-                                    <a href="/property/{{ $property->id }}/tasks"
-                                        class="list-group-item list-group-item-action">Tasks</a>
-                                </div>
-                            @endif
-
                         </div>
                     </div>
                 </div> <!-- /.col-3 -->
@@ -527,7 +517,7 @@
                                     @foreach ($property->viewings as $viewing)
                                         <tr>
                                             <td>
-                                                <a href="{{ url('show.viewing', $viewing->id) }}">
+                                                <a href="#">
                                                 {{ $viewing->client_name }}
                                                 </a>
                                             </td>
@@ -605,7 +595,7 @@
                                     @foreach ($property->leases->take(5) as $lease)
                                     <tr>
                                             <td>
-                                                <a href="">
+                                                <a href="#">
                                                 {{ $lease->tenant->full_name }}
                                                 </a>
                                             </td>
@@ -683,7 +673,7 @@
                                     @foreach ($property->tasks as $task)
                                         <tr>
                                             <td>
-                                                <a href="{{ url('show.task', $task->id) }}">
+                                                <a href="#">
                                                 {{ $task->title }}
                                                 </a>
                                             </td>
@@ -771,7 +761,7 @@
                                     @foreach ($property->maintenanceRequests as $maintenanceRequest)
                                         <tr>
                                             <td>
-                                                <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
+                                                <a href="#">
                                                 {{ $maintenanceRequest->title }}
                                                 </a>
                                             </td>
@@ -827,7 +817,7 @@
                             <div class="mr-0">
                                 <a href="{{ route('property.document', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->documents->count() }})</a>
                                 @can('create property')
-                                    <a href="{{ url('addp-file/' . $property->id) }}"
+                                    <a href="#"
                                         class="btn btn-primary btn-xs">New File</span>
                                     </a>
                                 @endcan

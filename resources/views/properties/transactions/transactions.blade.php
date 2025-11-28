@@ -83,9 +83,9 @@
                                         @can('view property')
                                             <a class="dropdown-item" href="{{ route('show.transaction', $transaction->id) }}"><i class="fa fa-eye"></i> View</a>
                                         @endcan
-                                        @can('edit property')
-                                            <a class="dropdown-item" href="{{ route('edit.transaction', $transaction->id) }}"><i class="fa fa-edit"></i> Edit</a>
-                                        @endcan
+                                        <!-- @can('edit property')
+                                            <a class="dropdown-item" href="{{-- route('edit.transaction', $transaction->id) --}}"><i class="fa fa-edit"></i> Edit</a>
+                                        @endcan -->
                                         @can('delete property')
                                             <div class="dropdown-divider"></div>
                                             <form class="d-inline" action="{{ route('delete.transaction', $transaction->id) }}" method="post">

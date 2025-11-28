@@ -339,16 +339,6 @@
 
                             <hr>
 
-                            @if(!auth()->user()->hasrole('Client'))
-                               <div class="list-group">
-                                    <a href="#" class="list-group-item list-group-item-action active">Menu </a>
-                                    <a href="/property/{{ $unit->id }}/reports"
-                                        class="list-group-item list-group-item-action">Reports</a>
-                                    <a href="/property/{{ $unit->id }}/tasks"
-                                        class="list-group-item list-group-item-action">Tasks</a>
-                                </div>
-                            @endif
-
                         </div>
                     </div>
                 </div> <!-- /.col-3 -->
@@ -469,7 +459,7 @@
                                     @foreach ($unit->maintenanceRequests as $maintenanceRequest)
                                         <tr>
                                             <td>
-                                                <a href="{{ url('show.maintenance-request', $maintenanceRequest->id) }}">
+                                                <a href="#">
                                                 {{ $maintenanceRequest->title }}
                                                 </a>
                                             </td>
@@ -548,7 +538,7 @@
                                     @foreach ($unit->viewings as $viewing)
                                         <tr>
                                             <td>
-                                                <a href="{{ url('show.viewing', $viewing->id) }}">
+                                                <a href="#">
                                                 {{ $viewing->client_name }}
                                                 </a>
                                             </td>

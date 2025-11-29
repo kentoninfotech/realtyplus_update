@@ -1,10 +1,10 @@
-@extends('layouts.template')
+@extends('layouts.print-template')
 
 @section('content')
 <div class="container">
     <div class="card mt-3">
         <div class="card-header">
-            <h1>Transaction #{{ $transaction->id }}</h1>
+            <h1>{{ $page_title }}</h1>
         </div>
         <div class="card-body">
             <div class="card-header">
@@ -42,7 +42,7 @@
 
                 <dt class="col-sm-3">Payer</dt>
                 <dd class="col-sm-9">
-                    {{ class_basename($transaction->payer_type) }} #{{ $transaction->payer_id }}
+                    {{ class_basename($transaction->payer_type) }} {{ $transaction->payer->name }}
                 </dd>
             </dl>
 

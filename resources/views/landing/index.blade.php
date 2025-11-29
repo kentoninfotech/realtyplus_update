@@ -15,7 +15,7 @@
                                 <div class="col-lg-8">
                                     <p
                                         class="d-inline-block border border-white rounded text-primary fw-semi-bold py-1 px-3 animated slideInDown">
-                                        Welcome to STRIDDERR Global Services</p>
+                                        Welcome to ROYAL REFUGE HOMES</p>
                                     <h1 class="display-1 mb-4 animated slideInDown">...Building, Construction, Real Estate
                                     </h1>
                                 </div>
@@ -31,7 +31,7 @@
                                 <div class="col-lg-7">
                                     <p
                                         class="d-inline-block border border-white rounded text-primary fw-semi-bold py-1 px-3 animated slideInDown">
-                                        Welcome to STRIDDER Global Services</p>
+                                        Welcome to STRIDDER HOMES</p>
                                     <h1 class="display-1 mb-4 animated slideInDown">Building Construction</h1>
                                 </div>
                             </div>
@@ -64,7 +64,7 @@
                     <h1 class="display-5 mb-4">We provide cutting-edge building and infrastructures</h1>
                     <p class="mb-4">
                        <br>
-                       At STRIDDERR Global Services Ltd, we pride ourselves on being a leading force in the construction industry, dedicated to building high-quality homes and providing exceptional architectural services. With years of experience under our belt, our team of skilled professionals is committed to transforming your vision into reality. We believe that every project we undertake is a testament to our unwavering dedication to excellence, innovation, and craftsmanship. From conceptual design to project completion, we ensure that every detail is meticulously planned and executed, delivering results that exceed our clients' expectations.
+                       At ROYAL REFUGE HOMES Ltd, we pride ourselves on being a leading force in the construction industry, dedicated to building high-quality homes and providing exceptional architectural services. With years of experience under our belt, our team of skilled professionals is committed to transforming your vision into reality. We believe that every project we undertake is a testament to our unwavering dedication to excellence, innovation, and craftsmanship. From conceptual design to project completion, we ensure that every detail is meticulously planned and executed, delivering results that exceed our clients' expectations.
 
                     </p>
                     <div class="border rounded p-4">
@@ -89,10 +89,10 @@
                             </div>
                             <div class="tab-pane fade" id="nav-mission" role="tabpanel"
                                 aria-labelledby="nav-mission-tab">
-                                <p>At STRIDDERR Global Services Ltd, our mission is to deliver exceptional construction, architectural, and civil infrastructure services that exceed our clients' expectations. We are dedicated to transforming visions into reality through innovative design, superior craftsmanship, and sustainable practices. Our commitment is to build not just structures, but lasting relationships with our clients, partners, and communities, ensuring the highest standards of quality, safety, and integrity in everything we do.</p>
+                                <p>At ROYAL REFUGE HOMES Ltd, our mission is to deliver exceptional construction, architectural, and civil infrastructure services that exceed our clients' expectations. We are dedicated to transforming visions into reality through innovative design, superior craftsmanship, and sustainable practices. Our commitment is to build not just structures, but lasting relationships with our clients, partners, and communities, ensuring the highest standards of quality, safety, and integrity in everything we do.</p>
                             </div>
                             <div class="tab-pane fade" id="nav-vision" role="tabpanel" aria-labelledby="nav-vision-tab">
-                                <p>Our vision at STRIDDERR Global Services Ltd is to be the premier construction company renowned for excellence, innovation, and sustainability. We aspire to lead the industry in creating iconic, enduring structures that enhance the quality of life and contribute to the development of vibrant, resilient communities. By continuously pushing the boundaries of what’s possible in construction and design, we aim to set new benchmarks for quality and efficiency, inspiring a future where our built environment harmonizes with the natural world.</p>
+                                <p>Our vision at ROYAL REFUGE HOMES Ltd is to be the premier construction company renowned for excellence, innovation, and sustainability. We aspire to lead the industry in creating iconic, enduring structures that enhance the quality of life and contribute to the development of vibrant, resilient communities. By continuously pushing the boundaries of what’s possible in construction and design, we aim to set new benchmarks for quality and efficiency, inspiring a future where our built environment harmonizes with the natural world.</p>
                             </div>
                         </div>
                     </div>
@@ -195,19 +195,19 @@
 
                         <b>Unmatched Quality and Craftsmanship</b><br>
 
-                        At STRIDDERR Global Services Ltd, we understand that quality is paramount in construction. Our team of experienced professionals is committed to delivering superior craftsmanship in every project we undertake. From residential homes to commercial buildings and civil infrastructure, we use only the highest quality materials and adhere to rigorous standards to ensure the longevity and durability of our constructions. Our meticulous attention to detail and dedication to excellence result in structures that not only meet but exceed our clients' expectations.
+                        At ROYAL REFUGE HOMES Ltd, we understand that quality is paramount in construction. Our team of experienced professionals is committed to delivering superior craftsmanship in every project we undertake. From residential homes to commercial buildings and civil infrastructure, we use only the highest quality materials and adhere to rigorous standards to ensure the longevity and durability of our constructions. Our meticulous attention to detail and dedication to excellence result in structures that not only meet but exceed our clients' expectations.
                         <br><br>
 
                         <b>Comprehensive and Customized Services</b>
                         <br>
-                        We offer a wide range of services tailored to meet the unique needs of our clients. Whether you require architectural design, residential construction, or large-scale civil infrastructure projects, STRIDDERR Global Services Ltd provides end-to-end solutions. Our comprehensive services include site analysis, space planning, 3D modeling, interior design, and project management. By working closely with our clients, we ensure that every aspect of the project aligns with their vision, budget, and timeline. This personalized approach sets us apart and ensures that each project is a true reflection of our clients' aspirations.
+                        We offer a wide range of services tailored to meet the unique needs of our clients. Whether you require architectural design, residential construction, or large-scale civil infrastructure projects, ROYAL REFUGE HOMES Ltd provides end-to-end solutions. Our comprehensive services include site analysis, space planning, 3D modeling, interior design, and project management. By working closely with our clients, we ensure that every aspect of the project aligns with their vision, budget, and timeline. This personalized approach sets us apart and ensures that each project is a true reflection of our clients' aspirations.
                         <br><br>
 
                         <b>Commitment to Sustainability and Innovation</b>
                         <br>
-                        In today's world, sustainability is more important than ever. At STRIDDERR Global Services Ltd, we are committed to incorporating sustainable practices into all our projects. We utilize eco-friendly materials, energy-efficient designs, and cutting-edge technologies to minimize our environmental impact and promote long-term sustainability. Our innovative approach to construction not only benefits the environment but also provides our clients with energy-efficient and cost-effective solutions. By choosing us, clients are investing in a future where their structures are both beautiful and environmentally responsible.
+                        In today's world, sustainability is more important than ever. At ROYAL REFUGE HOMES Ltd, we are committed to incorporating sustainable practices into all our projects. We utilize eco-friendly materials, energy-efficient designs, and cutting-edge technologies to minimize our environmental impact and promote long-term sustainability. Our innovative approach to construction not only benefits the environment but also provides our clients with energy-efficient and cost-effective solutions. By choosing us, clients are investing in a future where their structures are both beautiful and environmentally responsible.
                         <br><br>
-                        People choose STRIDDERR Global Services Ltd because we deliver exceptional quality, offer customized and comprehensive services, and are committed to sustainability and innovation. Our reputation for excellence, our dedication to client satisfaction, and our forward-thinking approach make us the preferred choice for construction and architectural services.
+                        People choose ROYAL REFUGE HOMES Ltd because we deliver exceptional quality, offer customized and comprehensive services, and are committed to sustainability and innovation. Our reputation for excellence, our dedication to client satisfaction, and our forward-thinking approach make us the preferred choice for construction and architectural services.
                     </p>
                 </div>
                 <div class="col-lg-6">
@@ -255,7 +255,7 @@
         <div class="container">
             <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
                 <p class="d-inline-block border rounded text-primary fw-semi-bold py-1 px-3">Our Services</p>
-                <h1 class="display-5 mb-5">STRIDDERR Global Services Ltd Services</h1>
+                <h1 class="display-5 mb-5">ROYAL REFUGE HOMES Ltd Services</h1>
             </div>
             <div class="row g-4 wow fadeInUp" data-wow-delay="0.3s">
                 <div class="col-lg-4">
@@ -290,7 +290,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h3 class="mb-4">Building Construction</h3>
-                                    <p class="mb-4">At STRIDDERR Global Services Ltd, our building construction services are designed to bring our clients' visions to life with precision and excellence. We handle every aspect of the construction process, from initial planning and design to the final finishing touches, ensuring that each project is completed on time, within budget, and to the highest standards. Whether it's a residential home, commercial building, or industrial facility, our experienced team leverages the latest construction technologies and best practices to deliver structures that are durable, functional, and aesthetically pleasing.</p>
+                                    <p class="mb-4">At ROYAL REFUGE HOMES Ltd, our building construction services are designed to bring our clients' visions to life with precision and excellence. We handle every aspect of the construction process, from initial planning and design to the final finishing touches, ensuring that each project is completed on time, within budget, and to the highest standards. Whether it's a residential home, commercial building, or industrial facility, our experienced team leverages the latest construction technologies and best practices to deliver structures that are durable, functional, and aesthetically pleasing.</p>
 
                                     {{-- <a href="service.php" class="btn btn-primary py-3 px-5 mt-3">Read More</a> --}}
                                 </div>
@@ -306,7 +306,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h3 class="mb-4">Property Management</h3>
-                                    <p class="mb-4">Our property management services at STRIDDERR Global Services Ltd provide comprehensive solutions to ensure the smooth operation and maintenance of your real estate assets. We offer a full range of services, including tenant management, property maintenance, financial reporting, and lease administration. Our dedicated team works diligently to enhance the value of your property, maximize occupancy rates, and ensure a seamless experience for both property owners and tenants. With our professional and proactive approach, you can trust us to manage your properties with the utmost care and efficiency.</p>
+                                    <p class="mb-4">Our property management services at ROYAL REFUGE HOMES Ltd provide comprehensive solutions to ensure the smooth operation and maintenance of your real estate assets. We offer a full range of services, including tenant management, property maintenance, financial reporting, and lease administration. Our dedicated team works diligently to enhance the value of your property, maximize occupancy rates, and ensure a seamless experience for both property owners and tenants. With our professional and proactive approach, you can trust us to manage your properties with the utmost care and efficiency.</p>
 
                                 </div>
                             </div>
@@ -321,7 +321,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <h3 class="mb-4">Architectural Services</h3>
-                                    <p class="mb-4">STRIDDERR Global Services Ltd offers a wide array of architectural services that blend creativity with functionality to create inspiring and practical spaces. Our team of skilled architects collaborates closely with clients to understand their needs and preferences, providing innovative design solutions that reflect their vision. From concept development and 3D modeling to detailed construction drawings and project management, we ensure that every architectural project is executed with precision and attention to detail. Our commitment to sustainability and cutting-edge design ensures that our projects are not only beautiful but also environmentally responsible.</p>
+                                    <p class="mb-4">ROYAL REFUGE HOMES Ltd offers a wide array of architectural services that blend creativity with functionality to create inspiring and practical spaces. Our team of skilled architects collaborates closely with clients to understand their needs and preferences, providing innovative design solutions that reflect their vision. From concept development and 3D modeling to detailed construction drawings and project management, we ensure that every architectural project is executed with precision and attention to detail. Our commitment to sustainability and cutting-edge design ensures that our projects are not only beautiful but also environmentally responsible.</p>
 
                                 </div>
                             </div>
@@ -335,7 +335,7 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <h3 class="mb-4">In estate development, STRIDDERR Global Services Ltd excels at transforming raw land into vibrant, livable communities. We manage the entire development process, from land acquisition and planning to infrastructure development and construction. Our approach is holistic, ensuring that every aspect of the estate is thoughtfully designed and executed to create harmonious and sustainable living environments. By integrating modern amenities, green spaces, and efficient infrastructure, we develop estates that offer a high quality of life and a strong sense of community for residents.</p>
+                                    <h3 class="mb-4">In estate development, ROYAL REFUGE HOMES Ltd excels at transforming raw land into vibrant, livable communities. We manage the entire development process, from land acquisition and planning to infrastructure development and construction. Our approach is holistic, ensuring that every aspect of the estate is thoughtfully designed and executed to create harmonious and sustainable living environments. By integrating modern amenities, green spaces, and efficient infrastructure, we develop estates that offer a high quality of life and a strong sense of community for residents.</p>
 
                                 </div>
                             </div>
@@ -476,7 +476,7 @@
                         <div class="btn-square bg-white border rounded-circle">
                             <i class="fa fa-quote-right fa-2x text-primary"></i>
                         </div>
-                        “Keep it up STRIDDERR, I got my projects fixed.”
+                        “Keep it up ROYAL REFUGE, I got my projects fixed.”
                     </div>
                     <img class="rounded-circle mb-3" src="{{asset('dist/landing/img/download (1).png')}}" alt="">
                     <h4>Realty Plus</h4>

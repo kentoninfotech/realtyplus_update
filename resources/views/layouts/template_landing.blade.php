@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>STRIDDERR Global Services</title>
+    <title>Royal Refuge Homes</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="Information Systems Solution Ltd (kenton)
         Information technology solutions,IT consulting,Software development
@@ -52,7 +52,7 @@
                 <small class="ms-4"><i class="fa fa-clock text-primary me-2"></i>9.00 am - 5.00 pm</small>
             </div>
             <div class="col-lg-6 px-5 text-end">
-                <small><i class="fa fa-envelope text-primary me-2"></i>info@stridderr.com.ng</small>
+                <small><i class="fa fa-envelope text-primary me-2"></i>info@Royal Refuge.com.ng</small>
                 <small class="ms-4"><i class="fa fa-phone-alt text-primary me-2"></i>+234 803 507 3028</small>
             </div>
         </div>
@@ -74,10 +74,10 @@
                     <a href="{{ route('home') }}" class="nav-item nav-link">Dashboard</a>
                 </div>
                 <div class="d-none d-lg-flex ms-2">
-                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://facebook.com/stridderr">
+                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://facebook.com/Royal Refuge">
                         <small class="fab fa-facebook-f text-primary"></small>
                     </a>
-                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://twitter.com/stridderr">
+                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://twitter.com/Royal Refuge">
                         <small class="fab fa-twitter text-primary"></small>
                     </a>
                     <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://www.linkedin.com/in/clement-george-3b880219b">
@@ -99,11 +99,11 @@
                     <h4 class="text-white mb-4">Our Office</h4>
                     <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Berger, Abuja</p>
                     <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+234 803 507 3028</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@stridderr.com.ng</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@Royal Refuge.com.ng</p>
                     <div class="d-flex pt-2">
-                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://twitter.com/stridderr"><i
+                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://twitter.com/Royal Refuge"><i
                                 class="fab fa-twitter"></i></a>
-                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://facebook.com/stridderr"><i
+                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://facebook.com/Royal Refuge"><i
                                 class="fab fa-facebook-f"></i></a>
                     </div>
                 </div>
@@ -123,7 +123,7 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-white mb-4">Get updates</h4>
-                    <p>Subscribe to Stridderr Updates</p>
+                    <p>Subscribe to Royal Refuge Updates</p>
                     <div class="position-relative w-100">
                         <input class="form-control bg-white border-0 w-100 py-3 ps-4 pe-5" type="text"
                             placeholder="Your email">
@@ -141,7 +141,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="https://stridderr.com.ng/">Stridderr Global Services Ltd</a>, All Right Reserved. <a href="{{url('home')}}">ADMIN</a>
+                    &copy; <a class="border-bottom" href="https://Royal Refuge.com.ng/">Royal Refuge Homes Ltd</a>, All Right Reserved. <a href="{{url('home')}}">ADMIN</a>
                 </div>
 
             </div>

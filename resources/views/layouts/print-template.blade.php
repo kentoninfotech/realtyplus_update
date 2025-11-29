@@ -9,10 +9,11 @@
 
 
 </head>
-<body>
+<body onload="window.print()">
+                <div style="text-align: center !important"><img src="{{asset('dist/img/banner.png')}}" alt="kenton" height="200" width="auto"></div>
 
 
-
+    
 
     <section class="content">
         @yield('content')

@@ -44,6 +44,8 @@ class AppServiceProvider extends ServiceProvider
                     //    ->whereNotIn('user_type', ['client', 'supplier', 'labourer'])
                        ->whereIn('user_type', ['admin', 'worker', 'staff', 'contractor'])
                        ->get());
+                            $view->with('businessgroups',businessgroups::select('id','businessgroup_name')->get());
+
 
                 $view->with('userbusinesses',Business::select('id','business_name')->where('user_id', Auth::user()->id)->orWhere('id', $businessId)->get());
 
@@ -55,7 +57,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with('business', Business::first());
             }
 
-            $view->with('businessgroups',businessgroups::select('id','businessgroup_name')->get());
+            // $view->with('businessgroups',businessgroups::select('id','businessgroup_name')->get());
 
             // if you need to access in controller and views:
             // Config::set('something', $something);

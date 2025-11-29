@@ -40,7 +40,10 @@ class PropertyTransaction extends Model
 
     public function payer()
     {
-        return $this->morphTo();
+        // return $this->morphTo();
+        // I want it to link to Tenant, Owner, or Agent based on payer_type
+        return $this->morphTo(__FUNCTION__, 'payer_type', 'payer_id');
+
     }
 
     // public function payments()

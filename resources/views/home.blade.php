@@ -2,7 +2,6 @@
 @php
     $pagetype = 'Dashboard';
 @endphp
-
 @section('content')
     <div class="content-header">
         <div class="container-fluid">

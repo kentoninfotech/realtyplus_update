@@ -567,7 +567,7 @@
                     <div class="card-header border-0">
                         <div class="d-flex justify-content-between align-items-center bg-white">
                             <div>
-                                <h5 class="mb-0">Leases</h5>
+                                <h5 class="mb-0">Leases/Rents</h5>
                             </div>
                             <div class="mr-0">
                                 <a href="{{ route('property.leases', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->leases->count() }})</a>

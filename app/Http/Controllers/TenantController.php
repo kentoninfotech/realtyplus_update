@@ -40,7 +40,9 @@ class TenantController extends Controller
      */
     public function showTenant($id)
     {
-        //
+        // Show tenant details
+        $tenant = Tenant::with('user')->findOrFail($id);
+        return view('personnel.tenants.view-tenant', compact('tenant'));
     }
     /**
      * Store a new Tenant.

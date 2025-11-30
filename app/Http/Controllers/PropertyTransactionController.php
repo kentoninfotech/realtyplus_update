@@ -125,7 +125,8 @@ class PropertyTransactionController extends Controller
     public function showTransaction($id)
     {
         $transaction = PropertyTransaction::findOrFail($id);
-        return view('properties.transactions.show-transaction', compact('transaction'));
+        $page_title = "Rent Payment Receipt";
+        return view('properties.transactions.show-transaction', compact('transaction','page_title'));
     }
     /**
      * search for payers,

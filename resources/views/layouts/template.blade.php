@@ -626,7 +626,7 @@
                                     Create New Business</i></small></label>
                     </div>
 
-                    <!-- {{--
+                    
                      
                     <form method="POST" action="{{ route('settings') }}" id="settingsform"
                         enctype="multipart/form-data">
@@ -638,24 +638,11 @@
 
                         <input type="hidden" name="oldbackground" value="{{ Auth::user()->businesses->background }}">
 
-                        <input type="hidden" name="newministry" id="newministry" value="">
+                       
 
                         <div class="form-group">
-                            <label for="ministrygroup_id" class="control-label ">Ministry Group/Headquarter</label>
-                            <select class="form-control" name="ministrygroup_id" id="ministrygroup_id">
-                                <option value="{{ $businesses->businessgroup_id }}" selected>
-                                     $businessgroups->where('id', $businesses->businessgroup_id)->first()->businessgroup_name 
-                                </option>
-                                @foreach ($businessgroups as $mg)
-                                    <option value="{{ $mg->id }}">{{ $mg->businessgroup_name }}</option>
-                                @endforeach
-
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="ministry_name">Ministry / Church Name</label>
-                            <input type="text" name="ministry_name" id="ministry_name" class="form-control"
+                            <label for="business_name">Business Name</label>
+                            <input type="text" name="business_name" id="business_name" class="form-control"
                                 value="{{ Auth::user()->businesses->business_name }}">
                         </div>
 
@@ -693,7 +680,12 @@
                         <div class="form-group">
                             <label for="user_id" class="control-label ">Admin User</label>
                             <select class="form-control" name="user_id" id="user_id">
-                                <option value="{{ Auth::user()->businesses->user_id }}" selected>{{ Auth::user()->businesses->user->name }}
+                                <option value="{{ Auth::user()->businesses->user_id }}" selected>
+                                    @if(Auth::user()->businesses->user)
+                                        {{ Auth::user()->businesses->user->name }}
+                                    @else
+                                        Select Admin User
+                                    @endif
                                 </option>
                                 @foreach ($staff as $hm)
                                     <option value="{{ $hm->id }}">{{ $hm->name }}</option>
@@ -719,7 +711,7 @@
 
 
                     </form>
-                    --}} -->
+                    
 
                 </div>
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Client;
 use App\Models\projects;
+use App\Models\Business;
 use Illuminate\Support\Facades\Auth;
 
 // To be used for registration
@@ -185,15 +186,17 @@ class HomeController extends Controller
         }
 
 
-        settings::updateOrCreate(['id'=>$request->id],[
-            'ministry_name' => $request->ministry_name,
+        Business::updateOrCreate(['id'=>$request->id],[
+            'business_name' => $request->ministry_name,
             'motto' => $request->motto,
             'logo' => $logo,
             'address' => $request->address,
             'background' => $background,
+            'primary_color'=>$request->primary_color,
+            'secondary_color'=>$request->secondary_color,
             'mode'=>$request->mode,
-            'color'=>$request->color,
-            'ministrygroup_id'=>$request->ministrygroup_id,
+            'deployment_type'=>$request->deployment_type,
+            // 'businessgroup_id'=>$request->ministrygroup_id,
             'user_id'=>$request->user_id
         ]);
 

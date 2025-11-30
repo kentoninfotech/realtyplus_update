@@ -672,9 +672,15 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="color">Choose System Colour</label>
-                            <input type="color" name="color" id="color" class="form-control"
-                                value="{{ Auth::user()->businesses->color }}">
+                            <label for="primary_color">Choose Primary Colour</label>
+                            <input type="color" name="primary_color" id="primary_color" class="form-control"
+                                value="{{ Auth::user()->businesses->primary_color }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="secondary_color">Choose Secondary Colour</label>
+                            <input type="color" name="secondary_color" id="secondary_color" class="form-control"
+                                value="{{ Auth::user()->businesses->secondary_color }}">
                         </div>
 
                         <div class="form-group">
@@ -698,8 +704,17 @@
                             <label for="mode">Mode</label>
                             <select class="form-control" name="mode" id="mode">
                                 <option value="{{ $businesses->mode }}">{{ Auth::user()->businesses->mode }}</option>
-                                <option value="inactive" selected>Active</option>
+                                <option value="Active" selected>Active</option>
                                 <option value="Maintenance">Maintenance</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="deployment_type">Mode</label>
+                            <select class="form-control" name="deployment_type" id="deployment_type">
+                                <option value="{{ $businesses->deployment_type }}">{{ Auth::user()->businesses->deployment_type }}</option>
+                                <option value="On-Premise" selected>On-Premise</option>
+                                <option value="Cloud">Cloud</option>
                             </select>
                         </div>
 

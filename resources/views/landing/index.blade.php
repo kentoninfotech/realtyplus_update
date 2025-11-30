@@ -16,7 +16,7 @@
                                     <p
                                         class="d-inline-block border border-white rounded text-primary fw-semi-bold py-1 px-3 animated slideInDown">
                                         Welcome to THE ROYAL REFUGE LTD</p>
-                                    <h1 class="display-1 mb-4 animated slideInDown">...Building, Construction, Real Estate
+                                    <h1 class="display-1 mb-4 animated slideInDown" style="text-shadow:2px 2px white;">...Building, Construction, Real Estate
                                     </h1>
                                 </div>
                             </div>
@@ -32,7 +32,7 @@
                                     <p
                                         class="d-inline-block border border-white rounded text-primary fw-semi-bold py-1 px-3 animated slideInDown">
                                         Welcome to THE ROYAL REFUGE LTD</p>
-                                    <h1 class="display-1 mb-4 animated slideInDown">Real Estate Developers</h1>
+                                    <h1 class="display-1 mb-4 animated slideInDown" style="text-shadow:2px 2px white;">Real Estate Developers</h1>
                                 </div>
                             </div>
                         </div>

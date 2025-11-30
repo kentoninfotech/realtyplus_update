@@ -52,7 +52,7 @@
                 <small class="ms-4"><i class="fa fa-clock text-primary me-2"></i>9.00 am - 5.00 pm</small>
             </div>
             <div class="col-lg-6 px-5 text-end">
-                <small><i class="fa fa-envelope text-primary me-2"></i>info@Royal Refuge.com.ng</small>
+                <small><i class="fa fa-envelope text-primary me-2"></i>info@royalrefuge.com.ng</small>
                 <small class="ms-4"><i class="fa fa-phone-alt text-primary me-2"></i>+234 803 507 3028</small>
             </div>
         </div>
@@ -97,13 +97,13 @@
             <div class="row g-5">
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-white mb-4">Our Office</h4>
-                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Berger, Abuja</p>
-                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+234 803 507 3028</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@Royal Refuge.com.ng</p>
+                    <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Mabushi, Abuja</p>
+                    <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>++234(0) 908 741 5600</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@royalrefuge.com.ng</p>
                     <div class="d-flex pt-2">
-                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://twitter.com/Royal Refuge"><i
+                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://twitter.com/royalrefuge"><i
                                 class="fab fa-twitter"></i></a>
-                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://facebook.com/Royal Refuge"><i
+                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://facebook.com/royalrefuge"><i
                                 class="fab fa-facebook-f"></i></a>
                     </div>
                 </div>
@@ -141,7 +141,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="https://Royal Refuge.com.ng/">Royal Refuge Homes Ltd</a>, All Right Reserved. <a href="{{url('home')}}">ADMIN</a>
+                    &copy; <a class="border-bottom" href="https://royalrefuge.com.ng/">Royal Refuge Homes Ltd</a>, All Right Reserved. <a href="{{url('home')}}">ADMIN</a>
                 </div>
 
             </div>

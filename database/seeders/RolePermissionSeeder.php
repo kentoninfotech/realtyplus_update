@@ -35,7 +35,7 @@ class RolePermissionSeeder extends Seeder
             'view property', 'create property', 'edit property', 'delete property',
             'view tenant', 'create tenant', 'edit tenant', 'delete tenant',
             'view agent', 'create agent', 'edit agent', 'delete agent',
-            'manage businesses', // Admin exception
+            'manage businesses', 'create maintenance_request', // Admin exception
         ];
 
         foreach ($permissions as $permission) {

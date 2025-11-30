@@ -13,6 +13,7 @@ use App\Models\Tenant;
 use App\Models\Property;
 use App\Models\PropertyUnit;
 use App\Models\MaintenanceRequest;
+use App\Models\Business;
 use App\Http\Requests\CreatePropertyTransactionRequest;
 use App\Http\Requests\UpdatePropertyTransactionRequest;
 
@@ -158,6 +159,23 @@ class PropertyTransactionController extends Controller
         $transaction = PropertyTransaction::findOrFail($id);
         $transaction->delete();
         return redirect()->route('property.transaction')->with('message', 'Transaction deleted successful!');
+    }
+
+    /**
+     * Generate and display transaction receipt (printable/saveable as PDF)
+     */
+    public function generateReceiptPdf($id)
+    {
+        $transaction = PropertyTransaction::with('payer', 'transactionable')->findOrFail($id);
+        
+        // Load additional relationships based on transactionable type
+        if ($transaction->transactionable_type === 'App\\Models\\Lease') {
+            $transaction->load('transactionable.tenant', 'transactionable.property');
+        }
+        
+        $business = Business::find(auth()->user()->business_id) ?? Business::first();
+
+        return view('properties.transactions.receipt', compact('transaction', 'business'));
     }
 
 }

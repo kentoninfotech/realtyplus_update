@@ -116,6 +116,7 @@ Route::get('property/transactions', [App\Http\Controllers\PropertyTransactionCon
 Route::get('properties/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'newTransaction'])->name('new.transaction');
 Route::post('properties/transaction', [App\Http\Controllers\PropertyTransactionController::class, 'createTransaction'])->name('create.transaction');
 Route::get('property/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'showTransaction'])->name('show.transaction');
+Route::get('property/transactions/{id}/receipt-pdf', [App\Http\Controllers\PropertyTransactionController::class, 'generateReceiptPdf'])->name('receipt.pdf');
 Route::get('properties/transactions/{id}/edit', [App\Http\Controllers\PropertyTransactionController::class, 'editTransaction'])->name('edit.transaction');
 Route::put('properties/transaction/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'updateTransaction'])->name('update.transaction');
 Route::get('leases/{id}/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'addLeaseTransaction'])->name('add.lease.transaction');

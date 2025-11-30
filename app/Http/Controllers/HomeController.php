@@ -33,7 +33,7 @@ class HomeController extends Controller
         if (Auth()->user()->hasRole('Client')){
             $projects = projects::where('client_id',Auth()->user()->id)->with('milestones:project_id,status')->get(['id','title', 'status']);
             return view('home')->with(['projects'=>$projects]);
-        }
+        }        
 
         $projects = projects::with('milestones:project_id,status')->get(['id','title', 'status']);
         return view('home')->with(['projects'=>$projects]);

@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Realty Plus | Dashboard</title>
+    <title>The Royal Refuge Ltd| Dashboard</title>
 
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
 
@@ -54,7 +54,7 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ asset('dist/img/realtyplus_logo.png') }}" alt="RealtyPlus"
+            <img class="animation__shake" src="{{ asset('public/images/'.$business->logo) }}" alt="RealtyPlus"
                 height="60" width="60">
         </div>
 
@@ -164,9 +164,9 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ '/home' }}" class="brand-link">
-                <img src="{{ asset('dist/img/realtyplus_logo.png') }}" alt="RealtyPlus"
-                    class="brand-image img-circle elevation-3" style="opacity: .8">
-                <span class="brand-text font-weight-light">Realty Plus</span>
+                <img src="{{ asset('public/images/'.$business->logo) }}" alt="RealtyPlus"
+                    class="elevation-3" style="opacity: .8" height="50"> <br>
+                <span class="brand-text font-weight-light">{{$business->business_name}}</span>
             </a>
 
             <!-- Sidebar -->
@@ -637,9 +637,6 @@
                         <input type="hidden" name="oldlogo" value="{{ Auth::user()->businesses->logo }}">
 
                         <input type="hidden" name="oldbackground" value="{{ Auth::user()->businesses->background }}">
-
-                       
-
                         <div class="form-group">
                             <label for="business_name">Business Name</label>
                             <input type="text" name="business_name" id="business_name" class="form-control"

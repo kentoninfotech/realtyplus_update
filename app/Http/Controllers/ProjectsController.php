@@ -41,13 +41,6 @@ class ProjectsController extends Controller
         return view('projects')->with(['projects' => $projects]);
     }
 
-
-    public function landing()
-    {
-        $project_files = project_files::where('featured','Yes')->get();
-        return view('landing.index')->with(['projects'=>$project_files]);
-    }
-
     /**
      * Show the form for creating a new resource.
      *

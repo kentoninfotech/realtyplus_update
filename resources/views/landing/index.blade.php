@@ -8,14 +8,14 @@
         <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img class="w-100" src="{{asset('dist/landing/img/carousel-2.jpg')}}" alt="Image">
+                    <img class="w-100" src="{{asset('dist/landing/img/home.jpg')}}" height="500" alt="Image">
                     <div class="carousel-caption">
                         <div class="container">
                             <div class="row justify-content-start">
                                 <div class="col-lg-8">
                                     <p
                                         class="d-inline-block border border-white rounded text-primary fw-semi-bold py-1 px-3 animated slideInDown">
-                                        Welcome to ROYAL REFUGE HOMES</p>
+                                        Welcome to THE ROYAL REFUGE LTD</p>
                                     <h1 class="display-1 mb-4 animated slideInDown">...Building, Construction, Real Estate
                                     </h1>
                                 </div>
@@ -24,15 +24,15 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img class="w-100" src="{{asset('dist/landing/img/carousel-1.jpg')}}" alt="Image">
+                    <img class="w-100" src="{{asset('dist/landing/img/carousel-1.jpg')}}" height="500" alt="Image">
                     <div class="carousel-caption">
                         <div class="container">
                             <div class="row justify-content-start">
                                 <div class="col-lg-7">
                                     <p
                                         class="d-inline-block border border-white rounded text-primary fw-semi-bold py-1 px-3 animated slideInDown">
-                                        Welcome to STRIDDER HOMES</p>
-                                    <h1 class="display-1 mb-4 animated slideInDown">Building Construction</h1>
+                                        Welcome to THE ROYAL REFUGE LTD</p>
+                                    <h1 class="display-1 mb-4 animated slideInDown">Real Estate Developers</h1>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +51,52 @@
     </div>
     <!-- Carousel End -->
 
-
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                <p class="d-inline-block border rounded text-primary fw-semi-bold py-1 px-3">Available Properties</p>
+                <h1 class="display-5 mb-5">Explore Our Available Properties</h1>
+            </div>
+            <div class="row g-4">
+                @foreach ($properties as $property)
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="service-item rounded overflow-hidden">
+                        <div class="position-relative overflow-hidden">
+                            @if(isset($property->images) && $property->images->count() > 0)
+                                @php
+                                    // Check if there is a featured image
+                                    $featuredImage = $property->images->firstWhere('is_featured', 1);
+                                    // If no featured image, get the first image
+                                    if (!$featuredImage) {
+                                        $featuredImage = $property->images->first();
+                                    }
+                                @endphp
+                                <img class="img-fluid" src="{{ asset('public/'.$featuredImage->image_path) }}" style="height: 280px; width: 100%;" alt="Royal Refuge Property">
+                            @else
+                                <img class="img-fluid" src="{{ asset('dist/landing/img/placeholder.jpg') }}" style="height: 280px; width: 100%;" alt="No Image Available">
+                            @endif
+                            <div
+                                class="service-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center">
+                                <h3 class="text-white mb-3">{{ $property->name }}</h3>
+                                <a class="btn btn-primary" href="{{ route('properties', $property->id) }}">Read More</a>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h5 class="mb-3">{{ $property->name }}</h5>
+                            <p>{{ Str::limit($property->address, 100) }}, {{ $property->state }}</p>
+                            @if($property->listing_type == 'rent')
+                            <span class="text-primary">Rent: ₦{{ number_format($property->rent_price, 0) }} /year</span>
+                            @else
+                            <span class="text-primary">Sale Price: ₦{{ number_format($property->sale_price, 0) }}</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+    
     <!-- About Start -->
     <div class="container-xxl py-5" id="about">
         <div class="container">
@@ -64,7 +109,7 @@
                     <h1 class="display-5 mb-4">We provide cutting-edge building and infrastructures</h1>
                     <p class="mb-4">
                        <br>
-                       At ROYAL REFUGE HOMES Ltd, we pride ourselves on being a leading force in the construction industry, dedicated to building high-quality homes and providing exceptional architectural services. With years of experience under our belt, our team of skilled professionals is committed to transforming your vision into reality. We believe that every project we undertake is a testament to our unwavering dedication to excellence, innovation, and craftsmanship. From conceptual design to project completion, we ensure that every detail is meticulously planned and executed, delivering results that exceed our clients' expectations.
+                       At ROYAL REFUGE LTD, we pride ourselves on being a leading force in the construction industry, dedicated to building high-quality homes and providing exceptional architectural services. With years of experience under our belt, our team of skilled professionals is committed to transforming your vision into reality. We believe that every project we undertake is a testament to our unwavering dedication to excellence, innovation, and craftsmanship. From conceptual design to project completion, we ensure that every detail is meticulously planned and executed, delivering results that exceed our clients' expectations.
 
                     </p>
                     <div class="border rounded p-4">

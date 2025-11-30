@@ -9,6 +9,8 @@ use App\Http\Requests\UpdatetasksRequest;
 use Illuminate\Http\Request;
 use App\Models\task_workers;
 use App\Models\categories;
+use App\Models\project_files;
+use App\Models\Property;
 
 class TasksController extends Controller
 {
@@ -194,6 +196,13 @@ class TasksController extends Controller
     public function update(UpdatetasksRequest $request, tasks $tasks)
     {
         //
+    }
+
+    public function landing()
+    {
+        $project_files = project_files::where('featured','Yes')->get();
+        $properties = Property::where('status','available')->get();
+        return view('landing.index')->with(['projects'=>$project_files, 'properties'=>$properties]);
     }
 
     /**

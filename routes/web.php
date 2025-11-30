@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [App\Http\Controllers\ProjectsController::class, 'landing']);
+Route::get('/', [App\Http\Controllers\TasksController::class, 'landing']);
 
 
 

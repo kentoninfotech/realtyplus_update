@@ -23,6 +23,10 @@ class TransactionService
         'deposit',
         'maintenance_expense',
         'refund',
+        'Service Charge',
+        'Diesel Deposit',
+        'Caution Fees',
+        'Others'
     ];
 
     /**

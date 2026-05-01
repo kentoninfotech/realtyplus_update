@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Royal Refuge Homes</title>
+    <title>RealtyPlus</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="" name="Information Systems Solution Ltd (kenton)
         Information technology solutions,IT consulting,Software development
@@ -11,7 +11,11 @@
     <meta content="" name="At Kenton Ltd., we prioritize customer satisfaction, quality, and innovation. We are committed to delivering solutions that drive operational efficiency, improve productivity, and fuel growth for our clients. With our expertise and dedication, we strive to be a trusted partner for organizations seeking to harness the power of information systems to thrive in an increasingly digital world.">
 
     <!-- Favicon -->
-    <link href="img/k.png" rel="icon">
+    @if(!empty($appFavicon) && file_exists(public_path($appFavicon)))
+        <link rel="icon" type="image/x-icon" href="{{ asset($appFavicon) }}">
+    @else
+        <link href="img/k.png" rel="icon">
+    @endif
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -23,6 +27,9 @@
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Main App CSS -->
+    <link href="{{asset('css/app.css')}}" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
     <link href="{{asset('dist/landing/lib/animate/animate.min.css')}}" rel="stylesheet">
@@ -52,14 +59,20 @@
                 <small class="ms-4"><i class="fa fa-clock text-primary me-2"></i>9.00 am - 5.00 pm</small>
             </div>
             <div class="col-lg-6 px-5 text-end">
-                <small><i class="fa fa-envelope text-primary me-2"></i>info@royalrefuge.com.ng</small>
+                <small><i class="fa fa-envelope text-primary me-2"></i>info@RealtyPlus.com.ng</small>
                 <small class="ms-4"><i class="fa fa-phone-alt text-primary me-2"></i>+234(0) 908 741 5600</small>
             </div>
         </div>
 
         <nav class="navbar navbar-expand-lg navbar-light py-lg-0 px-lg-5 wow fadeIn" data-wow-delay="0.1s">
             <a href="index.html" class="navbar-brand ms-4 ms-lg-0">
-                <h1 class="display-5 text-primary m-0"><img src="{{asset('dist/landing/img/logo.png')}}" alt="kenton" height="50" width="auto"></h1>
+                <h1 class="display-5 text-primary m-0">
+                    @if(!empty($appLogo) && file_exists(public_path($appLogo)))
+                        <img src="{{ asset($appLogo) }}" alt="{{ $appName ?? 'RealtyPlus' }}" height="50" width="auto">
+                    @else
+                        <img src="{{asset('dist/landing/img/logo.png')}}" alt="kenton" height="50" width="auto">
+                    @endif
+                </h1>
             </a>
             <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse"
                 data-bs-target="#navbarCollapse">
@@ -74,10 +87,10 @@
                     <a href="{{ route('home') }}" class="nav-item nav-link">Dashboard</a>
                 </div>
                 <div class="d-none d-lg-flex ms-2">
-                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://facebook.com/Royal Refuge">
+                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://facebook.com/RealtyPlus">
                         <small class="fab fa-facebook-f text-primary"></small>
                     </a>
-                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://twitter.com/Royal Refuge">
+                    <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://twitter.com/RealtyPlus">
                         <small class="fab fa-twitter text-primary"></small>
                     </a>
                     <a class="btn btn-light btn-sm-square rounded-circle ms-3" href="https://www.linkedin.com/in/clement-george-3b880219b">
@@ -99,11 +112,11 @@
                     <h4 class="text-white mb-4">Our Office</h4>
                     <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>Mabushi, Abuja</p>
                     <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>++234(0) 908 741 5600</p>
-                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@royalrefuge.com.ng</p>
+                    <p class="mb-2"><i class="fa fa-envelope me-3"></i>info@RealtyPlus.com.ng</p>
                     <div class="d-flex pt-2">
-                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://twitter.com/royalrefuge"><i
+                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://twitter.com/RealtyPlus"><i
                                 class="fab fa-twitter"></i></a>
-                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://facebook.com/royalrefuge"><i
+                        <a class="btn btn-square btn-outline-light rounded-circle me-2" href="https://facebook.com/RealtyPlus"><i
                                 class="fab fa-facebook-f"></i></a>
                     </div>
                 </div>
@@ -123,7 +136,7 @@
                 </div>
                 <div class="col-lg-3 col-md-6">
                     <h4 class="text-white mb-4">Get updates</h4>
-                    <p>Subscribe to Royal Refuge Updates</p>
+                    <p>Subscribe to RealtyPlus Updates</p>
                     <div class="position-relative w-100">
                         <input class="form-control bg-white border-0 w-100 py-3 ps-4 pe-5" type="text"
                             placeholder="Your email">
@@ -141,7 +154,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    &copy; <a class="border-bottom" href="https://royalrefuge.com.ng/">Royal Refuge Homes Ltd</a>, All Right Reserved. <a href="{{url('home')}}">ADMIN</a>
+                    &copy; <a class="border-bottom" href="https://RealtyPlus.com.ng/">RealtyPlus Ltd</a>, All Right Reserved. <a href="{{url('home')}}">ADMIN</a>
                 </div>
 
             </div>
@@ -154,7 +167,7 @@
 
 
     <!-- JavaScript Libraries -->
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{{asset('dist/landing/js/jquery.min.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="{{asset('dist/landing/lib/wow/wow.min.js')}}"></script>
     <script src="{{asset('dist/landing/lib/easing/easing.min.js')}}"></script>

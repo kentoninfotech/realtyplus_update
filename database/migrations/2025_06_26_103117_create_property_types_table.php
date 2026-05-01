@@ -15,13 +15,16 @@ class CreatePropertyTypesTable extends Migration
     {
         Schema::create('property_types', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
-            $table->string('name')->unique();
+            $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
+            $table->string('name');
             $table->text('description')->nullable();
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->boolean('is_residential')->default(true);
             $table->boolean('can_have_multiple_units')->default(false);
             $table->timestamps();
+
+            $table->unique(['business_id', 'name']);
+            $table->unique(['business_id', 'slug']);
         });
     }
 

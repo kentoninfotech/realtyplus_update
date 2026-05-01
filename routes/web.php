@@ -6,19 +6,60 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
 */
 
-Route::get('/', [App\Http\Controllers\TasksController::class, 'landing']);
+// PUBLIC LANDING
+Route::get('/', [App\Http\Controllers\LandingController::class, 'index'])->name('landing');
+Route::post('/feedback', [App\Http\Controllers\LandingController::class, 'feedback'])->name('landing.feedback');
 
+// REGISTRATION (business sign-up)
+Route::get('/register', [App\Http\Controllers\Auth\RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [App\Http\Controllers\Auth\RegisterController::class, 'register'])->name('register.submit');
+Route::get('/register/success', [App\Http\Controllers\Auth\RegisterController::class, 'showSuccess'])->name('register.success');
+Route::get('/activate/{token}', [App\Http\Controllers\Auth\ActivationController::class, 'activate'])->name('activate');
+Route::post('/activate/resend', [App\Http\Controllers\Auth\ActivationController::class, 'resend'])->name('activate.resend');
 
+// HOME (tenant)
+Route::middleware(['auth', 'tenant'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// HOME
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    // Business Settings (per-tenant branding, contact, invoice, tax)
+    Route::get('/business-settings', [App\Http\Controllers\BusinessSettingsController::class, 'edit'])->name('business-settings.edit');
+    Route::post('/business-settings', [App\Http\Controllers\BusinessSettingsController::class, 'update'])->name('business-settings.update');
+});
+
+// SUPER ADMIN CONSOLE
+Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmin.')->group(function () {
+    Route::get('/', [App\Http\Controllers\SuperAdmin\DashboardController::class, 'index'])->name('dashboard');
+
+    // Plans
+    Route::resource('plans', App\Http\Controllers\SuperAdmin\PlanController::class)->except(['show']);
+
+    // Landing CMS
+    Route::get('landing', [App\Http\Controllers\SuperAdmin\LandingContentController::class, 'index'])->name('landing.index');
+    Route::get('landing/create', [App\Http\Controllers\SuperAdmin\LandingContentController::class, 'create'])->name('landing.create');
+    Route::post('landing', [App\Http\Controllers\SuperAdmin\LandingContentController::class, 'store'])->name('landing.store');
+    Route::get('landing/{landing}/edit', [App\Http\Controllers\SuperAdmin\LandingContentController::class, 'edit'])->name('landing.edit');
+    Route::put('landing/{landing}', [App\Http\Controllers\SuperAdmin\LandingContentController::class, 'update'])->name('landing.update');
+    Route::delete('landing/{landing}', [App\Http\Controllers\SuperAdmin\LandingContentController::class, 'destroy'])->name('landing.destroy');
+
+    // Accounts
+    Route::get('accounts', [App\Http\Controllers\SuperAdmin\AccountController::class, 'index'])->name('accounts.index');
+    Route::get('accounts/{business}', [App\Http\Controllers\SuperAdmin\AccountController::class, 'show'])->name('accounts.show');
+    Route::post('accounts/{business}/activate', [App\Http\Controllers\SuperAdmin\AccountController::class, 'activate'])->name('accounts.activate');
+    Route::post('accounts/{business}/suspend', [App\Http\Controllers\SuperAdmin\AccountController::class, 'suspend'])->name('accounts.suspend');
+    Route::delete('accounts/{business}', [App\Http\Controllers\SuperAdmin\AccountController::class, 'destroy'])->name('accounts.destroy');
+
+    // Feedback
+    Route::get('feedback', [App\Http\Controllers\SuperAdmin\FeedbackController::class, 'index'])->name('feedback.index');
+    Route::get('feedback/{feedback}', [App\Http\Controllers\SuperAdmin\FeedbackController::class, 'show'])->name('feedback.show');
+    Route::put('feedback/{feedback}', [App\Http\Controllers\SuperAdmin\FeedbackController::class, 'respond'])->name('feedback.respond');
+    Route::delete('feedback/{feedback}', [App\Http\Controllers\SuperAdmin\FeedbackController::class, 'destroy'])->name('feedback.destroy');
+
+    // App Branding (logo, favicon, name)
+    Route::get('app-settings', [App\Http\Controllers\SuperAdmin\AppSettingsController::class, 'edit'])->name('app-settings.edit');
+    Route::post('app-settings', [App\Http\Controllers\SuperAdmin\AppSettingsController::class, 'update'])->name('app-settings.update');
+});
 
 // CLIENTS
 Route::get('clients', [App\Http\Controllers\HomeController::class, 'clients'])->name('clients');
@@ -255,4 +296,4 @@ Route::post('/settings', [App\Http\Controllers\HomeController::class, 'settings'
 //LOGOUT
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class,'logout']);
 
-Auth::routes();
+Auth::routes(['register' => false, 'verify' => true]);

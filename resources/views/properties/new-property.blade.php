@@ -31,8 +31,11 @@
     </div>
 
     <div class="card card-primary">
-        <div class="card-header">
-            <h4 class="card-title">Property Form</h4>
+        <div class="card-header d-flex align-items-center">
+            <h4 class="card-title mb-0">Property Form</h4>
+            <button type="button" class="btn btn-sm btn-outline-info ml-auto" data-toggle="modal" data-target="#propertyFormGuide">
+                <i class="fas fa-question-circle"></i> User Guide
+            </button>
         </div>
         <div class="card-body">
             <form action="{{ route('create.property') }}" method="post">
@@ -223,11 +226,16 @@
                 </div>
 
                 {{-- Section 4: Pricing & Listing Details --}}
-                <div class="card card-secondary card-outline mt-3">
+                <div class="card card-secondary card-outline collapsed-card mt-3">
                     <div class="card-header">
                         <h3 class="card-title">Pricing & Listing Details</h3>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Expand">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="display:none;">
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="year_built">Year Built</label>
@@ -310,6 +318,100 @@
 
                 <button type="submit" class="btn btn-primary mt-3">Add Property</button>
             </form>
+        </div>
+    </div>
+
+    {{-- User Guide Modal --}}
+    <div class="modal fade" id="propertyFormGuide" tabindex="-1" role="dialog" aria-labelledby="propertyFormGuideLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-info">
+                    <h5 class="modal-title" id="propertyFormGuideLabel"><i class="fas fa-book-open"></i> How to Fill the Property Form</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-muted">This guide explains every field on the form. Required fields are marked <span class="badge badge-danger">required</span>.</p>
+
+                    <h6 class="text-primary mt-3"><i class="fas fa-info-circle"></i> 1. Basic Property Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Property Type <span class="badge badge-danger">required</span></dt>
+                        <dd class="col-sm-8">Choose the category (e.g. Apartment, House, Land, Commercial). The form fields adapt to your selection — land properties show plot/zoning fields, residential ones show bedrooms/bathrooms.</dd>
+
+                        <dt class="col-sm-4">Property Name <span class="badge badge-danger">required</span></dt>
+                        <dd class="col-sm-8">A short, friendly label you'll recognise (e.g. “Villa 7, Lekki Phase 1”, “Block A — Garki”).</dd>
+
+                        <dt class="col-sm-4">Owner <span class="badge badge-danger">required</span></dt>
+                        <dd class="col-sm-8">The legal owner of the property. Your own company is auto-listed here from registration. Add new owners under <em>Clients → Owners</em>.</dd>
+
+                        <dt class="col-sm-4">Agent</dt>
+                        <dd class="col-sm-8">Optional. The agent managing this listing. Leave blank if not applicable.</dd>
+                    </dl>
+
+                    <h6 class="text-primary mt-3"><i class="fas fa-map-marker-alt"></i> 2. Location Details</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Address <span class="badge badge-danger">required</span></dt>
+                        <dd class="col-sm-8">Full street address (e.g. “12 Adeola Odeku Street”).</dd>
+                        <dt class="col-sm-4">State <span class="badge badge-danger">required</span></dt>
+                        <dd class="col-sm-8">Province or state (e.g. “Lagos”).</dd>
+                        <dt class="col-sm-4">Country <span class="badge badge-danger">required</span></dt>
+                        <dd class="col-sm-8">Country (e.g. “Nigeria”).</dd>
+                        <dt class="col-sm-4">Latitude / Longitude</dt>
+                        <dd class="col-sm-8">Optional GPS coordinates (decimal format, e.g. 6.4281, 3.4216). Useful for map views and search radius features.</dd>
+                    </dl>
+
+                    <h6 class="text-primary mt-3"><i class="fas fa-ruler-combined"></i> 3. Size & Unit Configuration</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Total Built Area (sqft)</dt>
+                        <dd class="col-sm-8">Sum of indoor floor area for the entire property.</dd>
+                        <dt class="col-sm-4">Lot Size (sqft)</dt>
+                        <dd class="col-sm-8">Total land area, including outdoor space.</dd>
+                        <dt class="col-sm-4">Multiple units toggle</dt>
+                        <dd class="col-sm-8">Tick this for duplexes, blocks of flats, estates with several apartments, etc. Leave unchecked for a single house, single shop, or one plot of land.</dd>
+                        <dt class="col-sm-4">Bedrooms / Bathrooms</dt>
+                        <dd class="col-sm-8">Shown for residential single-unit properties. Bathrooms accept halves (e.g. 2.5).</dd>
+                        <dt class="col-sm-4">Unit Area (sqm) / Zoning / Cadastral ID</dt>
+                        <dd class="col-sm-8">Shown for land-type single units. Cadastral ID is the unique parcel/plot number from the land registry.</dd>
+                        <dt class="col-sm-4">Total Units (estimated)</dt>
+                        <dd class="col-sm-8">For multi-unit properties: rough number of units. You'll add each unit individually from the property dashboard after saving.</dd>
+                    </dl>
+
+                    <h6 class="text-primary mt-3"><i class="fas fa-tags"></i> 4. Pricing & Listing Details <small class="text-muted">(collapsed by default — click “+” to expand)</small></h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Year Built</dt>
+                        <dd class="col-sm-8">Construction year (4-digit). Skip for land.</dd>
+                        <dt class="col-sm-4">Purchase Price</dt>
+                        <dd class="col-sm-8">What was paid to acquire the property. For internal records only.</dd>
+                        <dt class="col-sm-4">Sale Price</dt>
+                        <dd class="col-sm-8">Asking price if listing for sale.</dd>
+                        <dt class="col-sm-4">Rent Price</dt>
+                        <dd class="col-sm-8">Default rent (per period) if listing for rent. Becomes the rent for the only unit on single-unit properties.</dd>
+                        <dt class="col-sm-4">Listing Type <span class="badge badge-danger">required</span></dt>
+                        <dd class="col-sm-8">Sale, Rent, or Both. Controls how the property appears on listings.</dd>
+                        <dt class="col-sm-4">Date Acquired</dt>
+                        <dd class="col-sm-8">Date the owner took possession.</dd>
+                        <dt class="col-sm-4">Listed At</dt>
+                        <dd class="col-sm-8">When this listing should go live. Leave blank to publish immediately.</dd>
+                    </dl>
+
+                    <h6 class="text-primary mt-3"><i class="fas fa-list-ul"></i> 5. Description & Amenities</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Description</dt>
+                        <dd class="col-sm-8">Rich text describing condition, finishing, neighbourhood, etc. Use the toolbar for formatting.</dd>
+                        <dt class="col-sm-4">Amenities</dt>
+                        <dd class="col-sm-8">Tick every feature the property offers (parking, pool, security, gym, etc.). These appear as icons on the public listing.</dd>
+                    </dl>
+
+                    <div class="alert alert-info mt-3 mb-0">
+                        <i class="fas fa-lightbulb"></i>
+                        <strong>Tip:</strong> You can edit anything later. Save the property first, then upload images and configure individual units from the property dashboard.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Got it</button>
+                </div>
+            </div>
         </div>
     </div>
 

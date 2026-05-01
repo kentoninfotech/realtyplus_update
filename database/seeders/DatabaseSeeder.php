@@ -14,28 +14,29 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            RolePermissionSeeder::class,
+            SuperAdminSeeder::class,
+            PlansSeeder::class,
+            LandingContentSeeder::class,
             BusinessesTableSeeder::class,
-            RolePermissionSeeder::class, // Roles and permissions must be set up first 
-            UsersTableSeeder::class, // Users must exist first after business
+            UsersTableSeeder::class,
             PropertyTypesTableSeeder::class,
             PersonnelTableSeeder::class,
             ClientsTableSeeder::class,
             TenantsTableSeeder::class,
             AgentsTableSeeder::class,
             OwnersTableSeeder::class,
-            PropertiesTableSeeder::class, // Properties depend on PropertyTypes, Owners, Agents
+            PropertiesTableSeeder::class,
             AmenitiesTableSeeder::class,
-            PropertyAmenityTableSeeder::class, // Pivot table
-            LeasesTableSeeder::class, // Leases depend on Properties, PropertyUnits, Tenants
-            LeadsTableSeeder::class, // Leads depend on Agents
-            PropertyTransactionsTableSeeder::class, // Transactions can depend on Leases, Properties
-            ViewingsTableSeeder::class, // Viewings depend on Leads, Properties, PropertyUnits, Agents
-            DocumentsTableSeeder::class, // Documents depend on various models including Users
-            // PaymentsTableSeeder::class, // Payments depend on Leases, Transactions, Payers (Tenant, Client, Owner)
-            MaintenanceRequestsTableSeeder::class, // Depends on Properties, PropertyUnits, Users, Personnel
-            PropertyTasksTableSeeder::class, // Depends on various models including Users
-            UpdatePropertyFakeRecordSeeder::class, // Updates property total_units and has_units records
+            PropertyAmenityTableSeeder::class,
+            LeasesTableSeeder::class,
+            LeadsTableSeeder::class,
+            PropertyTransactionsTableSeeder::class,
+            ViewingsTableSeeder::class,
+            DocumentsTableSeeder::class,
+            MaintenanceRequestsTableSeeder::class,
+            PropertyTasksTableSeeder::class,
+            UpdatePropertyFakeRecordSeeder::class,
         ]);
-        // \App\Models\User::factory(10)->create();
     }
 }

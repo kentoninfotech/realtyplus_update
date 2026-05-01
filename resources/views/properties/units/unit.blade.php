@@ -20,7 +20,7 @@
     <div class="card card-widget widget-user">
         <!-- Add the bg color to the header using any of the bg-* classes -->
         <div class="widget-user-header text-white"
-            style="background: @if ($featuredImage) url({{ asset('public/' . $featuredImage->image_path) }}); background-size: cover; background-repeat: no-repeat;  @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
+            style="background: @if ($featuredImage) url({{ asset('' . $featuredImage->image_path) }}); background-size: cover; background-repeat: no-repeat;  @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
             <h1 class="text-right">{{ $unit->unit_number }}</h1>
             <h5 class="widget-user-desc text-right"><i class="nav-icon fas fa-map-marker-alt"></i> {{ $unit->property->address ?? '' }}, {{ $unit->property->state }}, {{ $unit->property->country }}
             </h5>
@@ -79,16 +79,16 @@
                         <div class="card">
                             <div class="card-body">
                                 @if($displayImage)
-                                    <img src="{{ asset('public/'.$displayImage) }}" alt="{{ $unit->unit_number }}" class="img-responsive img-featured center-block" id="mainUnitImage" style="max-width: 100%; height: auto; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); transition: box-shadow 0.3s;">
+                                    <img src="{{ asset(''.$displayImage) }}" alt="{{ $unit->unit_number }}" class="img-responsive img-featured center-block" id="mainUnitImage" style="max-width: 100%; height: auto; margin-bottom: 15px; box-shadow: 0 4px 16px rgba(0,0,0,0.12); transition: box-shadow 0.3s;">
                                     <div id="featuredGallery" style="margin-bottom: 10px; background: #f8f9fa; border-radius: 8px; padding: 10px 8px 6px 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.04);">
                                         @php $maxVisible = 6; @endphp
                                         <div id="featuredRow" style="display: inline-block;">
                                             @foreach($unit->images->take($maxVisible) as $img)
                                                 @php $borderColor = $img->is_featured ? '#337ab7' : 'transparent'; @endphp
-                                                <img src="{{ asset('public/'.$img->image_path) }}"
+                                                <img src="{{ asset(''.$img->image_path) }}"
                                                     alt="Featured"
                                                     class="img-featured featured-item {{ $img->is_featured ? 'active' : '' }} thumb-anim"
-                                                    data-main-image="{{ asset('public/'.$img->image_path) }}"
+                                                    data-main-image="{{ asset(''.$img->image_path) }}"
                                                     style="width: 80px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid {{ $borderColor }}; display: inline-block; margin-right: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: border-color 0.3s, transform 0.2s; {{ $img->is_featured ? 'transform: scale(1.08); z-index:2;' : '' }}">
                                             @endforeach
                                             @if($unit->images->count() > $maxVisible)
@@ -627,7 +627,7 @@
         min-height: 380px;
     }
     .no-records-bg {
-        background-image: url(' {{ asset('public/property_images/no-records.jpg') }} ');
+        background-image: url(' {{ asset('property_images/no-records.jpg') }} ');
         background-size: contain;
         background-position: center center;
         background-repeat: no-repeat;

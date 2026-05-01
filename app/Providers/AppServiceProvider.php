@@ -6,8 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\tasks;
 use App\Models\User;
 use App\Models\Business;
+use App\Models\AppSetting;
+use App\Models\BusinessSetting;
 use App\Models\businessgroups;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\View;
 use Illuminate\Database\Eloquent\Relations\Relation;
 // use Auth;
 
@@ -30,8 +33,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Share global app branding (logo, favicon, name) with every view.
+        try {
+            $appLogo    = AppSetting::get('app_logo');
+            $appFavicon = AppSetting::get('app_favicon');
+            $appName    = AppSetting::get('app_name', config('app.name'));
+        } catch (\Throwable $e) {
+            $appLogo = null;
+            $appFavicon = null;
+            $appName = config('app.name');
+        }
+        View::share('appLogo', $appLogo);
+        View::share('appFavicon', $appFavicon);
+        View::share('appName', $appName);
+
         // View composer (variable that becomes available in all blade view)
         view()->composer('*',function($view) {
+
+            $existing = $view->getData();
 
             if (Auth::check())
             {
@@ -49,12 +68,30 @@ class AppServiceProvider extends ServiceProvider
 
                 $view->with('userbusinesses',Business::select('id','business_name')->where('user_id', Auth::user()->id)->orWhere('id', $businessId)->get());
 
-                $view->with('business', Business::where('id', $businessId)->first());
+                if (! array_key_exists('business', $existing)) {
+                    $view->with('business', Business::where('id', $businessId)->first());
+                }
 
-                $view->with('businesses', Business::where('id', $businessId)->first());
+                if (! array_key_exists('businesses', $existing)) {
+                    $view->with('businesses', Business::where('id', $businessId)->first());
+                }
+
+                // Per-business settings (branding/contact/invoice/tax) as assoc array
+                if (! array_key_exists('businessSettings', $existing)) {
+                    try {
+                        $view->with('businessSettings', BusinessSetting::forBusiness($businessId));
+                if (! array_key_exists('businessSettings', $existing)) {
+                    $view->with('businessSettings', []);
+                }
+                    } catch (\Throwable $e) {
+                        $view->with('businessSettings', []);
+                    }
+                }
 
             }else{
-                $view->with('business', Business::first());
+                if (! array_key_exists('business', $existing)) {
+                    $view->with('business', Business::first());
+                }
             }
 
             // $view->with('businessgroups',businessgroups::select('id','businessgroup_name')->get());

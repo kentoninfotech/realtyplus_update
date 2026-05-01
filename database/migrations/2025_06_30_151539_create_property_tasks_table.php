@@ -15,6 +15,7 @@ class CreatePropertyTasksTable extends Migration
     {
         Schema::create('property_tasks', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
             $table->string('taskable_type')->nullable(); // Polymorphic: Lead, Property, Lease, MaintenanceRequest
             $table->unsignedBigInteger('taskable_id')->nullable();
             $table->index(['taskable_type', 'taskable_id']);

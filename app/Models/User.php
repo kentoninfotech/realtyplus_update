@@ -2,16 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail as MustVerifyEmailContract;
+use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmailContract
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, MustVerifyEmail;
 
     /**
      * The attributes that are mass assignable.
@@ -26,6 +27,8 @@ class User extends Authenticatable
         'user_type',
         'business_id',
         'status',
+        'is_super_admin',
+        'activation_token',
     ];
 
     /**
@@ -45,7 +48,27 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_super_admin' => 'boolean',
     ];
+
+    /* ------------------------------------------------------------------
+     | Multi-tenancy & status helpers
+     |------------------------------------------------------------------*/
+
+    public function isSuperAdmin(): bool
+    {
+        return (bool) $this->is_super_admin;
+    }
+
+    public function isActive(): bool
+    {
+        return $this->status === 'active';
+    }
+
+    public function ownedBusiness()
+    {
+        return $this->hasOne(Business::class, 'user_id');
+    }
 
     public function business()
     {

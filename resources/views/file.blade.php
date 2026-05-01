@@ -18,7 +18,7 @@
 </div>
 
 <div class="card card-widget">
-  <img class="card-img-top" src="{{asset('public/files/'.$file->project_id.'/'.$file->file_name)}}">
+  <img class="card-img-top" src="{{asset('files/'.$file->project_id.'/'.$file->file_name)}}">
   <div class="widget-header" style="padding: 10px;">
     <h1>{{$file->file_title}}</h1>
 

@@ -15,11 +15,13 @@ class CreateAmenitiesTable extends Migration
     {
         Schema::create('amenities', function (Blueprint $table) {
             $table->id();
-            // $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
-            $table->string('name')->unique();
+            $table->foreignId('business_id')->nullable()->constrained('businesses')->onDelete('cascade');
+            $table->string('name');
             $table->string('icon')->nullable();
             $table->text('description')->nullable();
             $table->timestamps();
+
+            $table->unique(['business_id', 'name']);
         });
     }
 

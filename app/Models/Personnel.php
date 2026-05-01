@@ -3,13 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class Personnel extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToBusiness;
 
     protected $fillable = [
         'first_name',

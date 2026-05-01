@@ -191,14 +191,14 @@
                         <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
                             <i class="fas fa-file text-primary mr-3"></i>
                             <div class="flex-grow-1">
-                                <a href="{{ asset('public/'. $doc->file_path) }}" target="_blank" class="text-decoration-none">
+                                <a href="{{ asset(''. $doc->file_path) }}" target="_blank" class="text-decoration-none">
                                     <strong>{{ $doc->title ?? basename($doc->file_path) }}</strong>
                                 </a>
                                 <p class="text-muted small mb-0">
                                     {{ optional($doc->created_at)->format('M d, Y') }}
                                 </p>
                             </div>
-                            <a href="{{ asset('public/'. $doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ asset(''. $doc->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
                                 <i class="fas fa-download"></i>
                             </a>
                         </div>

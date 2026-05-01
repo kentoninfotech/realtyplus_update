@@ -7,18 +7,20 @@ use App\Models\User;
 use App\Models\Client;
 use App\Models\projects;
 use App\Models\Business;
+use App\Models\Property;
+use App\Models\Tenant;
+use App\Models\Lease;
+use App\Models\Payment;
+use App\Models\MaintenanceRequest;
+use App\Models\tasks;
 use Illuminate\Support\Facades\Auth;
-
-// To be used for registration
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
+
 class HomeController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -26,18 +28,148 @@ class HomeController extends Controller
 
     /**
      * Show the application dashboard.
-     *
-     * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
     {
-        if (Auth()->user()->hasRole('Client')){
-            $projects = projects::where('client_id',Auth()->user()->id)->with('milestones:project_id,status')->get(['id','title', 'status']);
-            return view('home')->with(['projects'=>$projects]);
-        }        
+        $user       = Auth::user();
+        $businessId = $user->business_id;
 
-        $projects = projects::with('milestones:project_id,status')->get(['id','title', 'status']);
-        return view('home')->with(['projects'=>$projects]);
+        // Client view: just their own projects
+        if ($user->hasRole('Client')) {
+            $projects = projects::where('client_id', $user->id)
+                ->with('milestones:project_id,status')
+                ->get(['id', 'title', 'status']);
+            $clients  = User::where('business_id', $businessId)->where('user_type', 'client')->get();
+            return view('home', [
+                'projects'            => $projects,
+                'clients'             => $clients,
+                'propertiesCount'     => 0,
+                'tenantsCount'        => 0,
+                'projectsCount'       => $projects->count(),
+                'clientsCount'        => $clients->count(),
+                'dueRents'            => collect(),
+                'myTasks'             => collect(),
+                'maintenanceRequests' => collect(),
+                'activeProjects'      => collect(),
+                'recentPayments'      => collect(),
+                'totalCollectedMonth' => 0,
+                'totalDueMonth'       => 0,
+                'occupancyRate'       => 0,
+                'totalUnits'          => 0,
+                'occupiedUnits'       => 0,
+            ]);
+        }
+
+        // Counters
+        $propertiesCount = $this->safeCount(Property::class);
+        $tenantsCount    = $this->safeCount(Tenant::class);
+        $clients         = User::where('business_id', $businessId)->where('user_type', 'client')->get();
+        $projects        = projects::with('milestones:project_id,status')->get(['id', 'title', 'status']);
+
+        // Active projects
+        $activeProjects = projects::with('milestones:id,project_id,status')
+            ->where('status', 'In Progress')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        // My tasks (assigned to me, not done)
+        $myTasks = collect();
+        if (Schema::hasTable('tasks')) {
+            $myTasks = tasks::with('project:id,title')
+                ->where('assigned_to', $user->id)
+                ->whereNotIn('status', ['Completed', 'Done', 'Cancelled'])
+                ->latest()
+                ->take(8)
+                ->get();
+        }
+
+        // Due rents (active leases) -- fall back gracefully if Lease/Payment tables not yet seeded
+        $dueRents = collect();
+        $totalCollectedMonth = 0;
+        $totalDueMonth = 0;
+        $recentPayments = collect();
+        if (Schema::hasTable('leases')) {
+            $today = Carbon::today();
+
+            // Active leases whose rent is due (renewal_date passed OR end_date within 30 days)
+            $dueRents = Lease::with(['tenant', 'property:id,name', 'propertyUnit:id,unit_number'])
+                ->where('status', 'active')
+                ->where(function ($q) use ($today) {
+                    $q->whereDate('renewal_date', '<=', $today)
+                      ->orWhereDate('end_date', '<=', $today->copy()->addDays(30));
+                })
+                ->orderBy('renewal_date')
+                ->take(8)
+                ->get();
+
+            // monthly aggregates
+            if (Schema::hasTable('payments')) {
+                $totalCollectedMonth = (float) Payment::whereMonth('payment_date', now()->month)
+                    ->whereYear('payment_date', now()->year)
+                    ->where('status', 'paid')
+                    ->sum('amount');
+
+                $recentPayments = Payment::with('lease.tenant')
+                    ->latest('payment_date')
+                    ->take(5)
+                    ->get();
+            }
+
+            // Sum of rent expected this month from active leases
+            $totalDueMonth = (float) Lease::where('status', 'active')->sum('rent_amount');
+        }
+
+        // Maintenance requests (open)
+        $maintenanceRequests = collect();
+        if (Schema::hasTable('maintenance_requests')) {
+            $maintenanceRequests = MaintenanceRequest::with(['property:id,name', 'propertyUnit:id,unit_number'])
+                ->whereNotIn('status', ['Completed', 'Closed', 'Resolved'])
+                ->orderByRaw("FIELD(priority,'Critical','High','Medium','Low')")
+                ->latest()
+                ->take(6)
+                ->get();
+        }
+
+        // Occupancy
+        $totalUnits = 0;
+        $occupiedUnits = 0;
+        if (Schema::hasTable('property_units')) {
+            $totalUnits    = (int) \DB::table('property_units')
+                ->where('business_id', $businessId)->count();
+            $occupiedUnits = (int) \DB::table('property_units')
+                ->where('business_id', $businessId)
+                ->where('status', 'occupied')->count();
+        }
+        $occupancyRate = $totalUnits > 0 ? round(($occupiedUnits / $totalUnits) * 100) : 0;
+
+        return view('home', [
+            'projects'            => $projects,
+            'clients'             => $clients,
+            'propertiesCount'     => $propertiesCount,
+            'tenantsCount'        => $tenantsCount,
+            'projectsCount'       => $projects->count(),
+            'clientsCount'        => $clients->count(),
+            'dueRents'            => $dueRents,
+            'myTasks'             => $myTasks,
+            'maintenanceRequests' => $maintenanceRequests,
+            'activeProjects'      => $activeProjects,
+            'recentPayments'      => $recentPayments,
+            'totalCollectedMonth' => $totalCollectedMonth,
+            'totalDueMonth'       => $totalDueMonth,
+            'occupancyRate'       => $occupancyRate,
+            'totalUnits'          => $totalUnits,
+            'occupiedUnits'       => $occupiedUnits,
+        ]);
+    }
+
+    private function safeCount(string $modelClass): int
+    {
+        try {
+            return (int) $modelClass::count();
+        } catch (\Throwable $e) {
+            return 0;
+        }
     }
 
     public function clients()

@@ -46,6 +46,18 @@ class RolePermissionSeeder extends Seeder
         $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);
         $superAdmin->givePermissionTo(Permission::all());
 
+        $businessAdmin = Role::firstOrCreate(['name' => 'Business Admin']);
+        $businessAdmin->givePermissionTo(
+            Permission::all()->filter(fn($p) => $p->name !== 'manage businesses')
+        );
+
+        $personnel = Role::firstOrCreate(['name' => 'Personnel']);
+        $personnel->givePermissionTo([
+            'view project', 'view task', 'edit task',
+            'view property', 'view tenant', 'view client',
+            'view material', 'view milestone_report', 'create milestone_report', 'edit milestone_report',
+        ]);
+
         $admin = Role::firstOrCreate(['name' => 'System Admin']);
         $admin->givePermissionTo(Permission::all()->filter(fn($p) => $p->name !== 'manage businesses'));
 
@@ -76,6 +88,41 @@ class RolePermissionSeeder extends Seeder
 
         $client = Role::firstOrCreate(['name' => 'Client']);
         $client->givePermissionTo(['view project']); // Add condition in controller
-    
+
+        // Property stakeholder roles (self-service portals / limited views)
+        $owner = Role::firstOrCreate(['name' => 'Owner']);
+        $owner->givePermissionTo([
+            'view property', 'view tenant', 'view payment', 'view transaction',
+            'create maintenance_request',
+        ]);
+
+        $tenant = Role::firstOrCreate(['name' => 'Tenant']);
+        $tenant->givePermissionTo([
+            'view property', 'view payment', 'create maintenance_request',
+        ]);
+
+        // Workforce roles
+        $worker = Role::firstOrCreate(['name' => 'Worker']);
+        $worker->givePermissionTo([
+            'view task', 'edit task', 'view project', 'view material', 'view material_checkout',
+        ]);
+
+        $contractor = Role::firstOrCreate(['name' => 'Contractor']);
+        $contractor->givePermissionTo([
+            'view project', 'view task', 'edit task', 'create milestone_report', 'edit milestone_report',
+            'view milestone_report', 'view material', 'view material_checkout', 'create material_checkout',
+        ]);
+
+        // External / business stakeholder roles
+        $agent = Role::firstOrCreate(['name' => 'Agent']);
+        $agent->givePermissionTo([
+            'view property', 'create property', 'edit property',
+            'view client', 'create client', 'view tenant', 'create tenant',
+        ]);
+
+        $supplier = Role::firstOrCreate(['name' => 'Supplier']);
+        $supplier->givePermissionTo([
+            'view material', 'view material_supply', 'create material_supply', 'edit material_supply',
+        ]);
     }
 }

@@ -5,9 +5,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>The Royal Refuge Ltd| Dashboard</title>
+    <title>{{ ($appName ?? 'RealtyPlus') }} | Dashboard</title>
+    @if(!empty($appFavicon) && file_exists(public_path($appFavicon)))
+        <link rel="icon" type="image/x-icon" href="{{ asset($appFavicon) }}">
+    @endif
 
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"> -->
+
+    <!-- Main App CSS -->
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <link rel="stylesheet" href="{{ asset('plugins/select2/css/select2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css') }}">
@@ -54,8 +60,14 @@
 
         <!-- Preloader -->
         <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__shake" src="{{ asset('public/images/'.$business->logo) }}" alt="RealtyPlus"
-                height="60" width="60">
+            @php
+                $tenantLogo = (!empty($business) && !empty($business->logo) && file_exists(public_path('images/'.$business->logo)))
+                    ? asset('images/'.$business->logo)
+                    : (!empty($appLogo) && file_exists(public_path($appLogo)) ? asset($appLogo) : null);
+            @endphp
+            @if($tenantLogo)
+                <img class="animation__shake" src="{{ $tenantLogo }}" alt="{{ $appName ?? 'RealtyPlus' }}" height="60" width="60">
+            @endif
         </div>
 
         <!-- Navbar -->
@@ -109,7 +121,7 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('public/personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" alt="User Avatar"
+                                <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" alt="User Avatar"
                                     class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
@@ -164,9 +176,11 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ '/home' }}" class="brand-link">
-                <img src="{{ asset('public/images/'.$business->logo) }}" alt="RealtyPlus"
-                    class="elevation-3" style="opacity: .8" height="50"> <br>
-                <span class="brand-text font-weight-light">{{$business->business_name}}</span>
+                @if($tenantLogo)
+                    <img src="{{ $tenantLogo }}" alt="{{ $business->business_name ?? 'RealtyPlus' }}"
+                        class="elevation-3" style="opacity: .8" height="50"> <br>
+                @endif
+                <span class="brand-text font-weight-light">{{ $business->business_name ?? ($appName ?? 'RealtyPlus') }}</span>
             </a>
 
             <!-- Sidebar -->
@@ -174,7 +188,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('public/personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" class="img-circle elevation-2"
+                        <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" class="img-circle elevation-2"
                             alt="User Image"> <span style="color: white">{{ auth()->user()->name }}</span>
                     </div>
                     <div class="info">
@@ -204,7 +218,7 @@
                         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
                         <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
+                            <a href="{{ route('home') }}" class="nav-link active">
                                 <i class="nav-icon fas fa-dashboard"></i>
                                 <p>
                                     Dashboard
@@ -212,81 +226,7 @@
                             </a>
                         </li>
                 
-                 @canany(['view client', 'create client', 'edit client', 'delete client'])
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-users"></i>
-                                <p>
-                                    Clients
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ url('clients') }}" class="nav-link">
-                                        <i class="far fa-user nav-icon"></i>
-                                        <p>Clients</p>
-                                    </a>
-                                </li>
-                             @can('view owner')
-                                <li class="nav-item">
-                                    <a href="{{ route('owners') }}" class="nav-link">
-                                        <i class="fas fa-user-tie nav-icon"></i>
-                                        <p>Owners</p>
-                                    </a>
-                                </li>
-                             @endcan
-                             @can('view tenant')
-                                <li class="nav-item">
-                                    <a href="{{ route('tenants') }}" class="nav-link">
-                                        <i class="fas fa-user-tie nav-icon"></i>
-                                        <p>Tenants</p>
-                                    </a>
-                                </li>
-                             @endcan
-                             @can('create client')
-                                <li class="nav-item">
-                                    <a href="{{ url('new-client') }}" class="nav-link">
-                                        <i class="fa fa-plus-square nav-icon"></i>
-                                        <p>New Client</p>
-                                    </a>
-                                </li>
-                             @endcan
-
-                            </ul>
-                        </li>
-                 @endcanany
-
-                 @canany(['view project', 'create project', 'edit project', 'delete project'])
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-suitcase"></i>
-                                <p>
-                                    Projects
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ url('projects') }}" class="nav-link">
-                                        <i class="fas fa-briefcase nav-icon"></i>
-                                        <p>View Projects</p>
-                                    </a>
-                                </li>
-                            @can('create project')
-                                <li class="nav-item">
-                                    <a href="{{ url('addproject') }}" class="nav-link">
-                                        <i class="fas fa-building nav-icon"></i>
-                                        <p>Add New</p>
-                                    </a>
-                                </li>
-                            @endcan
-
-                            </ul>
-                        </li>
-                  @endcanany
-
-                  @canany(['view property', 'create property', 'edit property', 'delete property'])
+                 @canany(['view property', 'create property', 'edit property', 'delete property'])
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-buildings-fill" viewBox="0 0 16 16"><path d="M15 .5a.5.5 0 0 0-.724-.447l-8 4A.5.5 0 0 0 6 4.5v3.14L.342 9.526A.5.5 0 0 0 0 10v5.5a.5.5 0 0 0 .5.5h9a.5.5 0 0 0 .5-.5V14h1v1.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zM2 11h1v1H2zm2 0h1v1H4zm-1 2v1H2v-1zm1 0h1v1H4zm9-10v1h-1V3zM8 5h1v1H8zm1 2v1H8V7zM8 9h1v1H8zm2 0h1v1h-1zm-1 2v1H8v-1zm1 0h1v1h-1zm3-2v1h-1V9zm-1 2h1v1h-1zm-2-4h1v1h-1zm3 0v1h-1V7zm-2-2v1h-1V5zm1 0h1v1h-1z"/></svg>
@@ -335,6 +275,80 @@
                             </ul>
                         </li>
                   @endcanany
+
+                 @canany(['view project', 'create project', 'edit project', 'delete project'])
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-suitcase"></i>
+                                <p>
+                                    Projects
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ url('projects') }}" class="nav-link">
+                                        <i class="fas fa-briefcase nav-icon"></i>
+                                        <p>View Projects</p>
+                                    </a>
+                                </li>
+                            @can('create project')
+                                <li class="nav-item">
+                                    <a href="{{ url('addproject') }}" class="nav-link">
+                                        <i class="fas fa-building nav-icon"></i>
+                                        <p>Add New</p>
+                                    </a>
+                                </li>
+                            @endcan
+
+                            </ul>
+                        </li>
+                  @endcanany
+
+                 @canany(['view client', 'create client', 'edit client', 'delete client'])
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Clients
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ url('clients') }}" class="nav-link">
+                                        <i class="far fa-user nav-icon"></i>
+                                        <p>Clients</p>
+                                    </a>
+                                </li>
+                             @can('view owner')
+                                <li class="nav-item">
+                                    <a href="{{ route('owners') }}" class="nav-link">
+                                        <i class="fas fa-user-tie nav-icon"></i>
+                                        <p>Owners</p>
+                                    </a>
+                                </li>
+                             @endcan
+                             @can('view tenant')
+                                <li class="nav-item">
+                                    <a href="{{ route('tenants') }}" class="nav-link">
+                                        <i class="fas fa-user-tie nav-icon"></i>
+                                        <p>Tenants</p>
+                                    </a>
+                                </li>
+                             @endcan
+                             @can('create client')
+                                <li class="nav-item">
+                                    <a href="{{ url('new-client') }}" class="nav-link">
+                                        <i class="fa fa-plus-square nav-icon"></i>
+                                        <p>New Client</p>
+                                    </a>
+                                </li>
+                             @endcan
+
+                            </ul>
+                        </li>
+                 @endcanany
 
                   @canany(['view task', 'create task', 'edit task', 'delete task'])
                         <li class="nav-item">
@@ -513,6 +527,12 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('business-settings.edit') }}" class="nav-link">
+                                        <i class="fas fa-store nav-icon"></i>
+                                        <p>Business Settings</p>
+                                    </a>
+                                </li>
                                 <li class="nav-item">
                                     <a href="{{ url('settings') }}" class="nav-link" data-toggle="modal"
                                         data-target="#settings">
@@ -772,6 +792,19 @@
     <script src="{{ asset('plugins/summernote/summernote-bs4.min.js') }}"></script>
     <!-- overlayScrollbars -->
     <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
+    
+    <!-- DataTables -->
+    <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('plugins/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('plugins/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
+    
     <!-- AdminLTE App -->
     <script src="{{ asset('dist/js/adminlte.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
@@ -780,20 +813,58 @@
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
         $(function() {
-            // On Page Load
-
-            //Date picker
-
+            console.log('jQuery initialization starting...');
+            
+            // On Page Load - Initialize all plugins
+            
+            // Date picker
             $('.date').datetimepicker({
                 format: 'YYYY-MM-DD'
             });
-
-
-
+            console.log('Datepicker initialized');
+            
+            // Select2
             $('.select2').select2();
-
-            $('.wyswygeditor').summernote()
-
+            console.log('Select2 initialized');
+            
+            // Summernote WYSIWYG editor
+            if ($.fn.summernote) {
+                $('.wyswygeditor').summernote();
+                console.log('Summernote initialized');
+            }
+            
+            // DataTables
+            if ($.fn.DataTable) {
+                $('.datatable').DataTable({
+                    responsive: true,
+                    lengthChange: false,
+                    autoWidth: false
+                });
+                console.log('DataTables initialized');
+            }
+            
+            // Sidebar menu toggle for submenu items (jQuery fallback)
+            $('.nav-sidebar .nav-item > a').on('click', function(e) {
+                var $item = $(this).parent();
+                var $submenu = $item.find('> .nav-treeview');
+                
+                if ($submenu.length > 0) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    $item.toggleClass('menu-open');
+                    console.log('Menu item toggled:', $item);
+                }
+            });
+            
+            // Pushmenu toggle
+            $('[data-widget="pushmenu"]').on('click', function(e) {
+                e.preventDefault();
+                $('body').toggleClass('sidebar-collapse');
+                console.log('Sidebar toggled');
+            });
+            
+            console.log('jQuery initialization complete');
         });
 
         function material(accid) {

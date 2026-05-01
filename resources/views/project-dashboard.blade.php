@@ -23,7 +23,7 @@
             $featured_img = $project->project_files->where('featured', 'Yes')->first();
         @endphp
         <div class="widget-user-header text-white"
-            style="background: @if ($featured_img) url({{ asset('public/files/' . $featured_img->project_id . '/' . $featured_img->file_name) }}); @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
+            style="background: @if ($featured_img) url({{ asset('files/' . $featured_img->project_id . '/' . $featured_img->file_name) }}); @endif height: 250px !important; text-shadow: 2px 2px #000; background-color: grey;">
             <h1 class="text-right">{{ $project->title }}</h1>
             <h5 class="widget-user-desc text-right"><i class="nav-icon fas fa-map-marker-alt"></i> {{ $project->location }}
             </h5>
@@ -66,7 +66,7 @@
                     <div class="card">
                         @if ($featured_img)
                             <img class="card-img-top"
-                                src="{{ asset('public/files/' . $featured_img->project_id . '/' . $featured_img->file_name) }}"
+                                src="{{ asset('files/' . $featured_img->project_id . '/' . $featured_img->file_name) }}"
                                 alt="{{ $featured_img->file_title }}">
                         @endif
                         <div class="card-body">
@@ -144,7 +144,7 @@
 
                                 @foreach ($project->project_files as $key => $fit)
                                     @php
-                                        $file_ext = pathinfo(asset('public/files/' . $fit->project_id . '/' . $fit->file_name))['extension'];
+                                        $file_ext = pathinfo(asset('files/' . $fit->project_id . '/' . $fit->file_name))['extension'];
                                         if ($file_ext == 'png' || $file_ext == 'jpg' || $file_ext == 'jpeg') {
                                             echo '<li data-target="#carouselId" data-slide-to="' . $key++ . '" class="active"></li>';
                                         }
@@ -154,7 +154,7 @@
                             <div class="carousel-inner" role="listbox">
                                 @foreach ($project->project_files as $key => $fit)
                                     @php
-                                        $file_ext = pathinfo(asset('public/files/' . $fit->project_id . '/' . $fit->file_name))['extension'];
+                                        $file_ext = pathinfo(asset('files/' . $fit->project_id . '/' . $fit->file_name))['extension'];
                                         if ($file_ext == 'png' || $file_ext == 'jpg' || $file_ext == 'jpeg') {
                                             if ($key == 0) {
                                                 $active = 'active';
@@ -165,7 +165,7 @@
                                                 $active .
                                                 '">
                                                     <img src="' .
-                                                asset('public/files/' . $fit->project_id . '/' . $fit->file_name) .
+                                                asset('files/' . $fit->project_id . '/' . $fit->file_name) .
                                                 '"alt="' .
                                                 $fit->file_title .
                                                 '" height="300" width="100%">
@@ -228,7 +228,7 @@
 
                                 @foreach ($project->project_files as $ft)
                                     @php
-                                        $file_ext = pathinfo(asset('public/files/' . $ft->project_id . '/' . $ft->file_name))['extension'];
+                                        $file_ext = pathinfo(asset('files/' . $ft->project_id . '/' . $ft->file_name))['extension'];
                                     @endphp
                                     <li class="list-group-item list-group-item-action">
                                         <a target="_blank"

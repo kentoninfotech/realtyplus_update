@@ -42,7 +42,7 @@
                     @foreach ($units as $unit)
                         <tr>
                             <td>
-                                <img src="{{ asset('public/ Image_path') }}" alt="" width="50" height="50">
+                                <img src="{{ asset(' Image_path') }}" alt="" width="50" height="50">
                             </td>
                             <td>{{ $unit->unit_number }}</td>
                             <td>{{ $unit->unit_type ?? 'N/A' }}</td>

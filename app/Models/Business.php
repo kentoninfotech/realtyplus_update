@@ -50,4 +50,31 @@ class Business extends Model
     {
         return $this->hasMany(tasks::class, 'business_id', 'id');
     }
+
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
+
+    public function activeSubscription()
+    {
+        return $this->hasOne(Subscription::class)->latestOfMany();
+    }
+
+    public function plan()
+    {
+        return $this->hasOneThrough(
+            Plan::class,
+            Subscription::class,
+            'business_id',
+            'id',
+            'id',
+            'plan_id'
+        );
+    }
+
+    public function feedbacks()
+    {
+        return $this->hasMany(Feedback::class);
+    }
 }

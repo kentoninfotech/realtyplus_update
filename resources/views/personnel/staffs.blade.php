@@ -52,7 +52,7 @@
                 <tr>
                     <!-- <td><input type="checkbox" name="select_staff[]" value="{{-- $staff->id --}}"></td> -->
                     <td class="d-flex align-items-center">
-                        <img src="{{ (isset($staff->personnel->picture) && $staff->personnel->picture !== null) ? asset('public/personnel/pictures/' .$staff->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($staff->name) }}" class="rounded-circle me-2" width="40" height="40" alt="{{ $staff->name }}">
+                        <img src="{{ (isset($staff->personnel->picture) && $staff->personnel->picture !== null) ? asset('personnel/pictures/' .$staff->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($staff->name) }}" class="rounded-circle me-2" width="40" height="40" alt="{{ $staff->name }}">
                         <div style="margin-left:15px;">
                             <div>{{ $staff->name }}</div>
                             <div class="text-muted small">{{ $staff->email }}</div>

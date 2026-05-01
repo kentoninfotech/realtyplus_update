@@ -208,7 +208,7 @@
                     @foreach ($properties as $property)
                         <tr>
                             <td>
-                                <img src="{{ asset('public/ Image_path') }}" alt="" width="50" height="50">
+                                <img src="{{ asset(' Image_path') }}" alt="" width="50" height="50">
                             </td>
                             <td>{{ $property->name }}</td>
                             <td>{{ $property->propertyType->name ?? '' }}</td>

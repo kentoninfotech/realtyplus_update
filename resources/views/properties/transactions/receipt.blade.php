@@ -10,12 +10,24 @@
     } elseif ($transaction->transactionable_type === 'App\\Models\\MaintenanceRequest') {
         $transactionType = 'maintenance-type';
     }
+
+    $bs = isset($businessSettings) && is_array($businessSettings) ? $businessSettings : [];
+    $bsGet = function ($k, $d = null) use ($bs) { return array_key_exists($k, $bs) && $bs[$k] !== null && $bs[$k] !== '' ? $bs[$k] : $d; };
+    $bsImg = function ($k) use ($bs) {
+        if (!array_key_exists($k, $bs) || !$bs[$k]) return null;
+        return file_exists(public_path($bs[$k])) ? asset($bs[$k]) : null;
+    };
+    $currencySymbol = $bsGet('currency_symbol', '$');
+    $receiptPrefix  = $bsGet('receipt_prefix', '');
 @endphp
 
 <div class="receipt-wrapper">
-    {{-- Banner --}}
+    {{-- Banner: prefer business receipt_banner, fallback to header_image, then legacy default --}}
     <div class="receipt-banner">
-        @if(file_exists(public_path('dist/img/banner.png')))
+        @php $bannerUrl = $bsImg('receipt_banner') ?: $bsImg('header_image'); @endphp
+        @if ($bannerUrl)
+            <img src="{{ $bannerUrl }}" alt="Company Banner">
+        @elseif(file_exists(public_path('dist/img/banner.png')))
             <img src="{{ asset('dist/img/banner.png') }}" alt="Company Banner">
         @endif
     </div>
@@ -33,7 +45,10 @@
     <div class="receipt-container">
         {{-- Header --}}
         <div class="receipt-header {{ $transactionType }}">
-            @if($business && $business->logo && file_exists(public_path('images/' . $business->logo)))
+            @php $logoUrl = $bsImg('invoice_logo'); @endphp
+            @if ($logoUrl)
+                <img src="{{ $logoUrl }}" alt="Company Logo" class="company-logo">
+            @elseif($business && $business->logo && file_exists(public_path('images/' . $business->logo)))
                 <img src="{{ asset('images/' . $business->logo) }}" alt="Company Logo" class="company-logo">
             @else
                 <div style="width: 100px; height: 100px; background-color: #f0f0f0; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; border-radius: 8px; border: 2px solid #ddd;">
@@ -43,18 +58,30 @@
 
             <div class="company-name">{{ $business->business_name ?? 'RealtyPlus' }}</div>
 
+            @if ($tagLine = $bsGet('tag_line'))
+                <div style="font-size:11px; color:#666; margin-top:2px;">{{ $tagLine }}</div>
+            @endif
+
             <div class="company-info">
-                @if($business && $business->address)
-                    <div>{{ $business->address }}</div>
+                @php
+                    $addr = $bsGet('address_line2') ? trim(($business->address ?? '') . ', ' . $bsGet('address_line2'), ', ') : ($business->address ?? null);
+                    $cityState = trim(($bsGet('city', '') ? $bsGet('city') . ', ' : '') . ($bsGet('state', '') ?: ''), ', ');
+                @endphp
+                @if ($addr)<div>{{ $addr }}</div>@endif
+                @if ($cityState)<div>{{ $cityState }}{{ $bsGet('postal_code') ? ' ' . $bsGet('postal_code') : '' }}</div>@endif
+                @if ($bsGet('country'))<div>{{ $bsGet('country') }}</div>@endif
+                @if ($phone = $bsGet('contact_phone'))
+                    <div>📞 {{ $phone }}@if($alt = $bsGet('contact_phone_alt')), {{ $alt }}@endif</div>
+                @elseif($business && $business->user && $business->user->phone_number)
+                    <div>📞 {{ $business->user->phone_number }}</div>
                 @endif
-                @if($business && $business->user)
-                    @if($business->user->phone_number)
-                        <div>📞 {{ $business->user->phone_number }}</div>
-                    @endif
-                    @if($business->user->email)
-                        <div>✉️ {{ $business->user->email }}</div>
-                    @endif
+                @if ($email = $bsGet('contact_email'))
+                    <div>✉️ {{ $email }}</div>
+                @elseif($business && $business->user && $business->user->email)
+                    <div>✉️ {{ $business->user->email }}</div>
                 @endif
+                @if ($web = $bsGet('website'))<div>🌐 {{ $web }}</div>@endif
+                @if ($taxId = $bsGet('tax_id_number'))<div style="font-size:11px;">{{ $bsGet('tax_name', 'Tax') }} ID: {{ $taxId }}</div>@endif
                 @if($business && $business->motto)
                     <div style="margin-top: 8px; font-style: italic; font-size: 11px;">{{ $business->motto }}</div>
                 @endif
@@ -77,14 +104,14 @@
                 </div>
             @endif
 
-            <div class="receipt-id">Receipt #{{ $transaction->id }}</div>
+            <div class="receipt-id">Receipt #{{ $receiptPrefix }}{{ $transaction->id }}</div>
         </div>
 
         {{-- Amount Box --}}
         <div class="amount-box {{ $transactionType }}">
             <div class="label">Transaction Amount</div>
             <div class="amount">
-                {{ $transaction->type === 'credit' ? '+' : '-' }}${{ number_format($transaction->amount, 2) }}
+                {{ $transaction->type === 'credit' ? '+' : '-' }}{{ $currencySymbol }}{{ number_format($transaction->amount, 2) }}
             </div>
             <div class="status-badge status-{{ $transaction->status }}">
                 {{ ucfirst($transaction->status) }}
@@ -227,6 +254,15 @@
 
         {{-- Footer --}}
         <div class="receipt-footer">
+            @if ($notes = $bsGet('receipt_notes'))
+                <div style="margin-bottom:8px;">{{ $notes }}</div>
+            @endif
+            @if ($bank = $bsGet('bank_details'))
+                <div style="margin-bottom:8px; font-size:11px; white-space:pre-line;">{!! e($bank) !!}</div>
+            @endif
+            @if ($footerImg = $bsImg('footer_image'))
+                <div style="margin:10px 0;"><img src="{{ $footerImg }}" alt="footer" style="max-height:60px;"></div>
+            @endif
             <div class="footer-note">
                 This is a computer-generated receipt. No signature is required.
             </div>

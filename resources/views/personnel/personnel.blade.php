@@ -24,7 +24,7 @@
         <div class="card mb-4">
             <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <img src="{{ (isset($user->personnel->picture) && $user->personnel->picture !== null) ? asset('public/personnel/pictures/' .$user->personnel->picture) : asset('public/personnel/pictures/default-profile.png') ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}" 
+                    <img src="{{ (isset($user->personnel->picture) && $user->personnel->picture !== null) ? asset('personnel/pictures/' .$user->personnel->picture) : asset('personnel/pictures/default-profile.png') ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}" 
                     class="rounded-circle mr-3" width="150" height="150" alt="User Avatar">
                     <div class>                    <h1 class="mb-1 font-weight-bold" style="font-weight: 800;">{{ $user->name }}</h1>
                         <h5 class="mb-0 text-muted font-weight-bold" style="font-weight: 700;">{{ $user->personnel->designation ?? '' }}</h5>

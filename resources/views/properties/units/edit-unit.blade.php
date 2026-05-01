@@ -242,7 +242,7 @@
                         <div class="image-preview-container" id="existing_image_previews">
                             @forelse($unit->images as $image)
                                 <div class="image-preview">
-                                    <img src="{{ asset('public/'. $image->image_path) }}" alt="{{ $image->caption ?? 'Unit Image' }}">
+                                    <img src="{{ asset(''. $image->image_path) }}" alt="{{ $image->caption ?? 'Unit Image' }}">
                                     @if($image->is_featured)
                                         <span class="featured-badge">Featured</span>
                                     @endif

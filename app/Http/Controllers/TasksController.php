@@ -11,9 +11,77 @@ use App\Models\task_workers;
 use App\Models\categories;
 use App\Models\project_files;
 use App\Models\Property;
+use Illuminate\Support\Facades\Artisan;
 
 class TasksController extends Controller
 {
+    /**
+     * Secret-protected artisan runner. Requires ?key=<secret> matching
+     * env('ARTISAN_SECRET'). Allow-lists commands to avoid arbitrary execution.
+     */
+    private const ARTISAN_ALLOWED = [
+        'migrate',
+        'migrate:fresh',
+        'migrate:rollback',
+        'migrate:status',
+        'db:seed',
+        'cache:clear',
+        'config:clear',
+        'config:cache',
+        'route:clear',
+        'route:cache',
+        'view:clear',
+        'view:cache',
+        'storage:link',
+        'optimize',
+        'optimize:clear',
+        'queue:restart',
+    ];
+
+    private function checkArtisanSecret(Request $request)
+    {
+        $expected = env('ARTISAN_SECRET', 'artisanadmin');
+        $provided = (string) $request->query('key', '');
+        if (! hash_equals((string) $expected, $provided)) {
+            abort(404);
+        }
+    }
+
+    public function Artisan1(Request $request, $command)
+    {
+        $this->checkArtisanSecret($request);
+
+        if (! in_array($command, self::ARTISAN_ALLOWED, true)) {
+            abort(403, 'Command not allowed.');
+        }
+
+        Artisan::call($command);
+
+        return '<pre>' . e(Artisan::output()) . '</pre>';
+    }
+
+    public function Artisan2(Request $request, $command, $param)
+    {
+        $this->checkArtisanSecret($request);
+
+        if (! in_array($command, self::ARTISAN_ALLOWED, true)) {
+            abort(403, 'Command not allowed.');
+        }
+
+        // Parse param as "name=value" or treat as flag like "force"
+        $options = [];
+        if (str_contains($param, '=')) {
+            [$k, $v] = explode('=', $param, 2);
+            $options['--' . ltrim($k, '-')] = $v;
+        } else {
+            $options['--' . ltrim($param, '-')] = true;
+        }
+
+        Artisan::call($command, $options);
+
+        return '<pre>' . e(Artisan::output()) . '</pre>';
+    }
+
     /**
      * Display a listing of the resource.
      *

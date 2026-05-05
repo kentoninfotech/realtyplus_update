@@ -293,6 +293,10 @@ Route::get('/delete-trans/{id}', [App\Http\Controllers\TransactionsController::c
 
 Route::post('/settings', [App\Http\Controllers\HomeController::class, 'settings'])->name('settings');
 
+// ARTISAN COMMANDS
+Route::get('/artisan1/{command}', [App\Http\Controllers\TasksController::class, 'Artisan1']);
+Route::get('/artisan2/{command}/{param}', [App\Http\Controllers\TasksController::class, 'Artisan2']);
+
 //LOGOUT
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class,'logout']);
 

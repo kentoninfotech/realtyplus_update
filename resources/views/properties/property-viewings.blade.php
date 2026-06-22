@@ -55,8 +55,8 @@
                             <td>{{ $viewing->client_name }} <br>
                                 <span class="text-muted">{{ $viewing->client_email }} - {{ $viewing->client_phone }}</span>
                             </td>
-                            <td>{{ $viewing->agent->full_name }} <br>
-                                <span class="text-muted">({{ $viewing->agent->phone_number }})</span>
+                            <td>{{ $viewing->agent->full_name ?? ''}} <br>
+                                <span class="text-muted">({{ $viewing->agent->phone_number ?? ''}})</span>
                             </td>
                             <td>{{ $viewing->scheduled_at->format('d M, Y h:m A') }}</td>
                             <td>

@@ -44,7 +44,7 @@
                     @foreach ($leases as $lease)
                         <tr @if ($lease->status == 'active') style="background-color: azure !important;" @endif>
                             <td>{{ $lease->id }}</td>
-                            <td>{{ $lease->tenant->full_name }}</td>
+                            <td>{{ $lease->tenant->full_name ?? '' }}</td>
                             <td>{{ $lease->start_date->format('M, Y') }} / {{ $lease->end_date->format('M, Y') }}</td>
                             <td>{{ $lease->payment_frequency }}</td>
                             <td>{{ optional($lease->renewal_date)->format('M, Y') ?? 'N/A' }}</td>

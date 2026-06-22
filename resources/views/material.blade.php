@@ -85,13 +85,13 @@
                             @foreach ($mcheckouts as $mtc)
 
                             <tr>
-                                <td><b>{{$mtc->task->subject}}</b></td>
-                                <td><b>{{$mtc->task->project->title}}</b></td>
-                                <td><b>{{$mtc->quantity}}{{$mtc->material->measurement_unit}}</b></td>
-                                <td>{{$mtc->details}}</td>
-                                <td>{{$mtc->checkoutby->name}}</td>
-                                <td>{{$mtc->approvedby->name}}</td>
-                                <td>{{$mtc->dated}}</td>
+                                <td><b>{{$mtc->task->subject ?? ''}}</b></td>
+                                <td><b>{{$mtc->task->project->title ?? ''}}</b></td>
+                                <td><b>{{$mtc->quantity ?? ''}}{{$mtc->material->measurement_unit ?? ''}}</b></td>
+                                <td>{{$mtc->details ?? ''}}</td>
+                                <td>{{$mtc->checkoutby->name ?? ''}}</td>
+                                <td>{{$mtc->approvedby->name ?? ''}}</td>
+                                <td>{{$mtc->dated ?? ''}}</td>
                             </tr>
                         @endforeach
 

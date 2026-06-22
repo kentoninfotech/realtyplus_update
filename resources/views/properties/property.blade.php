@@ -522,7 +522,7 @@
                                                 </a>
                                             </td>
                                             <td>{{ $viewing->property->name ?? $property->propertyUnit->unit_number }}</td>
-                                            <td>{{ $viewing->agent->full_name }}</td>
+                                            <td>{{ $viewing->agent->full_name  ?? '' }}</td>
                                             <td>{{ $viewing->scheduled_at->format('d F, Y h:i A') ?? '' }}</td>
                                             <td>
                                                 @if ($viewing->status == 'scheduled')
@@ -596,7 +596,7 @@
                                     <tr>
                                             <td>
                                                 <a href="#">
-                                                {{ $lease->tenant->full_name }}
+                                                {{ $lease->tenant->full_name  ?? ''}}
                                                 </a>
                                             </td>
                                             <td>{{ $lease->property->name ?? $property->propertyUnit->unit_number }}</td>

@@ -15,7 +15,8 @@ class BusinessSettingsController extends Controller
      */
     protected $textKeys = [
         // Branding
-        'tag_line', 'motto',
+        'tag_line', 'motto', 'company_motto', 'company_name', 'company_address',
+        'company_phone', 'company_email', 'company_website',
         // Contact
         'contact_email', 'contact_phone', 'contact_phone_alt', 'website',
         'address_line1', 'address_line2', 'city', 'state', 'country', 'postal_code',
@@ -24,17 +25,23 @@ class BusinessSettingsController extends Controller
         // Invoice / Receipt
         'invoice_prefix', 'receipt_prefix', 'invoice_next_number', 'receipt_next_number',
         'currency_code', 'currency_symbol', 'invoice_notes', 'receipt_notes',
-        'invoice_footer', 'payment_terms', 'bank_details',
+        'invoice_footer', 'payment_terms', 'bank_details', 'invoice_footer_text',
+        'invoice_terms', 'header_position', 'footer_position', 'primary_color',
         // Tax
-        'tax_name', 'tax_rate', 'tax_id_number', 'tax_inclusive',
+        'tax_name', 'tax_rate', 'tax_id_number', 'tax_inclusive', 'tax_id',
+        'show_company_info', 'show_tax_id', 'show_terms',
     ];
 
     protected $imageKeys = [
         'header_image', 'footer_image', 'invoice_logo', 'receipt_banner', 'email_banner',
+        'company_logo', 'invoice_header_image', 'signature_image',
     ];
 
     public function edit()
     {
+        // Only business admins can access business settings
+        abort_unless(auth()->user()->user_type === 'business_admin', 403, 'Only business administrators can manage business settings.');
+
         $business = Business::find(Auth::user()->business_id);
         abort_unless($business, 404, 'Business not found.');
 
@@ -50,6 +57,9 @@ class BusinessSettingsController extends Controller
 
     public function update(Request $request)
     {
+        // Only business admins can update business settings
+        abort_unless(auth()->user()->user_type === 'business_admin', 403, 'Only business administrators can manage business settings.');
+
         $businessId = Auth::user()->business_id;
         $business = Business::find($businessId);
         abort_unless($business, 404, 'Business not found.');
@@ -117,5 +127,34 @@ class BusinessSettingsController extends Controller
 
         return redirect()->route('business-settings.edit')
             ->with('message', 'Business settings updated successfully.');
+    }
+
+    /**
+     * Delete an image setting
+     */
+    public function deleteImage(Request $request)
+    {
+        // Only business admins can delete images
+        abort_unless(auth()->user()->user_type === 'business_admin', 403, 'Only business administrators can manage business settings.');
+
+        $request->validate([
+            'key' => 'required|in:company_logo,invoice_header_image,signature_image,header_image,footer_image,invoice_logo,receipt_banner,email_banner',
+        ]);
+
+        $businessId = Auth::user()->business_id;
+        $setting = BusinessSetting::where('business_id', $businessId)
+            ->where('key', $request->key)
+            ->first();
+
+        if ($setting && $setting->value) {
+            $filePath = public_path($setting->value);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
+            $setting->delete();
+            BusinessSetting::forgetCache($businessId);
+        }
+
+        return redirect()->back()->with('message', 'Image deleted successfully!');
     }
 }

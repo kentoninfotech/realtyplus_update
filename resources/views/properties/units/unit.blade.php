@@ -264,8 +264,8 @@
                                             <div class="agent-name">{{ $unit->owner->full_name ?? $unit->property->owner->full_name ?? '' }}</div>
                                             <a href="{{ route('owner.property', $unit->owner->id ?? $unit->property->owner->id) }}" class="listing-link">View Properties</a>
                                             <div class="contact-item">
-                                                <i class="fa fa-email ml-auto mr-2"></i>
-                                                <span class="contact-value">{{ $unit->owner->email ?? $unit->property->owner->email ?? '' }}</span>
+                                                <i class="fa fa-envelope ml-auto mr-2"></i>
+                                                <span class="contact-value" style="word-wrap: break-word; font-size: 0.7em">{{ $unit->owner->email ?? $unit->property->owner->email ?? '' }}</span>
                                             </div>
                                             <div class="contact-item">
                                                 <i class="fa fa-phone ml-auto mr-2"></i>
@@ -276,7 +276,7 @@
                                 @endif
                                 <!-- PROPERTY AGENT  -->
                                 @isset($unit->property->agent)
-                                    <div class="agent-card">
+                                    <div class="agent-card" style="position: relative">
                                         <div>
                                         <div class="text-muted">Agent</div>
                                         <div class="agent-name">{{ $unit->property->agent->full_name ?? '' }}</div>
@@ -286,8 +286,8 @@
                                             <span class="contact-value">{{ $unit->property->agent->phone_number ?? '' }}</span>
                                         </div>
                                         <div class="contact-item">
-                                            <i class="fa fa-email ml-auto mr-2"></i>
-                                            <span class="contact-value">{{ $unit->property->agent->email ?? '' }}</span>
+                                            <i class="fa fa-envelope ml-auto mr-2"></i>
+                                            <span class="contact-value" style="word-wrap: break-word; font-size: 0.7em">{{ $unit->property->agent->email ?? '' }}</span>
                                         </div>
                                         </div>
                                     </div>
@@ -411,10 +411,31 @@
                     <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
                         <div class="text-center text-white p-4">
                             @can('create property')
-                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
-                                <a href="{{ route('new.property.lease', $unit->property->id) }}"
-                                    class="btn btn-primary btn-lg mr-2">Add Lease</span>
-                                </a>
+                                @if($unit->property->listing_type === 'sale')
+                                    <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Sales</p>
+                                    <a href="{{ route('unit.sale.form', $unit->id) }}"
+                                        class="btn btn-success btn-lg mr-2">
+                                        <i class="fas fa-cash-register"></i> Add Sale
+                                    </a>
+                                @elseif($unit->property->listing_type === 'rent')
+                                    <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
+                                    <a href="{{ route('new.property.lease', $unit->property->id) }}"
+                                        class="btn btn-primary btn-lg mr-2">
+                                        <i class="fas fa-file-contract"></i> Add Lease
+                                    </a>
+                                @elseif($unit->property->listing_type === 'both')
+                                    <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Transactions</p>
+                                    <a href="{{ route('unit.sale.form', $unit->id) }}"
+                                        class="btn btn-success btn-lg mr-2">
+                                        <i class="fas fa-cash-register"></i> Add Sale
+                                    </a>
+                                    <a href="{{ route('new.property.lease', $unit->property->id) }}"
+                                        class="btn btn-primary btn-lg">
+                                        <i class="fas fa-file-contract"></i> Add Lease
+                                    </a>
+                                @else
+                                    <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Transactions</p>
+                                @endif
                             @else
                                 <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Leases</p>
                             @endcan

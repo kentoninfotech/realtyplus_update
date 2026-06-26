@@ -11,6 +11,7 @@ class PropertyTransaction extends Model
     use HasFactory, BelongsToBusiness;
 
     protected $fillable = [
+        'business_id',
         'transactionable_type',
         'transactionable_id',
         'payer_type',

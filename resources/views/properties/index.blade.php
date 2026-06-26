@@ -75,8 +75,8 @@
                     <div class="icon">
                         <i class="ion ion-stats-bars"></i>
                     </div>
-                    @can('view project')
-                    <a href="{{ url('properties') }}" class="small-box-footer">More info <i
+                    @can('view property')
+                    <a href="{{ route('all.units') }}" class="small-box-footer">More info <i
                             class="fas fa-arrow-circle-right"></i></a>
                     @endcan
                 </div>
@@ -86,15 +86,15 @@
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3>{{ '6' }}</h3>
+                        <h3>{{ $units->where('status', 'available')->count() }}</h3>
 
-                        <p>Pending Payment</p>
+                        <p>Pending Payments</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    @can('view project')
-                    <a href="{{ url('alink') }}" class="small-box-footer">More info <i
+                    @can('view property')
+                    <a href="{{ route('pending.payments') }}" class="small-box-footer">More info <i
                             class="fas fa-arrow-circle-right"></i></a>
                     @endcan
                 </div>

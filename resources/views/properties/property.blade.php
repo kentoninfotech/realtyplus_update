@@ -291,8 +291,8 @@
                                             <div class="agent-name">{{ $property->owner->full_name ?? '' }}</div>
                                             <a href="{{ route('owner.property', $property->owner->id) }}" class="listing-link">View Properties</a>
                                             <div class="contact-item">
-                                                <i class="fa fa-email ml-auto mr-2"></i>
-                                                <span class="contact-value">{{ $property->owner->email ?? '' }}</span>
+                                                <i class="fa fa-envelope ml-auto mr-2"></i>
+                                                <span class="contact-value" style="word-wrap: break-word; font-size: 0.7em">{{ $property->owner->email ?? '' }}</span>
                                             </div>
                                             <div class="contact-item">
                                                 <i class="fa fa-phone ml-auto mr-2"></i>
@@ -313,8 +313,8 @@
                                             <span class="contact-value">{{ $property->agent->phone_number ?? '' }}</span>
                                         </div>
                                         <div class="contact-item">
-                                            <i class="fa fa-email ml-auto mr-2"></i>
-                                            <span class="contact-value">{{ $property->agent->email ?? '' }}</span>
+                                            <i class="fa fa-envelope ml-auto mr-2"></i>
+                                            <span class="contact-value" style="word-wrap: break-word; font-size: 0.7em">{{ $property->agent->email ?? '' }}</span>
                                         </div>
                                         </div>
                                     </div>
@@ -407,7 +407,7 @@
         <!-- PROPERTY UNITS -->
          <!-- FIX LOGIC TO USE AND(&&) COMPARISON INSTEAD OF OR(||)  -->
         @if ($property->has_units)
-            <div class="col-md-4" id="unitSection">
+            <div class="col-md-12" id="unitSection">
                     <div class="card card-height">
                       @if($property->units->count() > 0)
                         <div class="card-header border-0">
@@ -433,16 +433,42 @@
                                         <tr>
                                             <th scope="col">Unit</th>
                                             <th scope="col">Type</th>
+                                            <th scope="col">Tenant/Buyer</th>
                                             <th scope="col">Status</th>
+                                            <th scope="col">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach ($property->units->take(5) as $unit)
+                                            @php
+                                                // Get active lease if unit is leased
+                                                $activeLease = $unit->leases()->where('status', 'active')->first();
+                                                $tenant = $activeLease ? $activeLease->tenant : null;
+                                                
+                                                // Check if unit is sold by looking at transactions
+                                                $saleTransaction = $unit->property->transactions()
+                                                    ->where('purpose', 'sale')
+                                                    ->where('status', 'completed')
+                                                    ->latest()
+                                                    ->first();
+                                                $buyer = $saleTransaction && $saleTransaction->payer ? $saleTransaction->payer->full_name ?? 'N/A' : null;
+                                            @endphp
                                         <tr>
                                                 <td>
                                                     <a href="{{ route('show.unit', $unit->id)}}">{{ $unit->unit_number }}</a>
                                                 </td>
                                                 <td>{{ $unit->unit_type }}</td>
+                                                <td>
+                                                    @if($tenant)
+                                                        <span class="badge badge-info">Tenant</span><br>
+                                                        <strong>{{ $tenant->full_name ?? 'N/A' }}</strong>
+                                                    @elseif($buyer)
+                                                        <span class="badge badge-success">Buyer</span><br>
+                                                        <strong>{{ $buyer }}</strong>
+                                                    @else
+                                                        <span class="text-muted">-</span>
+                                                    @endif
+                                                </td>
                                                 <td>
                                                     @if ($unit->status == 'under_maintenance')
                                                         <span class="badge badge-warning">Under Maintenance</span>
@@ -457,6 +483,24 @@
                                                     @else
                                                         <span class="badge badge-secondary">Unavailable</span>
                                                     @endif
+                                                </td>
+                                                <td>
+                                                    @if ($unit->status == 'available')
+                                                        <a href="{{ route('unit.lease.form', $unit->id) }}" class="btn btn-xs btn-primary" title="Lease/Rent this unit">
+                                                            <i class="fas fa-home"></i> Buy
+                                                        </a>
+                                                        <a href="{{ route('unit.sale.form', $unit->id) }}" class="btn btn-xs btn-success" title="Sell this unit">
+                                                            <i class="fas fa-cash-register"></i> Sell
+                                                        </a>
+                                                    @endif
+                                                    <a href="{{ route('show.unit', $unit->id) }}" class="btn btn-xs btn-info" title="View unit details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                     @can('edit property')
+                                                        <a href="{{ route('edit.unit', $unit->id) }}" class="btn btn-xs btn-default" title="Edit Unit">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </a>
+                                                    @endcan
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -481,163 +525,7 @@
                     </div>
             </div>
         @endif
-        <!-- PROPERTY VIEWINGS -->
-        <div class="col-md-{{ $property->has_units ? '8' : '6' }}">
-            <div class="card card-height">
-                @if ($property->viewings->count() > 0 )
-                    <div class="card-header border-0">
-                        <div class="d-flex justify-content-between align-items-center bg-white">
-                            <div>
-                                <h5 class="mb-0">Viewings</h5>
-                            </div>
-                            <div class="mr-0">
-                                <a href="{{ route('property.viewing', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->viewings->count() }})</a>
-                                @can('create property')
-                                    <a href="{{ route('property.viewing', ['id' => $property->id, 'modal' => 'viewings']) }}"
-                                        class="btn btn-primary btn-xs">Scheduled Viewings</span>
-                                    </a>
-                                @endcan
-                                <button type="button" class="btn btn-sm btn-light">&times</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-reposive">
-                            <table class="table table-borderless table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Client</th>
-                                        <th scope="col">Property/Unit</th>
-                                        <th scope="col">Agent</th>
-                                        <th scope="col">Schedule</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($property->viewings as $viewing)
-                                        <tr>
-                                            <td>
-                                                <a href="#">
-                                                {{ $viewing->client_name }}
-                                                </a>
-                                            </td>
-                                            <td>{{ $viewing->property->name ?? $property->propertyUnit->unit_number }}</td>
-                                            <td>{{ $viewing->agent->full_name  ?? '' }}</td>
-                                            <td>{{ $viewing->scheduled_at->format('d F, Y h:i A') ?? '' }}</td>
-                                            <td>
-                                                @if ($viewing->status == 'scheduled')
-                                                    <span class="badge badge-warning float-right">Scheduled</span>
-                                                @elseif ($viewing->status == 'completed')
-                                                    <span class="badge badge-success float-right">Completed</span>
-                                                @elseif ($viewing->status == 'cancelled')
-                                                    <span class="badge badge-danger float-right">Cancelled</span>
-                                                @elseif ($viewing->status == 'rescheduled')
-                                                    <span class="badge badge-info float-right">Rescheduled</span>
-                                                @else
-                                                    <span class="badge badge-secondary float-right">In Progress</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                @else
-                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
-                        <div class="text-center text-white p-4">
-                            @can('create property')
-                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No viewings have been scheduled for this property yet.</p>
-                                <a href="{{ route('property.viewing', ['id' => $property->id, 'modal' => 'viewings']) }}"
-                                    class="btn btn-primary btn-lg mr-2">Scheduled Viewings</span>
-                                </a>
-                            @else
-                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No viewings have been scheduled for this property yet.</p>
-                            @endcan
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
-        
-        <!-- PROPERTY LEASES -->
-        <div class="col-md-6">
-            <div class="card card-height">
-                @if ($property->leases->count() > 0 )
-                    <div class="card-header border-0">
-                        <div class="d-flex justify-content-between align-items-center bg-white">
-                            <div>
-                                <h5 class="mb-0">Leases/Rents</h5>
-                            </div>
-                            <div class="mr-0">
-                                <a href="{{ route('property.leases', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->leases->count() }})</a>
-                                @can('create property')
-                                    <a href="{{ route('new.property.lease', $property->id) }}"
-                                        class="btn btn-primary btn-xs">Add New</span>
-                                    </a>
-                                @endcan
-                                <button type="button" class="btn btn-sm btn-light">&times</button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="table-reposive">
-                            <table class="table table-borderless table-hover mb-0">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Tenant</th>
-                                        <th scope="col">Property/Unit</th>
-                                        <th scope="col">Due Date</th>
-                                        <th scope="col">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($property->leases->take(5) as $lease)
-                                    <tr>
-                                            <td>
-                                                <a href="#">
-                                                {{ $lease->tenant->full_name  ?? ''}}
-                                                </a>
-                                            </td>
-                                            <td>{{ $lease->property->name ?? $property->propertyUnit->unit_number }}</td>
-                                            <td>{{ $lease->end_date->format('F, Y') ?? '' }}</td>
-                                            <td>
-                                                @if ($lease->status == 'pending')
-                                                    <span class="badge badge-warning float-right">Pending</span>
-                                                @elseif ($lease->status == 'active')
-                                                    <span class="badge badge-primary float-right">Active</span>
-                                                @elseif ($lease->status == 'expired')
-                                                    <span class="badge badge-danger float-right">Expired</span>
-                                                @elseif ($lease->status == 'renewed')
-                                                    <span class="badge badge-success float-right">Renewed</span>
-                                                @else
-                                                    <span class="badge badge-secondary float-right">{{ Str::headline($lease->status) }}</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                @else
-                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
-                        <div class="text-center text-white p-4">
-                            @can('create property')
-                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
-                                <a href="{{ route('new.property.lease', $property->id) }}"
-                                    class="btn btn-primary btn-lg mr-2">New Lease</span>
-                                </a>
-                            @else
-                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Leases</p>
-                            @endcan
-                        </div>
-                    </div>
-                @endif
-            </div>
-        </div>
-        
-        <!-- PROPERTY TASKS -->
+        <!-- PROPERTY TASKS AND SCHEDULE VIEWINGS ROW -->
         <div class="col-md-6">
             <div class="card card-height">
                 @if ($property->tasks->count() > 0 )
@@ -725,6 +613,162 @@
                 @endif
             </div>
         </div> <!-- /.col-6 -->
+
+        <!-- PROPERTY VIEWINGS -->
+        <div class="col-md-6">
+            <div class="card card-height">
+                @if ($property->viewings->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Schedule Viewings</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ route('property.viewing', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->viewings->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ route('property.viewing', ['id' => $property->id, 'modal' => 'viewings']) }}"
+                                        class="btn btn-primary btn-xs">Schedule</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Client</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Agent</th>
+                                        <th scope="col">Schedule</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->viewings as $viewing)
+                                        <tr>
+                                            <td>
+                                                <a href="#">
+                                                {{ $viewing->client_name }}
+                                                </a>
+                                            </td>
+                                            <td>{{ $viewing->property->name ?? $property->propertyUnit->unit_number }}</td>
+                                            <td>{{ $viewing->agent->full_name  ?? '' }}</td>
+                                            <td>{{ $viewing->scheduled_at->format('d F, Y h:i A') ?? '' }}</td>
+                                            <td>
+                                                @if ($viewing->status == 'scheduled')
+                                                    <span class="badge badge-warning float-right">Scheduled</span>
+                                                @elseif ($viewing->status == 'completed')
+                                                    <span class="badge badge-success float-right">Completed</span>
+                                                @elseif ($viewing->status == 'cancelled')
+                                                    <span class="badge badge-danger float-right">Cancelled</span>
+                                                @elseif ($viewing->status == 'rescheduled')
+                                                    <span class="badge badge-info float-right">Rescheduled</span>
+                                                @else
+                                                    <span class="badge badge-secondary float-right">In Progress</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
+                            @can('create property')
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No viewings have been scheduled for this property yet.</p>
+                                <a href="{{ route('property.viewing', ['id' => $property->id, 'modal' => 'viewings']) }}"
+                                    class="btn btn-primary btn-lg mr-2">Schedule Viewings</span>
+                                </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No viewings have been scheduled for this property yet.</p>
+                            @endcan
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
+        
+        <!-- PROPERTY LEASES -->
+        <div class="col-md-12">
+            <div class="card card-height">
+                @if ($property->leases->count() > 0 )
+                    <div class="card-header border-0">
+                        <div class="d-flex justify-content-between align-items-center bg-white">
+                            <div>
+                                <h5 class="mb-0">Leases/Rents</h5>
+                            </div>
+                            <div class="mr-0">
+                                <a href="{{ route('property.leases', $property->id) }}" class="btn btn-sm btn-light">view({{ $property->leases->count() }})</a>
+                                @can('create property')
+                                    <a href="{{ route('new.property.lease', $property->id) }}"
+                                        class="btn btn-primary btn-xs">Add New</span>
+                                    </a>
+                                @endcan
+                                <button type="button" class="btn btn-sm btn-light">&times</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-reposive">
+                            <table class="table table-borderless table-hover mb-0">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Tenant</th>
+                                        <th scope="col">Property/Unit</th>
+                                        <th scope="col">Due Date</th>
+                                        <th scope="col">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($property->leases->take(5) as $lease)
+                                    <tr>
+                                            <td>
+                                                <a href="#">
+                                                {{ $lease->tenant->full_name  ?? ''}}
+                                                </a>
+                                            </td>
+                                            <td>{{ $lease->property->name ?? $property->propertyUnit->unit_number }}</td>
+                                            <td>{{ $lease->end_date->format('F, Y') ?? '' }}</td>
+                                            <td>
+                                                @if ($lease->status == 'pending')
+                                                    <span class="badge badge-warning float-right">Pending</span>
+                                                @elseif ($lease->status == 'active')
+                                                    <span class="badge badge-primary float-right">Active</span>
+                                                @elseif ($lease->status == 'expired')
+                                                    <span class="badge badge-danger float-right">Expired</span>
+                                                @elseif ($lease->status == 'renewed')
+                                                    <span class="badge badge-success float-right">Renewed</span>
+                                                @else
+                                                    <span class="badge badge-secondary float-right">{{ Str::headline($lease->status) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                @else
+                    <div class="card-body d-flex align-items-center justify-content-center no-records-bg">
+                        <div class="text-center text-white p-4">
+                            @can('create property')
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 6px rgba(0,0,0,0.7);">No Leases</p>
+                                <a href="{{ route('new.property.lease', $property->id) }}"
+                                    class="btn btn-primary btn-lg mr-2">New Lease</span>
+                                </a>
+                            @else
+                                <p class="lead mb-4" style="text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">No Leases</p>
+                            @endcan
+                        </div>
+                    </div>
+                @endif
+            </div>
+        </div>
         <!-- PROPERTY MAINTENANCE REQUESTS -->
         <div class="col-md-7">
             <div class="card card-height">
@@ -839,7 +883,7 @@
                                         <tr>
                                             <td>
                                                 <a target="_blank"
-                                                    href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
+                                                    href="{{ asset($document->file_path) }}">{{ $document->title }}
                                                 <span class="badge badge-info float-right">{{ $document->file_type }}</span></a>
                                             </td>
                                             <td>{{ $document->uploader->name ?? '' }}</td>

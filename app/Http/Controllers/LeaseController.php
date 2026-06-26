@@ -106,6 +106,32 @@ class LeaseController extends Controller
             'unitsForDropdown' // Pass units related to the selected property (or empty)
         ));
     }
+    /**
+     * Show the form for creating a new lease for a specific unit.
+     *
+     */
+    public function newUnitLease($unitId)
+    {
+        $unit = PropertyUnit::with('property')->findOrFail($unitId);
+        
+        // Check if unit is available for lease
+        if ($unit->status !== 'available') {
+            return redirect()->back()->with('error', 'This unit is not available for lease.');
+        }
+        
+        $property = $unit->property;
+        $tenants = Tenant::where('business_id', auth()->user()->business_id)->get();
+        $paymentFrequencies = ['monthly', 'quarterly', 'annually', 'bi-annually'];
+        $leaseStatuses = ['active', 'pending', 'terminated', 'renewed', 'expired'];
+
+        return view('properties.leases.new-property-lease', compact(
+            'property',
+            'unit',
+            'tenants',
+            'paymentFrequencies',
+            'leaseStatuses'
+        ));
+    }
      /**
      * Store a newly created lease in storage.
      *
@@ -127,6 +153,27 @@ class LeaseController extends Controller
         });
 
         return redirect()->route('leases')->with('message', 'Lease created successfully!');
+    }
+    /**
+     * Show a specific lease
+     */
+    public function showLease($id)
+    {
+        $lease = Lease::with(['tenant', 'property', 'propertyUnit'])->findOrFail($id);
+        return view('properties.leases.show-lease', compact('lease'));
+    }
+    /**
+     * Show the form for editing a lease
+     */
+    public function editLease($id)
+    {
+        $lease = Lease::with(['tenant', 'property', 'propertyUnit'])->findOrFail($id);
+        $properties = Property::all();
+        $tenants = Tenant::all();
+        $paymentFrequencies = ['monthly', 'quarterly', 'annually', 'bi-annually'];
+        $leaseStatuses = ['active', 'pending', 'terminated', 'renewed', 'expired'];
+        
+        return view('properties.leases.edit-lease', compact('lease', 'properties', 'tenants', 'paymentFrequencies', 'leaseStatuses'));
     }
     /**
      * Get units by property ID (for dynamic dropdowns in forms)

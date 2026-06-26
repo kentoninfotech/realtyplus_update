@@ -44,7 +44,7 @@
                             <td>{{ $document->id }}</td>
                             <td>
                                 <a target="_blank"
-                                    href="{{ URL::to('public/documents/' . $document->file_path) }}">{{ $document->title }}
+                                    href="{{ asset($document->file_path) }}">{{ $document->title }}
                                 </a>
                             </td>
                             <td>{{ $document->description }}</td>

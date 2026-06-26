@@ -143,7 +143,7 @@
                     </div>
                     <div class="form-group">
                         <label for="agent_id">Agent</label>
-                        <select id="agent_id" name="agent_id" class="form-control" required>
+                        <select id="agent_id" name="agent_id" class="form-control">
                             <option value="">Select Agent</option>
                             @foreach($agents as $agent)
                                 <option value="{{ $agent->id }}">{{ $agent->full_name }}</option>

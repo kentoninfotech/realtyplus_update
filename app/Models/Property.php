@@ -14,6 +14,7 @@ class Property extends Model
         'property_type_id',
         'agent_id',
         'owner_id',
+        'business_id',
         'name',
         'address',
         'state',
@@ -33,11 +34,14 @@ class Property extends Model
         'date_acquired',
         'listing_type',
         'listed_at',
+        'featured',
+        'featured_order',
     ];
 
 
     protected $casts = [
         'has_units' => 'boolean',
+        'featured' => 'boolean',
         'date_acquired' => 'date',
         'listed_at'   => 'datetime'
     ];
@@ -99,5 +103,11 @@ class Property extends Model
         return $this->morphMany(PropertyTask::class, 'taskable');
     }
 
-
+    /**
+     * Scope to get featured properties
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true)->orderBy('featured_order')->limit(9);
+    }
 }

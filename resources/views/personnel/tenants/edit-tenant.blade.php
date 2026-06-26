@@ -19,7 +19,7 @@
 
     <div class="card card-primary">
         <div class="card-header">
-            <h4 class="card-title">Edit {{$tenant->user->name }}' Records</h4>
+            <h4 class="card-title">Edit {{ ($tenant->user && $tenant->user->name) ? $tenant->user->name : ($tenant->first_name . ' ' . $tenant->last_name) }}'s Records</h4>
             <a class="btn btn-success sm float-right" href="{{ route('tenants') }}">Back</a>
         </div>
         <div class="card-body">

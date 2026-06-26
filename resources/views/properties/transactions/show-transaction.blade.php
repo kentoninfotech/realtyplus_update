@@ -8,7 +8,13 @@
             <i class="fas fa-arrow-left"></i> Back to Transactions
         </a>
         <div>
-            <a href="{{ route('receipt.pdf', $transaction->id) }}?print=1" target="_blank" class="btn btn-outline-info btn-sm mr-2">
+            <a href="{{ route('transaction.invoice', $transaction->id) }}" target="_blank" class="btn btn-outline-primary btn-sm mr-2">
+                <i class="fas fa-file-invoice"></i> View Invoice
+            </a>
+            <a href="{{ route('transaction.receipt', $transaction->id) }}" target="_blank" class="btn btn-outline-info btn-sm mr-2">
+                <i class="fas fa-receipt"></i> View Receipt
+            </a>
+            <a href="{{ route('receipt.pdf', $transaction->id) }}?print=1" target="_blank" class="btn btn-outline-secondary btn-sm mr-2">
                 <i class="fas fa-print"></i> Print
             </a>
             <a href="{{ route('receipt.pdf', $transaction->id) }}" class="btn btn-outline-danger btn-sm">

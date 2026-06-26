@@ -52,6 +52,31 @@
         .m-0{
             font-size: 1.5em !important;
         }
+
+        /* Fix footer positioning for long forms */
+        html {
+            height: 100%;
+        }
+
+        body.hold-transition {
+            height: 100%;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            margin-bottom: auto;
+        }
+
+        .main-footer {
+            margin-top: auto;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 
@@ -121,7 +146,7 @@
                         <a href="#" class="dropdown-item">
                             <!-- Message Start -->
                             <div class="media">
-                                <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" alt="User Avatar"
+                                <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('personnel-files/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" alt="User Avatar"
                                     class="img-size-50 mr-3 img-circle">
                                 <div class="media-body">
                                     <h3 class="dropdown-item-title">
@@ -142,7 +167,7 @@
                 <!-- Notifications Dropdown Menu -->
                 <li class="nav-item dropdown">
                     <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-bell"></i>
+                        <i class="fas fa-bell"></i>
                         <span class="badge badge-warning navbar-badge">15</span>
                     </a>
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
@@ -188,7 +213,7 @@
                 <!-- Sidebar user panel (optional) -->
                 <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                     <div class="image">
-                        <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('personnel/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" class="img-circle elevation-2"
+                        <img src="{{ (isset($login_user->personnel->picture) && $login_user->personnel->picture !== null) ? asset('personnel-files/pictures/' .$login_user->personnel->picture) : 'https://ui-avatars.com/api/?name=' . urlencode($login_user->name) }}" class="img-circle elevation-2"
                             alt="User Image"> <span style="color: white">{{ auth()->user()->name }}</span>
                     </div>
                     <div class="info">
@@ -236,6 +261,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
+                                @if(Route::has('properties'))
                                 <li class="nav-item">
                                     <a href="{{ route('properties') }}" class="nav-link">
                                     <p>
@@ -244,7 +270,8 @@
                                     </p>
                                     </a>
                                 </li>
-                            @can('create property')
+                                @endif
+                                @can('create property')
                                 <li class="nav-item">
                                     <a href="{{ route('new.property') }}" class="nav-link">
                                     <p>    
@@ -252,8 +279,8 @@
                                      Add Property</p>
                                     </a>
                                 </li>
-                            @endcan
-                            @can('create property')
+                                @endcan
+                                @can('create property')
                                 <li class="nav-item">
                                     <a href="{{ route('property.transaction') }}" class="nav-link">
                                     <p>    
@@ -261,17 +288,16 @@
                                      Property Transactions</p>
                                     </a>
                                 </li>
-                            @endcan
-                            @can('create property')
+                                @endcan
+                                @can('create property')
                                 <li class="nav-item">
                                     <a href="{{ route('leases') }}" class="nav-link">
                                     <p>    
-                                    <i class="nav-icon fas fa-solid fa-file-contract"></i>
+                                    <i class="nav-icon fas fa-file-contract"></i>
                                      Property Leases</p>
                                     </a>
                                 </li>
-                            @endcan
-
+                                @endcan
                             </ul>
                         </li>
                   @endcanany
@@ -517,7 +543,7 @@
 
                 @endcanany
 
-                @can('manage settings')
+                @if(auth()->user()->user_type === 'business_admin' || auth()->user()->can('manage settings'))
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-cog"></i>
@@ -527,39 +553,45 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="{{ route('business-settings.edit') }}" class="nav-link">
-                                        <i class="fas fa-store nav-icon"></i>
-                                        <p>Business Settings</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ url('settings') }}" class="nav-link" data-toggle="modal"
-                                        data-target="#settings">
-                                        <i class="fas fa-cog nav-icon"></i>
-                                        <p>System Settings</p>
-                                    </a>
+                                @if(auth()->user()->user_type === 'business_admin' || auth()->user()->can('manage settings'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('business-settings.edit') }}" class="nav-link">
+                                            <i class="fas fa-store nav-icon"></i>
+                                            <p>Business Settings</p>
+                                        </a>
+                                    </li>
+                                @endif
+                                @if(auth()->user()->can('manage settings'))
+                                    <li class="nav-item">
+                                        <a href="{{ url('settings') }}" class="nav-link" data-toggle="modal"
+                                            data-target="#settings">
+                                            <i class="fas fa-cog nav-icon"></i>
+                                            <p>System Settings</p>
+                                        </a>
 
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ route('users.role') }}" class="nav-link">
-                                        <i class="fas fa-user-lock nav-icon"></i>
-                                        <p>Manage Role & Perm..</p>
-                                    </a>
+                                    </li>
+                                @endif
+                                @if(auth()->user()->user_type === 'business_admin' || auth()->user()->can('manage settings'))
+                                    <li class="nav-item">
+                                        <a href="{{ route('users.role') }}" class="nav-link">
+                                            <i class="fas fa-user-lock nav-icon"></i>
+                                            <p>Manage Role & Perm..</p>
+                                        </a>
 
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{ url('categories') }}" class="nav-link">
-                                        <i class="far fa-file-alt nav-icon"></i>
-                                        <p>Categories</p>
-                                    </a>
-                                </li>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ url('categories') }}" class="nav-link">
+                                            <i class="far fa-file-alt nav-icon"></i>
+                                            <p>Categories</p>
+                                        </a>
+                                    </li>
+                                @endif
 
 
 
                             </ul>
                         </li>
-                @endcan
+                @endif
 
                         <li class="nav-item">
                             <a href="{{ url('logout') }}" class="nav-link">
@@ -793,7 +825,10 @@
     <!-- overlayScrollbars -->
     <script src="{{ asset('plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     
-    <!-- DataTables -->
+    <!-- DataTables - Core Library (MUST load before plugins) -->
+    <script src="{{ asset('plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    
+    <!-- DataTables - Plugins and Extensions -->
     <script src="{{ asset('plugins/datatables-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/dataTables.responsive.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}"></script>
@@ -805,15 +840,27 @@
     <script src="{{ asset('plugins/datatables-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('plugins/datatables-buttons/js/buttons.print.min.js') }}"></script>
     
-    <!-- AdminLTE App -->
+    <!-- AdminLTE App - MUST be after Bootstrap -->
     <script src="{{ asset('dist/js/adminlte.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('dist/js/demo.js') }}"></script>
 
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
     <script>
-        $(function() {
-            console.log('jQuery initialization starting...');
+        // Initialize all features when DOM is ready
+        $(document).ready(function() {
+            console.log('jQuery ready - initializing dashboard features...');
+            
+            // Initialize Bootstrap dropdowns
+            $('[data-toggle="dropdown"]').each(function() {
+                new bootstrap.Dropdown(this);
+            });
+            
+            // Initialize Bootstrap tooltips
+            $('[data-toggle="tooltip"]').tooltip();
+            
+            // Initialize Bootstrap popovers
+            $('[data-toggle="popover"]').popover();
             
             // On Page Load - Initialize all plugins
             
@@ -821,16 +868,16 @@
             $('.date').datetimepicker({
                 format: 'YYYY-MM-DD'
             });
-            console.log('Datepicker initialized');
+            console.log('✓ Datepicker initialized');
             
             // Select2
             $('.select2').select2();
-            console.log('Select2 initialized');
+            console.log('✓ Select2 initialized');
             
             // Summernote WYSIWYG editor
             if ($.fn.summernote) {
                 $('.wyswygeditor').summernote();
-                console.log('Summernote initialized');
+                console.log('✓ Summernote initialized');
             }
             
             // DataTables
@@ -840,10 +887,10 @@
                     lengthChange: false,
                     autoWidth: false
                 });
-                console.log('DataTables initialized');
+                console.log('✓ DataTables initialized');
             }
             
-            // Sidebar menu toggle for submenu items (jQuery fallback)
+            // Sidebar menu toggle for submenu items
             $('.nav-sidebar .nav-item > a').on('click', function(e) {
                 var $item = $(this).parent();
                 var $submenu = $item.find('> .nav-treeview');
@@ -853,16 +900,91 @@
                     e.stopPropagation();
                     
                     $item.toggleClass('menu-open');
-                    console.log('Menu item toggled:', $item);
+                    $submenu.slideToggle(300);
+                    console.log('✓ Submenu toggled:', $item);
                 }
             });
             
-            // Pushmenu toggle
+            // Pushmenu toggle - Sidebar collapse button
             $('[data-widget="pushmenu"]').on('click', function(e) {
                 e.preventDefault();
                 $('body').toggleClass('sidebar-collapse');
-                console.log('Sidebar toggled');
+                console.log('✓ Sidebar collapse toggled');
             });
+            
+            // Fullscreen widget
+            $('[data-widget="fullscreen"]').on('click', function(e) {
+                e.preventDefault();
+                if (!document.fullscreenElement && !document.mozFullScreenElement && 
+                    !document.webkitFullscreenElement && !document.msFullscreenElement) {
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    } else if (document.documentElement.mozRequestFullScreen) {
+                        document.documentElement.mozRequestFullScreen();
+                    } else if (document.documentElement.webkitRequestFullscreen) {
+                        document.documentElement.webkitRequestFullscreen(Element.ALLOW_KEYBOARD_INPUT);
+                    } else if (document.documentElement.msRequestFullscreen) {
+                        document.documentElement.msRequestFullscreen();
+                    }
+                    console.log('✓ Fullscreen enabled');
+                } else {
+                    if (document.cancelFullScreen) {
+                        document.cancelFullScreen();
+                    } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                    } else if (document.webkitCancelFullScreen) {
+                        document.webkitCancelFullScreen();
+                    } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                    }
+                    console.log('✓ Fullscreen disabled');
+                }
+            });
+            
+            // Control sidebar toggle
+            $('[data-widget="control-sidebar"]').on('click', function(e) {
+                e.preventDefault();
+                $('body').toggleClass('control-sidebar-slide-open');
+                console.log('✓ Control sidebar toggled');
+            });
+            
+            // Navbar search
+            $('[data-widget="navbar-search"]').on('click', function(e) {
+                e.preventDefault();
+                $('.navbar-search-block').slideToggle();
+                console.log('✓ Navbar search toggled');
+            });
+            
+            console.log('✓✓✓ All dashboard features initialized successfully! ✓✓✓');
+        });
+
+        function material(accid) {
+
+            var name = $('#ach' + accid).attr("data-name");
+            var type = $('#ach' + accid).attr("data-type");
+            var measurement_unit = $('#ach' + accid).attr("data-measurement_unit");
+            var size = $('#ach' + accid).attr("data-size");
+            var picture = $('#ach' + accid).attr("data-picture");
+
+            var cost_per = $('#ach' + accid).attr("data-cost_per");
+            var business_id = $('#ach' + accid).attr("data-business_id");
+            var category = $('#ach' + accid).attr("data-category");
+
+            $('#id').val(accid);
+            $('#name').val(name);
+            $('#type').val(type).attr("selected", "selected");
+            $('#measurement_unit').val(measurement_unit);
+            $('#size').val(size);
+
+
+
+            $('#cost_per').val(cost_per);
+            $('#oldpicture').val(picture);
+            $('#category').val(category).attr("selected", "selected");
+            $('#business_id').val(business_id).attr("selected", "selected");
+            $('#matbutton').html("Update Material");
+
+        }
             
             console.log('jQuery initialization complete');
         });

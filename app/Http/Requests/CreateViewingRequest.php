@@ -27,7 +27,7 @@ class CreateViewingRequest extends FormRequest
             'property_id' => 'required|exists:properties,id',
             'property_unit_id' => 'nullable|exists:property_units,id',
             'lead_id' => 'nullable|exists:leads,id',
-            'agent_id' => 'required|exists:agents,id',
+            'agent_id' => 'nullable|exists:agents,id',
             'client_name' => 'required|string|max:255',
             'client_email' => 'required|email|max:255',
             'client_phone' => 'nullable|string|max:255',

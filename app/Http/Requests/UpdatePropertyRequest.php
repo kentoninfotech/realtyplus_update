@@ -63,6 +63,8 @@ class UpdatePropertyRequest extends FormRequest
             'listing_type' => ['required', 'string', Rule::in(['sale', 'rent', 'both'])],
             'listed_at' => ['nullable', 'date'],
             'has_units' => ['boolean'], // From the checkbox
+            'featured' => ['nullable', 'boolean'],
+            'featured_order' => ['nullable', 'integer', 'min:1', 'max:9'],
             'amenities' => ['nullable', 'array'],
             'amenities.*' => ['exists:amenities,id'],
         ];

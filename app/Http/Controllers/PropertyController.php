@@ -200,6 +200,8 @@ class PropertyController extends Controller
                 'date_acquired' => $validatedData['date_acquired'] ?? null,
                 'listing_type' => $validatedData['listing_type'],
                 'listed_at' => $validatedData['listed_at'] ?? null,
+                'featured' => $validatedData['featured'] ?? false,
+                'featured_order' => ($validatedData['featured'] ?? false) ? ($validatedData['featured_order'] ?? null) : null,
             ]);
 
             // Handle Unit Update/Creation/Deletion based on `properties.has_units`
@@ -268,6 +270,59 @@ class PropertyController extends Controller
         $property = Property::findOrFail($propertyId);
         $units = $property->units;
         return view('properties.property-units', compact('property', 'units'));
+    }
+    /**
+     * Show all Units across all properties
+     */
+    public function allUnits()
+    {
+        // Get all units from properties belonging to this business
+        $units = PropertyUnit::with('property', 'images')
+            ->whereHas('property', function($query) {
+                $query->where('business_id', auth()->user()->business_id);
+            })
+            ->get();
+        return view('units.index', compact('units'));
+    }
+    /**
+     * Show pending payments
+     */
+    public function pendingPayments()
+    {
+        // Get pending lease payments (rent)
+        $pendingRents = \App\Models\Lease::where('business_id', auth()->user()->business_id)
+            ->where('status', 'active')
+            ->with('tenant', 'propertyUnit', 'property')
+            ->get();
+        
+        // For now, create a simple pending payments structure
+        $pendingPayments = collect();
+        $totalPendingAmount = 0;
+        
+        foreach ($pendingRents as $lease) {
+            $totalPendingAmount += $lease->monthly_rent ?? 0;
+            $pendingPayments->push([
+                'payment_type' => 'rent',
+                'property_name' => $lease->property->name ?? null,
+                'unit_number' => $lease->propertyUnit->unit_number ?? null,
+                'payer_name' => $lease->tenant->full_name ?? 'Unknown',
+                'amount' => $lease->monthly_rent ?? 0,
+                'due_date' => $lease->end_date ?? null,
+                'detail_url' => route('leases'),
+            ]);
+        }
+        
+        $pendingRentCount = $pendingRents->count();
+        $pendingLandCount = 0; // Can be extended later
+        $pendingPropertyCount = 0; // Can be extended later
+        
+        return view('properties.pending-payments', compact(
+            'pendingPayments',
+            'totalPendingAmount',
+            'pendingRentCount',
+            'pendingLandCount',
+            'pendingPropertyCount'
+        ));
     }
     /**
      * Owner's Property

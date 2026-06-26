@@ -26,6 +26,7 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     // Business Settings (per-tenant branding, contact, invoice, tax)
     Route::get('/business-settings', [App\Http\Controllers\BusinessSettingsController::class, 'edit'])->name('business-settings.edit');
     Route::post('/business-settings', [App\Http\Controllers\BusinessSettingsController::class, 'update'])->name('business-settings.update');
+    Route::post('/business-settings/delete-image', [App\Http\Controllers\BusinessSettingsController::class, 'deleteImage'])->name('settings.delete-image');
 });
 
 // SUPER ADMIN CONSOLE
@@ -62,67 +63,70 @@ Route::middleware(['auth', 'superadmin'])->prefix('superadmin')->name('superadmi
 });
 
 // CLIENTS
-Route::get('clients', [App\Http\Controllers\HomeController::class, 'clients'])->name('clients');
-Route::get('new-client', [App\Http\Controllers\HomeController::class, 'newClient'])->name('new-client');
-Route::post('new-client', [App\Http\Controllers\HomeController::class, 'saveClient'])->name('saveClient');
-Route::post('saveClient/{cid}', [App\Http\Controllers\HomeController::class, 'updateClient'])->name('update.client');
-Route::get('edit-client/{cid}', [App\Http\Controllers\HomeController::class, 'editClient'])->name('edit-client');
+Route::middleware(['auth', 'tenant'])->group(function () {
+    Route::get('clients', [App\Http\Controllers\HomeController::class, 'clients'])->name('clients');
+    Route::get('new-client', [App\Http\Controllers\HomeController::class, 'newClient'])->name('new-client');
+    Route::post('new-client', [App\Http\Controllers\HomeController::class, 'saveClient'])->name('saveClient');
+    Route::post('saveClient/{cid}', [App\Http\Controllers\HomeController::class, 'updateClient'])->name('update.client');
+    Route::get('edit-client/{cid}', [App\Http\Controllers\HomeController::class, 'editClient'])->name('edit-client');
 
-// PERSONNELS
-Route::get('personnel', [App\Http\Controllers\PersonnelController::class, 'index'])->name('personnel');
-Route::get('new-personnel', [App\Http\Controllers\PersonnelController::class, 'newPersonnel'])->name('new.personnel');
-Route::get('personnel/staffs', [App\Http\Controllers\PersonnelController::class, 'allStaffs'])->name('staffs');
-Route::get('personnel/workers', [App\Http\Controllers\PersonnelController::class, 'allWorkers'])->name('workers');
-Route::get('personnel/contractors', [App\Http\Controllers\PersonnelController::class, 'allContractors'])->name('contractors');
-Route::get('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'showPersonnel'])->name('show.personnel');
-Route::post('new-personnel', [App\Http\Controllers\PersonnelController::class, 'createPersonnel'])->name('create.personnel');
-Route::get('edit-personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'editPersonnel'])->name('edit.personnel');
-Route::put('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'updatePersonnel'])->name('update.personnel');
-Route::post('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'deletePersonnel'])->name('delete.personnel');
+    // PERSONNELS
+    Route::get('personnel', [App\Http\Controllers\PersonnelController::class, 'index'])->name('personnel');
+    Route::get('new-personnel', [App\Http\Controllers\PersonnelController::class, 'newPersonnel'])->name('new.personnel');
+    Route::get('personnel/staffs', [App\Http\Controllers\PersonnelController::class, 'allStaffs'])->name('staffs');
+    Route::get('personnel/workers', [App\Http\Controllers\PersonnelController::class, 'allWorkers'])->name('workers');
+    Route::get('personnel/contractors', [App\Http\Controllers\PersonnelController::class, 'allContractors'])->name('contractors');
+    Route::get('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'showPersonnel'])->name('show.personnel');
+    Route::post('new-personnel', [App\Http\Controllers\PersonnelController::class, 'createPersonnel'])->name('create.personnel');
+    Route::get('edit-personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'editPersonnel'])->name('edit.personnel');
+    Route::put('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'updatePersonnel'])->name('update.personnel');
+    Route::post('personnel/{id}', [App\Http\Controllers\PersonnelController::class, 'deletePersonnel'])->name('delete.personnel');
 
-// OWNERS
-Route::get('owners', [App\Http\Controllers\OwnerController::class, 'index'])->name('owners');
-Route::get('new-owner', [App\Http\Controllers\OwnerController::class, 'newOwner'])->name('new.owner');
-Route::post('create-owner', [App\Http\Controllers\OwnerController::class, 'createOwner'])->name('create.owner');
-Route::get('edit-owner/{id}', [App\Http\Controllers\OwnerController::class, 'editOwner'])->name('edit.owner');
-Route::put('update-owner/{id}', [App\Http\Controllers\OwnerController::class, 'updateOwner'])->name('update.owner');
-Route::get('owner/{id}', [App\Http\Controllers\OwnerController::class, 'showOwner'])->name('show.owner');
-Route::post('delete-owner/{id}', [App\Http\Controllers\OwnerController::class, 'deleteOwner'])->name('delete.owner');
+    // OWNERS
+    Route::get('owners', [App\Http\Controllers\OwnerController::class, 'index'])->name('owners');
+    Route::get('new-owner', [App\Http\Controllers\OwnerController::class, 'newOwner'])->name('new.owner');
+    Route::post('create-owner', [App\Http\Controllers\OwnerController::class, 'createOwner'])->name('create.owner');
+    Route::get('edit-owner/{id}', [App\Http\Controllers\OwnerController::class, 'editOwner'])->name('edit.owner');
+    Route::put('update-owner/{id}', [App\Http\Controllers\OwnerController::class, 'updateOwner'])->name('update.owner');
+    Route::get('owner/{id}', [App\Http\Controllers\OwnerController::class, 'showOwner'])->name('show.owner');
+    Route::post('delete-owner/{id}', [App\Http\Controllers\OwnerController::class, 'deleteOwner'])->name('delete.owner');
 
-// TENANTS
-Route::get('tenants', [App\Http\Controllers\TenantController::class, 'index'])->name('tenants');
-Route::get('new-tenant', [App\Http\Controllers\TenantController::class, 'newTenant'])->name('new.tenant');
-Route::post('create-tenant', [App\Http\Controllers\TenantController::class, 'createTenant'])->name('create.tenant');
-Route::get('edit-tenant/{id}', [App\Http\Controllers\TenantController::class, 'editTenant'])->name('edit.tenant');
-Route::put('update-tenant/{id}', [App\Http\Controllers\TenantController::class, 'updateTenant'])->name('update.tenant');
-Route::get('tenant/{id}', [App\Http\Controllers\TenantController::class, 'showTenant'])->name('show.tenant');
-Route::post('delete-tenant/{id}', [App\Http\Controllers\TenantController::class, 'deleteTenant'])->name('delete.tenant');
+    // TENANTS
+    Route::get('tenants', [App\Http\Controllers\TenantController::class, 'index'])->name('tenants');
+    Route::get('new-tenant', [App\Http\Controllers\TenantController::class, 'newTenant'])->name('new.tenant');
+    Route::post('create-tenant', [App\Http\Controllers\TenantController::class, 'createTenant'])->name('create.tenant');
+    Route::get('edit-tenant/{id}', [App\Http\Controllers\TenantController::class, 'editTenant'])->name('edit.tenant');
+    Route::put('update-tenant/{id}', [App\Http\Controllers\TenantController::class, 'updateTenant'])->name('update.tenant');
+    Route::get('tenant/{id}', [App\Http\Controllers\TenantController::class, 'showTenant'])->name('show.tenant');
+    Route::post('delete-tenant/{id}', [App\Http\Controllers\TenantController::class, 'deleteTenant'])->name('delete.tenant');
 
-// AGENTS
-Route::get('agents', [App\Http\Controllers\AgentController::class, 'index'])->name('agents');
-Route::get('new-agent', [App\Http\Controllers\AgentController::class, 'newAgent'])->name('new.agent');
-Route::post('create-agent', [App\Http\Controllers\AgentController::class, 'createAgent'])->name('create.agent');
-Route::get('edit-agent/{id}', [App\Http\Controllers\AgentController::class, 'editAgent'])->name('edit.agent');
-Route::put('update-agent/{id}', [App\Http\Controllers\AgentController::class, 'updateAgent'])->name('update.agent');
-Route::get('agent/{id}', [App\Http\Controllers\AgentController::class, 'showAgent'])->name('show.agent');
-Route::post('delete-agent/{id}', [App\Http\Controllers\AgentController::class, 'deleteAgent'])->name('delete.agent');
+    // AGENTS
+    Route::get('agents', [App\Http\Controllers\AgentController::class, 'index'])->name('agents');
+    Route::get('new-agent', [App\Http\Controllers\AgentController::class, 'newAgent'])->name('new.agent');
+    Route::post('create-agent', [App\Http\Controllers\AgentController::class, 'createAgent'])->name('create.agent');
+    Route::get('edit-agent/{id}', [App\Http\Controllers\AgentController::class, 'editAgent'])->name('edit.agent');
+    Route::put('update-agent/{id}', [App\Http\Controllers\AgentController::class, 'updateAgent'])->name('update.agent');
+    Route::get('agent/{id}', [App\Http\Controllers\AgentController::class, 'showAgent'])->name('show.agent');
+    Route::post('delete-agent/{id}', [App\Http\Controllers\AgentController::class, 'deleteAgent'])->name('delete.agent');
 
-// PROPERTIES
-Route::get('properties', [App\Http\Controllers\PropertyController::class, 'index'])->name('properties');
-Route::get('properties/create', [App\Http\Controllers\PropertyController::class, 'newProperty'])->name('new.property');
-Route::post('properties', [App\Http\Controllers\PropertyController::class, 'createProperty'])->name('create.property');
-Route::get('properties/{id}/edit', [App\Http\Controllers\PropertyController::class, 'editProperty'])->name('edit.property');
-Route::get('properties/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
-Route::put('properties/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
-Route::get('properties/{propertyId}/units', [App\Http\Controllers\PropertyController::class, 'propertyUnit'])->name('property.units');
-Route::post('properties/delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
-// OWNERS PROPERTY
-Route::get('owner/{id}/properties', [App\Http\Controllers\PropertyController::class, 'ownerProperty'])->name('owner.property');
-Route::get('owner/{id}/new-property', [App\Http\Controllers\PropertyController::class, 'AddOwnerProperty'])->name('add.owner.property');
-// HANDLE PROPERTY IMAGES
-Route::post('/properties/{id}/upload-image', [App\Http\Controllers\PropertyController::class, 'uploadPropertyImage'])->name('property.uploadImage');
-Route::post('/properties/{id}/featured-image/{image}', [App\Http\Controllers\PropertyController::class, 'setFeaturedImage'])->name('property.setFeaturedImage');
-Route::delete('/properties/images/{propertyImage}', [App\Http\Controllers\PropertyController::class, 'deleteImage'])->name('property.deleteImage');
+    // PROPERTIES
+    Route::get('properties', [App\Http\Controllers\PropertyController::class, 'index'])->name('properties');
+    Route::get('properties/all-units', [App\Http\Controllers\PropertyController::class, 'allUnits'])->name('all.units');
+    Route::get('properties/pending-payments', [App\Http\Controllers\PropertyController::class, 'pendingPayments'])->name('pending.payments');
+    Route::get('properties/create', [App\Http\Controllers\PropertyController::class, 'newProperty'])->name('new.property');
+    Route::post('properties', [App\Http\Controllers\PropertyController::class, 'createProperty'])->name('create.property');
+    Route::get('properties/{id}/edit', [App\Http\Controllers\PropertyController::class, 'editProperty'])->name('edit.property');
+    Route::get('properties/{id}', [App\Http\Controllers\PropertyController::class, 'showProperty'])->name('show.property');
+    Route::put('properties/{id}', [App\Http\Controllers\PropertyController::class, 'updateProperty'])->name('update.property');
+    Route::get('properties/{propertyId}/units', [App\Http\Controllers\PropertyController::class, 'propertyUnit'])->name('property.units');
+    Route::post('properties/delete-property/{id}', [App\Http\Controllers\PropertyController::class, 'deleteProperty'])->name('delete.property');
+    // OWNERS PROPERTY
+    Route::get('owner/{id}/properties', [App\Http\Controllers\PropertyController::class, 'ownerProperty'])->name('owner.property');
+    Route::get('owner/{id}/new-property', [App\Http\Controllers\PropertyController::class, 'AddOwnerProperty'])->name('add.owner.property');
+    // HANDLE PROPERTY IMAGES
+    Route::post('/properties/{id}/upload-image', [App\Http\Controllers\PropertyController::class, 'uploadPropertyImage'])->name('property.uploadImage');
+    Route::post('/properties/{id}/featured-image/{image}', [App\Http\Controllers\PropertyController::class, 'setFeaturedImage'])->name('property.setFeaturedImage');
+    Route::delete('/properties/images/{propertyImage}', [App\Http\Controllers\PropertyController::class, 'deleteImage'])->name('property.deleteImage');
 
 // PROPERTY UNITS, LEASES, VIEWINGS, TASKS, MAINTENANCE REQUEST, DOCUMENTS,
 
@@ -140,11 +144,20 @@ Route::prefix('properties')->group(function () {
     Route::post('/units/{id}/featured-image/{image}', [App\Http\Controllers\UnitController::class, 'setFeaturedImage'])->name('unit.setFeaturedImage');
     Route::delete('/units/images/{unitImage}', [App\Http\Controllers\UnitController::class, 'deleteImage'])->name('unit.deleteImage');
 });
+// UNIT SALES
+Route::get('/units/{unitId}/sell', [App\Http\Controllers\UnitSaleController::class, 'showSaleForm'])->name('unit.sale.form');
+Route::post('/units/sale/process', [App\Http\Controllers\UnitSaleController::class, 'processSale'])->name('unit.sale.process');
+Route::get('/units/sale/{saleId}/payment', [App\Http\Controllers\UnitSaleController::class, 'showPaymentPage'])->name('unit.sale.payment');
+Route::post('/units/sale/{saleId}/complete', [App\Http\Controllers\UnitSaleController::class, 'completeSale'])->name('unit.sale.complete');
+Route::get('/units/{unitId}/sale-history', [App\Http\Controllers\UnitSaleController::class, 'viewUnitSaleHistory'])->name('unit.sale.history');
 // LEASES
 Route::get('/property/leases', [App\Http\Controllers\LeaseController::class, 'index'])->name('leases');
 Route::get('properties/leases/create', [App\Http\Controllers\LeaseController::class, 'newLease'])->name('new.lease');
 Route::get('property/{id}/leases/create', [App\Http\Controllers\LeaseController::class, 'newPropertyLease'])->name('new.property.lease');
+Route::get('/units/{unitId}/lease', [App\Http\Controllers\LeaseController::class, 'newUnitLease'])->name('unit.lease.form');
 Route::post('properties/leases', [App\Http\Controllers\LeaseController::class, 'createLease'])->name('create.lease');
+Route::get('properties/leases/{id}', [App\Http\Controllers\LeaseController::class, 'showLease'])->name('show.lease');
+Route::get('properties/leases/{id}/edit', [App\Http\Controllers\LeaseController::class, 'editLease'])->name('edit.lease');
 Route::get('properties/{id}/leases', [App\Http\Controllers\LeaseController::class, 'propertyLease'])->name('property.leases');
 Route::get('unit/{id}/leases', [App\Http\Controllers\LeaseController::class, 'unitLease'])->name('unit.leases');
 Route::put('properties/leases/{id}', [App\Http\Controllers\LeaseController::class, 'updateLease'])->name('update.lease');
@@ -158,6 +171,8 @@ Route::get('properties/transactions/create', [App\Http\Controllers\PropertyTrans
 Route::post('properties/transaction', [App\Http\Controllers\PropertyTransactionController::class, 'createTransaction'])->name('create.transaction');
 Route::get('property/transactions/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'showTransaction'])->name('show.transaction');
 Route::get('property/transactions/{id}/receipt-pdf', [App\Http\Controllers\PropertyTransactionController::class, 'generateReceiptPdf'])->name('receipt.pdf');
+Route::get('property/transactions/{id}/receipt', [App\Http\Controllers\PropertyTransactionController::class, 'displayReceipt'])->name('transaction.receipt');
+Route::get('property/transactions/{id}/invoice', [App\Http\Controllers\PropertyTransactionController::class, 'displayInvoice'])->name('transaction.invoice');
 Route::get('properties/transactions/{id}/edit', [App\Http\Controllers\PropertyTransactionController::class, 'editTransaction'])->name('edit.transaction');
 Route::put('properties/transaction/{id}', [App\Http\Controllers\PropertyTransactionController::class, 'updateTransaction'])->name('update.transaction');
 Route::get('leases/{id}/transactions/create', [App\Http\Controllers\PropertyTransactionController::class, 'addLeaseTransaction'])->name('add.lease.transaction');
@@ -296,8 +311,15 @@ Route::post('/settings', [App\Http\Controllers\HomeController::class, 'settings'
 // ARTISAN COMMANDS
 Route::get('/artisan1/{command}', [App\Http\Controllers\TasksController::class, 'Artisan1']);
 Route::get('/artisan2/{command}/{param}', [App\Http\Controllers\TasksController::class, 'Artisan2']);
+});
 
 //LOGOUT
 Route::get('/logout', [App\Http\Controllers\Auth\LoginController::class,'logout']);
+
+// GUEST PROPERTY VIEWING (Public routes) - browse featured properties
+Route::get('/browse-properties', [App\Http\Controllers\Guest\GuestPropertyController::class, 'index'])->name('guest.properties');
+Route::get('/property/{id}', [App\Http\Controllers\Guest\GuestPropertyController::class, 'show'])->name('guest.property.detail');
+Route::post('/property/{id}/interest', [App\Http\Controllers\Guest\GuestPropertyController::class, 'submitInterest'])->name('guest.property.interest');
+Route::post('/property/{id}/contact-agent', [App\Http\Controllers\Guest\GuestPropertyController::class, 'contactAgent'])->name('guest.property.contact-agent');
 
 Auth::routes(['register' => false, 'verify' => true]);

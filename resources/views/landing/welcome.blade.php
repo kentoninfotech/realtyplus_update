@@ -65,7 +65,37 @@
         .hero h1 { font-size: clamp(2rem, 4.5vw, 3.6rem); font-weight: 800; line-height: 1.1; margin-bottom: 1rem; }
         .hero p.lead { font-size: 1.25rem; opacity: .95; margin-bottom: 2rem; max-width: 640px; }
         .hero .cta-row { display:flex; gap: 12px; flex-wrap: wrap; }
-        .carousel-indicators [data-bs-target] { background-color: rgba(255,255,255,.7); }
+        
+        /* Carousel fixes */
+        .carousel { position: relative; }
+        .carousel-inner { position: relative; width: 100%; overflow: hidden; }
+        .carousel-item { position: relative; display: none; float: left; width: 100%; margin-right: -100%; }
+        .carousel-item.active { display: block; animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .carousel-control-prev, .carousel-control-next { 
+            position: absolute; top: 50%; z-index: 1; 
+            display: flex; align-items: center; justify-content: center;
+            width: 15%; height: auto; padding: 0; cursor: pointer;
+            text-indent: -9999px; background: rgba(0,0,0,.3); border: none;
+            opacity: .7; transition: opacity .2s;
+        }
+        .carousel-control-prev:hover, .carousel-control-next:hover { opacity: 1; }
+        .carousel-control-prev { left: 0; }
+        .carousel-control-next { right: 0; }
+        .carousel-control-prev-icon, .carousel-control-next-icon {
+            display: inline-block; width: 2rem; height: 2rem;
+            background: no-repeat 50% / 100% 100%;
+        }
+        .carousel-indicators [data-bs-target] { 
+            background-color: rgba(255,255,255,.7); 
+            border: none; border-radius: 50%; 
+            width: 12px; height: 12px; 
+            transition: all .2s;
+        }
+        .carousel-indicators .active { 
+            background-color: #fff; 
+            width: 32px; border-radius: 6px;
+        }
 
         /* Sections */
         section { padding: 80px 0; }
@@ -132,7 +162,37 @@
         .cta-banner h2 { font-size: 2rem; font-weight: 800; }
 
         /* FAQ */
-        .accordion-rp .accordion-button { font-weight: 600; }
+        .accordion-rp { background: transparent; border: none; }
+        .accordion-rp .accordion-item { 
+            background: #fff; 
+            border: 1px solid #e2e8f0; 
+            border-radius: 8px; 
+            margin-bottom: 12px;
+        }
+        .accordion-rp .accordion-button { 
+            font-weight: 600; 
+            background: #fff;
+            color: var(--rp-dark);
+            padding: 16px 20px;
+            border: none;
+        }
+        .accordion-rp .accordion-button:not(.collapsed) {
+            background: #f1f5f9;
+            color: var(--rp-primary);
+            box-shadow: none;
+        }
+        .accordion-rp .accordion-button:focus {
+            border-color: var(--rp-primary);
+            box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25);
+        }
+        .accordion-rp .accordion-button::after {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%232563eb'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+        }
+        .accordion-rp .accordion-body {
+            padding: 16px 20px;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+        }
 
         /* Contact / Footer */
         footer { background: var(--rp-dark); color: #cbd5e1; padding: 60px 0 24px; }
@@ -239,6 +299,122 @@
 </section>
 @endif
 
+{{-- FEATURED PROPERTIES --}}
+@if($featuredProperties->count())
+<section id="featured-properties" class="section-bg">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow">Discover Opportunities</span>
+            <h2 class="section-title">Featured Properties</h2>
+            <p class="section-sub">Browse our handpicked selection of premium properties available for sale, rent, or lease.</p>
+        </div>
+        <div class="row g-4">
+            @foreach($featuredProperties as $property)
+                @php
+                    $featuredImage = $property->images->firstWhere('is_featured', 1);
+                    $displayImage = $featuredImage ? $featuredImage->image_path : ($property->images->count() > 0 ? $property->images->first()->image_path : asset('plugins/fontawesome-free/svgs/solid/image.svg'));
+                    $amenityList = $property->amenities->take(3)->pluck('name')->toArray();
+                @endphp
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="property-card" style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all .3s; cursor: pointer; height: 100%; display: flex; flex-direction: column;"
+                         onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(15,23,42,.12)'"
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                         onclick="window.location.href='{{ route('guest.property.detail', $property->id) }}'">
+                        
+                        {{-- Property Image --}}
+                        <div style="position: relative; overflow: hidden; height: 240px; background: #f1f5f9;">
+                            @if(file_exists(public_path($displayImage)))
+                                <img src="{{ asset($displayImage) }}" alt="{{ $property->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #e2e8f0;">
+                                    <i class="fas fa-image" style="font-size: 3rem; color: #cbd5e1;"></i>
+                                </div>
+                            @endif
+                            
+                            {{-- Badge for Listing Type --}}
+                            <div style="position: absolute; top: 12px; right: 12px;">
+                                @if($property->listing_type === 'for_sale')
+                                    <span style="background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600;">FOR SALE</span>
+                                @elseif($property->listing_type === 'for_rent')
+                                    <span style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600;">FOR RENT</span>
+                                @else
+                                    <span style="background: #6b7280; color: white; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600;">LEASED</span>
+                                @endif
+                            </div>
+                        </div>
+
+                        {{-- Property Info --}}
+                        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                            {{-- Name --}}
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0 0 8px; color: var(--rp-dark); text-decoration: none;">{{ $property->name }}</h3>
+                            
+                            {{-- Location --}}
+                            <div style="color: var(--rp-muted); font-size: .9rem; margin-bottom: 12px;">
+                                <i class="fas fa-map-marker-alt" style="margin-right: 6px;"></i>
+                                {{ $property->state }}, {{ $property->country }}
+                            </div>
+
+                            {{-- Price --}}
+                            <div style="font-size: 1.4rem; font-weight: 800; color: var(--rp-primary); margin-bottom: 12px;">
+                                @if($property->listing_type === 'for_sale' && $property->sale_price)
+                                    ₦{{ number_format($property->sale_price, 0) }}
+                                @elseif($property->listing_type === 'for_rent' && $property->rent_price)
+                                    ₦{{ number_format($property->rent_price, 0) }}<span style="font-size: 0.75rem; font-weight: 600;">/month</span>
+                                @elseif($property->purchase_price)
+                                    ₦{{ number_format($property->purchase_price, 0) }}
+                                @else
+                                    <span style="color: var(--rp-muted); font-size: 0.9rem;">Contact for price</span>
+                                @endif
+                            </div>
+
+                            {{-- Property Type & Details --}}
+                            <div style="display: flex; gap: 12px; font-size: .85rem; color: #64748b; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                                @if($property->propertyType)
+                                    <span><i class="fas fa-home" style="margin-right: 4px;"></i>{{ $property->propertyType->name }}</span>
+                                @endif
+                                @if($property->area_sqft)
+                                    <span><i class="fas fa-ruler" style="margin-right: 4px;"></i>{{ number_format($property->area_sqft) }} sqft</span>
+                                @endif
+                            </div>
+
+                            {{-- Amenities --}}
+                            @if($amenityList)
+                                <div style="margin-bottom: 12px;">
+                                    <p style="font-size: .8rem; color: var(--rp-muted); margin-bottom: 6px; font-weight: 600;">Amenities:</p>
+                                    <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                                        @foreach($amenityList as $amenity)
+                                            <span style="background: #f1f5f9; color: #334155; padding: 4px 10px; border-radius: 20px; font-size: .75rem;">{{ $amenity }}</span>
+                                        @endforeach
+                                        @if($property->amenities->count() > 3)
+                                            <span style="background: #f1f5f9; color: #334155; padding: 4px 10px; border-radius: 20px; font-size: .75rem;">+{{ $property->amenities->count() - 3 }} more</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+
+                            {{-- Agent Info --}}
+                            @if($property->agent)
+                                <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                                    <p style="font-size: .8rem; color: var(--rp-muted); margin-bottom: 4px;">Listed by</p>
+                                    <p style="font-weight: 600; color: var(--rp-dark); margin: 0;">{{ $property->agent->name }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        {{-- View All Button --}}
+        <div class="text-center mt-5">
+            <a href="{{ route('guest.properties') }}" class="btn-rp btn-primary-rp" style="padding: 12px 36px; font-size: 1rem;">
+                View All Properties <i class="fas fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- FEATURES --}}
 <section id="features">
     <div class="container">
@@ -330,7 +506,7 @@
 @if($faqs->count())
 <section id="faq" class="section-bg">
     <div class="container" style="max-width: 820px;">
-        <div class="text-center">
+        <div class="text-center mb-4">
             <span class="section-eyebrow">FAQ</span>
             <h2 class="section-title">Questions? We have answers.</h2>
         </div>
@@ -338,12 +514,12 @@
             @foreach($faqs as $i => $faq)
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button class="accordion-button {{ $i!=0?'collapsed':'' }}" type="button" data-bs-toggle="collapse" data-bs-target="#faq-{{ $faq->id }}">
+                        <button class="accordion-button {{ $i!=0?'collapsed':'' }}" type="button" data-bs-toggle="collapse" data-bs-target="#faq-{{ $faq->id }}" aria-expanded="{{ $i==0?'true':'false' }}" aria-controls="faq-{{ $faq->id }}">
                             {{ $faq->title }}
                         </button>
                     </h2>
                     <div id="faq-{{ $faq->id }}" class="accordion-collapse collapse {{ $i==0?'show':'' }}" data-bs-parent="#faqAccordion">
-                        <div class="accordion-body text-muted">{{ $faq->body }}</div>
+                        <div class="accordion-body">{{ $faq->body }}</div>
                     </div>
                 </div>
             @endforeach
@@ -469,5 +645,45 @@
 
 <script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 <script src="{{ asset('plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+<script>
+// Initialize carousel and accordion after DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize hero carousel
+    const heroCarousel = document.getElementById('heroCarousel');
+    if (heroCarousel) {
+        new bootstrap.Carousel(heroCarousel, {
+            interval: 6000,
+            wrap: true,
+            keyboard: true,
+            touch: true
+        });
+    }
+
+    // Initialize FAQ accordion - ensure collapse works
+    const faqButtons = document.querySelectorAll('.accordion-button');
+    faqButtons.forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Bootstrap 5 handles this automatically with data-bs-toggle="collapse"
+            // This ensures it works even if there are JS conflicts
+            const target = this.getAttribute('data-bs-target');
+            if (target) {
+                const element = document.querySelector(target);
+                if (element) {
+                    const bsCollapse = new bootstrap.Collapse(element, {
+                        toggle: true
+                    });
+                }
+            }
+        });
+    });
+
+    // Auto-initialize any tooltips or popovers (optional)
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
+</script>
 </body>
 </html>

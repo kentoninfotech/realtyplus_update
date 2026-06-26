@@ -282,6 +282,30 @@
                             <label for="listed_at">Listed At</label>
                             <input type="datetime-local" name="listed_at" class="form-control" value="{{ old('listed_at', $property->listed_at ? \Carbon\Carbon::parse($property->listed_at)->format('Y-m-d\TH:i') : '') }}">
                         </div>
+
+                        {{-- Featured Property Option --}}
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="featured" name="featured" value="1" {{ (old('featured', $property->featured)) ? 'checked' : '' }}>
+                                <label class="custom-control-label" for="featured">
+                                    <strong>Featured Property</strong>
+                                    <small class="form-text text-muted d-block">Check this box to feature this property on the landing page and guest property listings (max 9 properties)</small>
+                                </label>
+                            </div>
+                        </div>
+
+                        {{-- Featured Order --}}
+                        <div class="form-group" id="featured_order_group" style="{{ (old('featured', $property->featured)) ? '' : 'display:none;' }}">
+                            <label for="featured_order">Featured Display Order</label>
+                            <input type="number" name="featured_order" id="featured_order" class="form-control" placeholder="Enter order (1-9)" value="{{ old('featured_order', $property->featured_order) }}" min="1" max="9">
+                            <small class="form-text text-muted">Lower numbers appear first. Leave blank to add at the end.</small>
+                        </div>
+
+                        <script>
+                            document.getElementById('featured').addEventListener('change', function() {
+                                document.getElementById('featured_order_group').style.display = this.checked ? 'block' : 'none';
+                            });
+                        </script>
                     </div>
                 </div>
 

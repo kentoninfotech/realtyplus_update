@@ -14,6 +14,7 @@ class CategoriesController extends Controller
      */
     public function index()
     {
+        abort_unless(auth()->user()->user_type === 'business_admin', 403, 'Only business administrators can manage categories.');
         $categories = categories::paginate(50);
         return view('categories', compact('categories'));
     }
@@ -36,6 +37,7 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
+        abort_unless(auth()->user()->user_type === 'business_admin', 403, 'Only business administrators can manage categories.');
         categories::updateOrCreate(['id'=>$request->id],[
             'title'=>$request->title,
             'group_name'=>$request->category_group,
@@ -92,6 +94,7 @@ class CategoriesController extends Controller
      */
     public function destroy($id)
     {
+        abort_unless(auth()->user()->user_type === 'business_admin', 403, 'Only business administrators can manage categories.');
         categories::findOrFail($id)->delete();
         $message = 'The Category has been deleted!';
         return redirect()->route('categories')->with(['message'=>$message]);

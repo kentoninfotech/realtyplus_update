@@ -24,7 +24,7 @@
         <div class="card mb-4">
             <div class="card-body d-flex flex-wrap align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <img src="{{ (isset($user->personnel->picture) && $user->personnel->picture !== null) ? asset('personnel/pictures/' .$user->personnel->picture) : asset('personnel/pictures/default-profile.png') ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}" 
+                    <img src="{{ (isset($user->personnel->picture) && $user->personnel->picture !== null) ? asset('personnel-files/pictures/' .$user->personnel->picture) : asset('personnel-files/pictures/default-profile.png') ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name) }}" 
                     class="rounded-circle mr-3" width="150" height="150" alt="User Avatar">
                     <div class>                    <h1 class="mb-1 font-weight-bold" style="font-weight: 800;">{{ $user->name }}</h1>
                         <h5 class="mb-0 text-muted font-weight-bold" style="font-weight: 700;">{{ $user->personnel->designation ?? '' }}</h5>
@@ -72,7 +72,7 @@
             <div class="card-header d-flex justify-content-between align-items-center">
                 <strong>Official Information</strong>
                 @if(isset($user->personnel->id) && $user->personnel->cv)
-                <a href="{{ asset('personnel/cv/'. $user->personnel->cv) }}" class="btn btn-link btn-sm ml-auto" target="_blank" rel="noopener">View CV</a>
+                <a href="{{ asset('personnel-files/cv/'. $user->personnel->cv) }}" class="btn btn-link btn-sm ml-auto" target="_blank" rel="noopener">View CV</a>
                 @endif
             </div>
             <div class="card-body row">

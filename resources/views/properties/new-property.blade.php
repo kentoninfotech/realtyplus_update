@@ -226,16 +226,16 @@
                 </div>
 
                 {{-- Section 4: Pricing & Listing Details --}}
-                <div class="card card-secondary card-outline collapsed-card mt-3">
+                <div class="card card-secondary card-outline mt-3">
                     <div class="card-header">
                         <h3 class="card-title">Pricing & Listing Details</h3>
                         <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Expand">
-                                <i class="fas fa-plus"></i>
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                <i class="fas fa-minus"></i>
                             </button>
                         </div>
                     </div>
-                    <div class="card-body" style="display:none;">
+                    <div class="card-body">
                         <div class="form-row">
                             <div class="form-group col-md-4">
                                 <label for="year_built">Year Built</label>
@@ -260,7 +260,7 @@
                             <div class="form-group col-md-4">
                                 <label for="listing_type">Listing Type</label>
                                 <select name="listing_type" class="form-control" required>
-                                    <option value="">Select Listing Type</option>
+                                    <option value="" disabled hidden>Select Listing Type</option>
                                     <option value="sale" {{ old('listing_type') == 'sale' ? 'selected' : '' }}>Sale</option>
                                     <option value="rent" {{ old('listing_type') == 'rent' ? 'selected' : '' }}>Rent</option>
                                     <option value="both" {{ old('listing_type') == 'both' ? 'selected' : '' }}>Both Sale & Rent</option>

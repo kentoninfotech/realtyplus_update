@@ -1,6 +1,12 @@
 @extends('layouts.template')
-<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.43.0/mapbox-gl.js'></script>
-<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.43.0/mapbox-gl.css' rel='stylesheet' />
+<!-- Leaflet CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+<!-- Leaflet JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<!-- Leaflet Geocoder -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+<script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
 <style>
     body {
         margin: 0;
@@ -8,10 +14,19 @@
     }
 
     #map {
-        position: absolute;
-        top: 0;
-        bottom: 0;
+        position: relative;
         width: 100%;
+        height: 100%;
+    }
+    
+    .map-info {
+        background: #f0f7ff;
+        border-left: 4px solid #007bff;
+        padding: 12px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: #666;
     }
 </style>
 
@@ -85,8 +100,30 @@
                     <input type="text" class="form-control" name="location" id="location"
                         aria-describedby="project_location" placeholder="Enter a Location"
                         value="{{ isset($project->location) ? $project->location : '' }}">
-                    <small id="project_location" class="form-text text-muted">An address, district or landmark of the
-                        project site</small>
+                    <small id="project_location" class="form-text text-muted">An address, district or landmark of the project site</small>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="latitude">Latitude</label>
+                            <input type="text" class="form-control" name="latitude" id="latitude"
+                                placeholder="Latitude (click on map)" readonly
+                                value="{{ isset($project->latitude) ? $project->latitude : '' }}">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="longitude">Longitude</label>
+                            <input type="text" class="form-control" name="longitude" id="longitude"
+                                placeholder="Longitude (click on map)" readonly
+                                value="{{ isset($project->longitude) ? $project->longitude : '' }}">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="map-info">
+                    <strong>📍 Click on the map</strong> to select a location. The coordinates will be automatically captured and entered in the Latitude and Longitude fields.
                 </div>
 
                 <div class="row" style="width: 100%; height: 300px; overflow: hidden">
@@ -174,38 +211,69 @@
     </div>
 
 
-    <script src='https://unpkg.com/mapbox@1.0.0-beta9/dist/mapbox-sdk.min.js'></script>
-
     <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoibGF3aXgxMCIsImEiOiJjamJlOGE1bmcyZ2V5MzNtcmlyaWRzcDZlIn0.ZRQ73zzVxwcADIPvsqB6mg';
-        console.log(mapboxgl.accessToken);
-        var client = new MapboxClient(mapboxgl.accessToken);
-        console.log(client);
-
-        var address = 't5h 0k7'
-        var test = client.geocodeForward(address, function(err, data, res) {
-            // data is the geocoding result as parsed JSON
-            // res is the http response, including: status, headers and entity properties
-
-            console.log(res);
-            console.log(res.url);
-            console.log(data);
-
-            var coordinates = data.features[0].center;
-
-            alert(coordinates);
-
-            var map = new mapboxgl.Map({
-                container: 'map',
-                style: 'mapbox://styles/mapbox/streets-v10',
-                center: coordinates,
-                zoom: 14
-            });
-            new mapboxgl.Marker()
-                .setLngLat(coordinates)
-                .addTo(map);
-
-
+        // Initialize Leaflet map
+        var map = L.map('map').setView([6.5244, 3.3792], 13); // Default center (Lagos, Nigeria)
+        
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+        
+        // Add geocoder control
+        L.Control.geocoder().addTo(map);
+        
+        // Variable to store the current marker
+        var currentMarker = null;
+        
+        // Initialize with existing coordinates if available
+        @if(isset($project->latitude) && isset($project->longitude))
+            var initialLat = {{ $project->latitude }};
+            var initialLng = {{ $project->longitude }};
+            map.setView([initialLat, initialLng], 14);
+            currentMarker = L.marker([initialLat, initialLng]).addTo(map)
+                .bindPopup('📍 Project Location');
+        @endif
+        
+        // Handle map clicks to select location
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+            
+            // Update input fields
+            document.getElementById('latitude').value = lat.toFixed(6);
+            document.getElementById('longitude').value = lng.toFixed(6);
+            
+            // Remove previous marker if exists
+            if (currentMarker) {
+                map.removeLayer(currentMarker);
+            }
+            
+            // Add new marker at clicked location
+            currentMarker = L.marker([lat, lng]).addTo(map)
+                .bindPopup('<strong>📍 Selected Location</strong><br>Lat: ' + lat.toFixed(6) + '<br>Lng: ' + lng.toFixed(6))
+                .openPopup();
+            
+            // Optionally reverse geocode to get address (requires a geocoding service)
+            reverseGeocode(lat, lng);
         });
+        
+        // Simple reverse geocoding using Nominatim (OpenStreetMap)
+        function reverseGeocode(lat, lng) {
+            var url = 'https://nominatim.openstreetmap.org/reverse?format=json&lat=' + lat + '&lon=' + lng;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.address) {
+                        // Try to get a readable address
+                        var address = data.address.road || data.address.suburb || data.address.town || data.address.city || 'Selected Location';
+                        // Optionally update the location field
+                        // document.getElementById('location').value = address;
+                    }
+                })
+                .catch(error => console.log('Reverse geocoding failed:', error));
+        }
     </script>
 @endsection

@@ -20,6 +20,11 @@ class LandingController extends Controller
         $faqs         = LandingContent::section('faq')->get();
         $stats        = LandingContent::section('stat')->get();
         $plans        = Plan::active()->orderBy('sort_order')->get();
+        
+        // Fetch featured properties with their images and amenities
+        $featuredProperties = \App\Models\Property::featured()
+            ->with(['propertyType', 'images', 'amenities', 'agent'])
+            ->get();
 
         $settings = [
             'site_title'    => LandingContent::setting('site_title', config('app.name')),
@@ -29,7 +34,7 @@ class LandingController extends Controller
         ];
 
         return view('landing.welcome', compact(
-            'heroSlides', 'features', 'testimonials', 'faqs', 'stats', 'plans', 'settings'
+            'heroSlides', 'features', 'testimonials', 'faqs', 'stats', 'plans', 'settings', 'featuredProperties'
         ));
     }
 

@@ -37,30 +37,34 @@
                     </div>
                 @endif
 
+                @php
+                    // Ensure personnel relationship is loaded
+                    $personnel = $user->personnel ?? new \App\Models\Personnel();
+                @endphp
 
                 <div class="row form-group">
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">First Name:</label>
-                        <input name="first_name" type="text" class="form-control" id="first_name" maxlength="50" placeholder="First Name" value="{{ old('first_name', $user->personnel->first_name ?? '') }}">
+                        <input name="first_name" type="text" class="form-control" id="first_name" maxlength="50" placeholder="First Name" value="{{ old('first_name', $personnel->first_name ?? '') }}">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Last Name: </label>
-                        <input name="last_name" type="text" class="form-control" placeholder="Last Name" value="{{ old('last_name', $user->personnel->last_name ?? '') }}" maxlength="50">
+                        <input name="last_name" type="text" class="form-control" placeholder="Last Name" value="{{ old('last_name', $personnel->last_name ?? '') }}" maxlength="50">
                     </div>
                     <div class="col-lg-4">
                         <label class="control-label col-lg-12" for="content">Othernames: </label>
-                        <input name="other_name" type="text" class="form-control" placeholder="Othernames" value="{{ old('other_name', $user->personnel->other_name ?? '') }}" maxlength="50">
+                        <input name="other_name" type="text" class="form-control" placeholder="Othernames" value="{{ old('other_name', $personnel->other_name ?? '') }}" maxlength="50">
                     </div>
                 </div>
 
                     <div class="row form-group">
                         <div class="col-lg-3">
                         <label class="control-label col-lg-12" for="content">Date of Birth: </label>
-                    <input name="dob" type="date" class="form-control" placeholder="Date of Birth" maxlength="50" value="{{ old('dob', $user->personnel->dob ?? '') }}" id="datepicker">
+                    <input name="dob" type="date" class="form-control" placeholder="Date of Birth" maxlength="50" value="{{ old('dob', $personnel->dob ? \Carbon\Carbon::parse($personnel->dob)->format('Y-m-d') : '') }}" id="datepicker">
                     </div>
                     <div class="col-lg-3">
                         <label class="control-label col-lg-12" for="content">State of Origin:</label>
-                        <input name="state_of_origin" list="state" class="form-control" id="state" maxlength="50" value="{{ old('state_of_origin', $user->personnel->state_of_origin ?? '') }}" placeholder="State of Origin">
+                        <input name="state_of_origin" list="state" class="form-control" id="state" maxlength="50" value="{{ old('state_of_origin', $personnel->state_of_origin ?? '') }}" placeholder="State of Origin">
                         <datalist id="state">
                             <option value="Abia">
                             <option value="Adamawa">
@@ -103,15 +107,15 @@
                     </div>
                     <div class="col-lg-3">
                         <label class="control-label col-lg-12" for="content">Nationality </label>
-                        <input name="nationality" type="text" class="form-control" placeholder="Nationality" maxlength="50" value="{{ old('nationality', $user->personnel->nationality ?? '') }}">
+                        <input name="nationality" type="text" class="form-control" placeholder="Nationality" maxlength="50" value="{{ old('nationality', $personnel->nationality ?? '') }}">
                     </div>
                     <div class="col-lg-3">
                         <label class="control-label col-lg-12" for="content">Marital Status: </label>
                         <select name="marital_status" class="form-control">
-                            <option disabled {{ old('marital_status', $user->personnel->marital_status ?? null) ? '' : 'selected' }}>Marital Status</option>
-                            <option value="Single" {{ old('marital_status', $user->personnel->marital_status ?? null) == 'Single' ? 'selected' : '' }}>Single</option>
-                            <option value="Married" {{ old('marital_status', $user->personnel->marital_status ?? null) == 'Married' ? 'selected' : '' }}>Married</option>
-                            <option value="Divorced" {{ old('marital_status', $user->personnel->marital_status ?? null) == 'Divorced' ? 'selected' : '' }}>Divorced</option>
+                            <option disabled {{ old('marital_status', $personnel->marital_status ?? null) ? '' : 'selected' }}>Marital Status</option>
+                            <option value="Single" {{ old('marital_status', $personnel->marital_status ?? null) == 'Single' ? 'selected' : '' }}>Single</option>
+                            <option value="Married" {{ old('marital_status', $personnel->marital_status ?? null) == 'Married' ? 'selected' : '' }}>Married</option>
+                            <option value="Divorced" {{ old('marital_status', $personnel->marital_status ?? null) == 'Divorced' ? 'selected' : '' }}>Divorced</option>
                         </select>
                     </div>
                     </div>
@@ -128,7 +132,7 @@
                         </div>
                         <div class="col-lg-4">
                             <label class="control-label col-lg-12" for="content">Address: </label>
-                            <textarea col="2" row="" name="address" type="text" class="form-control" placeholder="Address" maxlength="100">{{ old('address', $user->personnel->address ?? '') }}</textarea>
+                            <textarea col="2" row="" name="address" type="text" class="form-control" placeholder="Address" maxlength="100">{{ old('address', $personnel->address ?? '') }}</textarea>
                         </div>
                     </div>
 
@@ -136,7 +140,7 @@
                         <div class="col-lg-6">
                             <div class="row center"><h4>Educational Information</h4><hr></div>
                             <label class="control-label col-lg-12" for="content">Highest Certificate / School Name / Year of Graduation: </label>
-                            <input name="highest_certificate" list="certificate" class="form-control" placeholder="Highest Certificate" maxlength="50"  value="{{ old('highest_certificate', $user->personnel->highest_certificate ?? '') }}">
+                            <input name="highest_certificate" list="certificate" class="form-control" placeholder="Highest Certificate" maxlength="50"  value="{{ old('highest_certificate', $personnel->highest_certificate ?? '') }}">
                             <datalist id="certificate">
                                 <option value="O'Level">
                                 <option value="OND">
@@ -153,7 +157,7 @@
                         <div class="col-lg-6">
                             <div class="row center"><h4>System Role</h4><hr></div>
                             <label class="control-label col-lg-12" for="content">Role: <i class="fas fa-help"></i></label>
-                            <select name="role[]" class="form-control" multiple>
+                            <select name="role[]" class="form-control">
                                 @php
                                     $userRoles = $user->getRoleNames();
                                 @endphp
@@ -169,23 +173,23 @@
                     <div class="row form-group">
                         <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Date Employed: </label>
-                            <input name="employment_date" type="date" class="form-control date" placeholder="Date Employed" id="datepicker2" maxlength="50" value="{{ old('employment_date', $user->personnel->employment_date ?? '') }}">
+                            <input name="employment_date" type="date" class="form-control date" placeholder="Date Employed" id="datepicker2" value="{{ old('employment_date', $personnel->employment_date ? \Carbon\Carbon::parse($personnel->employment_date)->format('Y-m-d') : '') }}">
                         </div>
                         <div class="col-lg-3">
                             <label for="department" class="control-label col-lg-12">Department</label>
-                            <select class="form-control" id="department" name="department" data-selected="{{ old('department', $user->personnel->department ?? '') }}">
+                            <select class="form-control" id="department" name="department" data-selected="{{ old('department', $personnel->department ?? '') }}">
                                 <option selected disabled>Choose Department</option>
                             </select>
                         </div>
                         <div class="col-lg-3">
                             <label for="designation" class="control-label col-lg-12">Designation</label>
-                            <select class="form-control" id="designation" name="designation" data-selected="{{ old('designation', $user->personnel->designation ?? '') }}" disabled>
+                            <select class="form-control" id="designation" name="designation" data-selected="{{ old('designation', $personnel->designation ?? '') }}" disabled>
                                 <option selected disabled>Choose Designation</option>
                             </select>
                         </div>
                         <div class="col-lg-3">
                             <label class="control-label col-lg-12" for="content">Basic Salary: </label>
-                            <input name="salary" type="number" class="form-control" placeholder="Salary" value="{{ old('salary', $user->personnel->salary ?? '') }}" maxlength="30">
+                            <input name="salary" type="number" class="form-control" placeholder="Salary" value="{{ old('salary', $personnel->salary ?? '') }}" maxlength="30">
                         </div>
                     </div>
 

@@ -21,6 +21,16 @@ class Client extends Model
         'address',
     ];
 
+    /**
+     * Get the user's full name (for compatibility with payer display).
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return $this->name;
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

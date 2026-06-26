@@ -35,14 +35,69 @@ class TenantController extends Controller
         return view('personnel.tenants.new-tenant');
     }
     /**
-     * Show Tenant form.
+     * Show Tenant form with comprehensive details.
      **
      */
     public function showTenant($id)
     {
-        // Show tenant details
-        $tenant = Tenant::with('user')->findOrFail($id);
-        return view('personnel.tenants.view-tenant', compact('tenant'));
+        // Show tenant details with all related information
+        $tenant = Tenant::with(['user', 'leases.property', 'leases.propertyUnit'])->findOrFail($id);
+        
+        // Get all leases for the tenant
+        $leases = $tenant->leases()->with(['property', 'propertyUnit', 'payments'])->get();
+        
+        // Calculate payment statistics
+        $totalRent = 0;
+        $totalPaidRent = 0;
+        $totalOutstanding = 0;
+        $activeLeases = 0;
+        $nextPaymentDate = null;
+        
+        foreach ($leases as $lease) {
+            if ($lease->status === 'active') {
+                $activeLeases++;
+                $totalRent += $lease->rent_amount;
+                
+                // Get payments for this lease
+                $payments = $lease->payments()->where('status', 'paid')->sum('amount');
+                $totalPaidRent += $payments;
+                
+                // Calculate outstanding amount
+                $expectedPayments = $lease->rent_amount;
+                $outstanding = $expectedPayments - $payments;
+                $totalOutstanding += max(0, $outstanding);
+                
+                // Get next payment date (renewal date or based on payment frequency)
+                if (!$nextPaymentDate || $lease->renewal_date < $nextPaymentDate) {
+                    $nextPaymentDate = $lease->renewal_date;
+                }
+            }
+        }
+        
+        // Get all payments with pagination
+        $payments = \App\Models\Payment::whereIn('lease_id', $leases->pluck('id'))
+            ->with('lease')
+            ->orderBy('payment_date', 'desc')
+            ->paginate(10);
+        
+        // Get payment history (past 12 months)
+        $recentPayments = \App\Models\Payment::whereIn('lease_id', $leases->pluck('id'))
+            ->where('status', 'paid')
+            ->where('payment_date', '>=', now()->subMonths(12))
+            ->orderBy('payment_date', 'desc')
+            ->get();
+        
+        return view('personnel.tenants.view-tenant', compact(
+            'tenant', 
+            'leases', 
+            'payments',
+            'totalRent',
+            'totalPaidRent',
+            'totalOutstanding',
+            'activeLeases',
+            'nextPaymentDate',
+            'recentPayments'
+        ));
     }
     /**
      * Store a new Tenant.

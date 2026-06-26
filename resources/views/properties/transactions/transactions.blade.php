@@ -54,7 +54,7 @@
                                     <span class="badge badge-danger">-</span>
                                 @endif
                             </td>
-                            <td>{{ $transaction->payer->full_name }}</td>
+                            <td>{{ $transaction->payer ? ($transaction->payer->full_name ?? $transaction->payer->name ?? 'Unknown') : 'Unknown' }}</td>
                             <td>{{ $transaction->transaction_date->format('d M, Y') }} </td>
                             <td>{{ $transaction->payment_method }}</td>
                             <td>{{ $transaction->reference_number }}</td>

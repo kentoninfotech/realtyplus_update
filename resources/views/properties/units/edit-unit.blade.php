@@ -152,7 +152,7 @@
                             <label for="status">Status</label>
                             <select name="status" id="status" class="form-control" required>
                                 <option value="available" {{ (old('status', $unit->status) == 'available') ? 'selected' : '' }}>Available</option>
-                                <option value="Rented" {{ (old('status', $unit->status) == 'Rented') ? 'selected' : '' }}>Rented</option>
+                                <option value="rented" {{ (old('status', $unit->status) == 'rented') ? 'selected' : '' }}>Rented</option>
                                 <option value="leased" {{ (old('status', $unit->status) == 'leased') ? 'selected' : '' }}>Leased</option>
                                 <option value="under_maintenance" {{ (old('status', $unit->status) == 'under_maintenance') ? 'selected' : '' }}>Under Maintenance</option>
                                 <option value="sold" {{ (old('status', $unit->status) == 'sold') ? 'selected' : '' }}>Sold</option>
@@ -241,7 +241,7 @@
 
                         <div class="image-preview-container" id="existing_image_previews">
                             @forelse($unit->images as $image)
-                                <div class="image-preview">
+                                <div class="image-preview" data-image-id="{{ $image->id }}">
                                     <img src="{{ asset(''. $image->image_path) }}" alt="{{ $image->caption ?? 'Unit Image' }}">
                                     @if($image->is_featured)
                                         <span class="featured-badge">Featured</span>
@@ -250,12 +250,8 @@
                                         <div class="image-caption">{{ $image->caption }}</div>
                                     @endif
                                     
-                                    <!-- DELETE IMAGE FORM -->
-                                    <form action="{{ route('unit.deleteImage', $image->id) }}" method="POST" class="remove-image-form" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="remove-image" onclick="return confirm('Are you sure you want to delete this image?')">&times;</button>
-                                    </form>
+                                    <!-- DELETE IMAGE BUTTON (AJAX) -->
+                                    <button type="button" class="remove-image delete-image-btn" data-image-id="{{ $image->id }}" data-delete-url="{{ route('unit.deleteImage', $image->id) }}" title="Delete Image">&times;</button>
                                     
                                 </div>
                             @empty
@@ -337,7 +333,7 @@
             // Show relevant sections based on selected unit type
             if (selectedType === 'residential' || selectedType === 'commercial' || selectedType === 'other') {
                 residentialCommercialFields.classList.remove('hidden-section');
-            } else if (selectedType === 'Land') {
+            } else if (selectedType === 'land') {
                 landFields.classList.remove('hidden-section');
             }
         }
@@ -352,6 +348,42 @@
         $('.select2').select2({
             placeholder: "Select a Property",
             allowClear: true
+        });
+
+        // Handle image deletion via AJAX
+        document.querySelectorAll('.delete-image-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const imageId = this.getAttribute('data-image-id');
+                const deleteUrl = this.getAttribute('data-delete-url');
+                
+                if (confirm('Are you sure you want to delete this image?')) {
+                    fetch(deleteUrl, {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            // Remove the image preview from the DOM
+                            const imagePreview = document.querySelector(`[data-image-id="${imageId}"]`);
+                            if (imagePreview) {
+                                imagePreview.remove();
+                            }
+                            // Show success message (optional)
+                            alert('Image deleted successfully!');
+                        } else {
+                            alert('Error deleting image. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Error deleting image. Please check the console.');
+                    });
+                }
+            });
         });
     });
 </script>

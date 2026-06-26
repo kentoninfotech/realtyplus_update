@@ -48,8 +48,8 @@ class PropertyTransactionController extends Controller
     public function newTransaction()
     {
 
-        $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent'];
-        $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\MaintenanceRequest'];
+        $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent', 'App\Models\Client'];
+        $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\PropertyUnit', 'App\Models\UnitSale', 'App\Models\MaintenanceRequest'];
         $status = ['pending', 'completed', 'failed', 'reversed'];
         $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
         $purposes = $this->transactionService::PURPOSES;
@@ -75,8 +75,8 @@ class PropertyTransactionController extends Controller
      */
     public function editTransaction()
     {
-        $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent'];
-        $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\MaintenanceRequest'];
+        $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent', 'App\Models\Client'];
+        $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\PropertyUnit', 'App\Models\UnitSale', 'App\Models\MaintenanceRequest'];
         $status = ['pending', 'processing', 'completed', 'failed', 'reversed', 'cancelled', 'refunded'];
         $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
         $purposes = $this->transactionService::PURPOSES;
@@ -172,6 +172,51 @@ class PropertyTransactionController extends Controller
         // Load additional relationships based on transactionable type
         if ($transaction->transactionable_type === 'App\\Models\\Lease') {
             $transaction->load('transactionable.tenant', 'transactionable.property');
+        }
+        
+        $business = Business::find(auth()->user()->business_id) ?? Business::first();
+
+        return view('properties.transactions.receipt', compact('transaction', 'business'));
+    }
+
+    /**
+     * Display professional invoice
+     */
+    public function displayInvoice($id)
+    {
+        $transaction = PropertyTransaction::with('payer', 'transactionable', 'documents')->findOrFail($id);
+        
+        // Check authorization
+        if ($transaction->business_id !== auth()->user()->business_id) {
+            abort(403, 'Unauthorized access.');
+        }
+        
+        // Load additional relationships based on transactionable type
+        if ($transaction->transactionable_type === 'App\\Models\\Lease') {
+            $transaction->load('transactionable.tenant', 'transactionable.property');
+        } elseif ($transaction->transactionable_type === 'App\\Models\\UnitSale') {
+            $transaction->load('transactionable.propertyUnit.property', 'transactionable.buyer');
+        }
+        
+        $business = Business::find(auth()->user()->business_id) ?? Business::first();
+
+        return view('properties.transactions.invoice', compact('transaction', 'business'));
+    }
+
+    public function displayReceipt($id)
+    {
+        $transaction = PropertyTransaction::with('payer', 'transactionable', 'documents')->findOrFail($id);
+        
+        // Check authorization
+        if ($transaction->business_id !== auth()->user()->business_id) {
+            abort(403, 'Unauthorized access.');
+        }
+        
+        // Load additional relationships based on transactionable type
+        if ($transaction->transactionable_type === 'App\\Models\\Lease') {
+            $transaction->load('transactionable.tenant', 'transactionable.property');
+        } elseif ($transaction->transactionable_type === 'App\\Models\\UnitSale') {
+            $transaction->load('transactionable.propertyUnit.property', 'transactionable.buyer');
         }
         
         $business = Business::find(auth()->user()->business_id) ?? Business::first();

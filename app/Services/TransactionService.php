@@ -107,14 +107,15 @@ class TransactionService
 
             // Store under public disk: storage/app/public/transactions/{id}/...
             $filename = $file->getClientOriginalName();
-            $path = $file->move(public_path('documents/transactions/'), $filename);
-            // $path = $file->move(public_path('documents/transactions/{$transaction->id}'), $filename);
-            // $path = $file->store("documents/transactions/{$transaction->id}", 'public');
+            $file->move(public_path('documents/transactions/'), $filename);
+            
+            // Store only the relative path, not the absolute path returned by move()
+            $relativePath = 'documents/transactions/' . $filename;
 
             // Adjust these fields to match your Document schema
             $transaction->documents()->create([
                 'title'                 => $file->getClientOriginalName(),
-                'file_path'             => $path,
+                'file_path'             => $relativePath,
                 'file_type'             => $file->getClientMimeType(),
                 'description'           => 'Transaction document ' . $file->getClientOriginalName(),
                 'uploaded_by_user_id'   => auth()->user()->id,

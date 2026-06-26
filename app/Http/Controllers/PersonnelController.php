@@ -126,14 +126,14 @@ class PersonnelController extends Controller
                 $file = $request->file('picture');
                 $datePrefix = date('d-m-Y');
                 $filename = $datePrefix . '_' . $file->getClientOriginalName();
-                $file->move(public_path('personnel/pictures'), $filename);
+                $file->move(public_path('personnel-files/pictures'), $filename);
                 $validateData['picture'] = $filename;
             }
             if ($request->hasFile('cv')) {
                 $file = $request->file('cv');
                 $datePrefix = date('d-m-Y');
                 $filename = $datePrefix . '_' . $file->getClientOriginalName();
-                $file->move(public_path('personnel/cv'), $filename);
+                $file->move(public_path('personnel-files/cv'), $filename);
                 $validateData['cv'] = $filename;
             }
 
@@ -190,7 +190,7 @@ class PersonnelController extends Controller
             if ($request->hasFile('picture')) {
                 // Remove old picture if exists
                 if ($user->personnel && $user->personnel->picture) {
-                    $oldPicturePath = public_path('personnel/pictures/' . $user->personnel->picture);
+                    $oldPicturePath = public_path('personnel-files/pictures/' . $user->personnel->picture);
                     if (file_exists($oldPicturePath)) {
                         @unlink($oldPicturePath);
                     }
@@ -198,13 +198,13 @@ class PersonnelController extends Controller
                 $file = $request->file('picture');
                 $datePrefix = date('d-m-Y');
                 $filename = $datePrefix . '_' . $file->getClientOriginalName();
-                $file->move(public_path('personnel/pictures'), $filename);
+                $file->move(public_path('personnel-files/pictures'), $filename);
                 $validateData['picture'] =  $filename;
             }
             if ($request->hasFile('cv')) {
                 // Remove old CV if exists
                 if ($user->personnel && $user->personnel->cv) {
-                    $oldCvPath = public_path('personnel/cv/' . $user->personnel->cv);
+                    $oldCvPath = public_path('personnel-files/cv/' . $user->personnel->cv);
                     if (file_exists($oldCvPath)) {
                         @unlink($oldCvPath);
                     }
@@ -212,7 +212,7 @@ class PersonnelController extends Controller
                 $file = $request->file('cv');
                 $datePrefix = date('d-m-Y');
                 $filename = $datePrefix . '_' . $file->getClientOriginalName();
-                $file->move(public_path('personnel/cv'), $filename);
+                $file->move(public_path('personnel-files/cv'), $filename);
                 $validateData['cv'] = $filename;
             }
 
@@ -244,13 +244,13 @@ class PersonnelController extends Controller
 
         // delete the user picture & cv from Storage
         if ($user->personnel && $user->personnel->cv) {
-            $oldCvPath = public_path('/personnel/cv/' . $user->personnel->cv);
+            $oldCvPath = public_path('/personnel-files/cv/' . $user->personnel->cv);
             if (file_exists($oldCvPath)) {
                 @unlink($oldCvPath);
             }
         }
         if ($user->personnel && $user->personnel->picture) {
-            $oldPicturePath = public_path('/personnel/pictures/' . $user->personnel->picture);
+            $oldPicturePath = public_path('/personnel-files/pictures/' . $user->personnel->picture);
             if (file_exists($oldPicturePath)) {
                 @unlink($oldPicturePath);
             }

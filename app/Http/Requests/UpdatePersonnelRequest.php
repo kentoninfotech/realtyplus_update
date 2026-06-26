@@ -25,6 +25,9 @@ class UpdatePersonnelRequest extends FormRequest
     public function rules()
     {
         $businessId = auth()->user()->business_id;
+        
+        // The route parameter 'id' is the User ID, not Personnel ID
+        $userId = $this->route('id');
 
         return [
             'first_name' => 'nullable|string|max:70',
@@ -37,7 +40,7 @@ class UpdatePersonnelRequest extends FormRequest
                 'max:255',
                 Rule::unique('users')->where(function ($query) use ($businessId) {
                     return $query->where('business_id', $businessId);
-                })->ignore($this->user->id),
+                })->ignore($userId),
             ],
             'designation' => 'nullable|string|max:50',
             'department' => 'nullable|string|max:70',

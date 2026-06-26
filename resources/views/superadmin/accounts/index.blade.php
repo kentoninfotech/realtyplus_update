@@ -7,7 +7,7 @@
         <select class="form-select" name="status">
             <option value="">All statuses</option>
             @foreach(['pending','active','suspended'] as $s)
-                <option value="{{ $s }}" @selected($status===$s)>{{ ucfirst($s) }}</option>
+                <option value="{{ $s }}" {{ $status === $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
             @endforeach
         </select>
     </div>

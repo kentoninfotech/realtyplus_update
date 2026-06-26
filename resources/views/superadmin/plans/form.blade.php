@@ -30,7 +30,7 @@
                 <label class="form-label">Billing cycle</label>
                 <select class="form-select" name="billing_cycle">
                     @foreach(['monthly','quarterly','yearly','lifetime'] as $cycle)
-                        <option value="{{ $cycle }}" @selected(old('billing_cycle', $plan->billing_cycle) === $cycle)>{{ ucfirst($cycle) }}</option>
+                        <option value="{{ $cycle }}" {{ old('billing_cycle', $plan->billing_cycle) === $cycle ? 'selected' : '' }}>{{ ucfirst($cycle) }}</option>
                     @endforeach
                 </select>
             </div>

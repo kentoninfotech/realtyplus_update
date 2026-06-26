@@ -11,7 +11,7 @@
             <label class="form-label">Status</label>
             <select class="form-select" name="status">
                 @foreach(['new','in_review','responded','closed'] as $s)
-                    <option value="{{ $s }}" @selected($feedback->status===$s)>{{ ucfirst($s) }}</option>
+                    <option value="{{ $s }}" {{ $feedback->status === $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
                 @endforeach
             </select>
         </div>

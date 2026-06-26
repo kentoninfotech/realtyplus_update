@@ -53,7 +53,7 @@
                     <select class="form-select" name="section" required>
                         <option value="">-- Select Section --</option>
                         @foreach(['hero_slide','feature','testimonial','faq','stat','setting'] as $s)
-                            <option value="{{ $s }}" @selected(old('section',$item->section)===$s)>{{ str_replace('_',' ',ucfirst($s)) }}</option>
+                            <option value="{{ $s }}" {{ old('section', $item->section) === $s ? 'selected' : '' }}>{{ str_replace('_',' ',ucfirst($s)) }}</option>
                         @endforeach
                     </select>
                     @if($item->exists)

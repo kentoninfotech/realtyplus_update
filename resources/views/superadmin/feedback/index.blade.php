@@ -5,7 +5,7 @@
     <select class="form-select" name="status" style="max-width:200px;" onchange="this.form.submit()">
         <option value="">All statuses</option>
         @foreach(['new','in_review','responded','closed'] as $s)
-            <option value="{{ $s }}" @selected($status===$s)>{{ ucfirst($s) }}</option>
+            <option value="{{ $s }}" {{ $status === $s ? 'selected' : '' }}>{{ ucfirst($s) }}</option>
         @endforeach
     </select>
 </form>

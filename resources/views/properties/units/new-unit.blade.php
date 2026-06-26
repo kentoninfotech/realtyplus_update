@@ -71,10 +71,27 @@
                             @endif
                         </div>
 
+                        {{-- Unit Quantity Selection --}}
+                        <div class="form-group">
+                            <label for="unit_quantity">Number of Units to Create <span class="text-danger">*</span></label>
+                            <input type="number" name="unit_quantity" id="unit_quantity" class="form-control" min="1" max="50" value="{{ old('unit_quantity', 1) }}" required>
+                            <small class="form-text text-muted">Enter 1 for single unit, or 2-50 to create multiple units at once with the same properties.</small>
+                        </div>
+
                         <div class="form-group">
                             <label for="unit_number">Unit Number/Identifier</label>
                             <input type="text" name="unit_number" id="unit_number" class="form-control" required value="{{ old('unit_number') }}">
-                            <small class="form-text text-muted">e.g., Apt 101, Unit B, Lot 5, Office 300.</small>
+                            <small class="form-text text-muted">e.g., Apt 101, Unit B, Lot 5, Office 300. For bulk units, enter the starting number/name.</small>
+                        </div>
+
+                        {{-- Bulk Unit Names (Shown when quantity > 1) --}}
+                        <div id="bulkUnitNamesSection" class="hidden-section">
+                            <div class="alert alert-info">
+                                <i class="fas fa-info-circle"></i> <strong>Bulk Unit Names:</strong> Enter the name for each unit. All other properties (pricing, availability) will be the same for all units.
+                            </div>
+                            <div id="bulkUnitNamesContainer">
+                                {{-- Dynamically generated unit name inputs --}}
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -174,6 +191,30 @@
                     </div>
                 </div>
 
+                {{-- Section 4: Featured Unit Settings --}}
+                <div class="card card-secondary card-outline mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Featured Unit Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group form-check">
+                            <input type="checkbox" name="featured" id="featured" value="1" class="form-check-input" {{ old('featured') ? 'checked' : '' }}>
+                            <label class="form-check-label" for="featured">
+                                Feature this unit on guest home page
+                            </label>
+                            <small class="form-text text-muted d-block mt-2">
+                                Check this box to display this unit in the "Featured Units" section on the landing page. Featured units must have either a sale price or rent price to be displayed.
+                            </small>
+                        </div>
+
+                        <div class="form-group" id="featured_order_group" style="display: {{ old('featured') ? 'block' : 'none' }};">
+                            <label for="featured_order">Featured Order (Display Priority)</label>
+                            <input type="number" name="featured_order" id="featured_order" class="form-control" min="1" max="100" value="{{ old('featured_order', 1) }}">
+                            <small class="form-text text-muted">Lower numbers appear first. Leave blank if not featured.</small>
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="btn btn-primary mt-3">Create Unit</button>
             </form>
         </div>
@@ -183,6 +224,9 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const unitTypeSelect = document.getElementById('unit_type');
+        const unitQuantityInput = document.getElementById('unit_quantity');
+        const bulkUnitNamesSection = document.getElementById('bulkUnitNamesSection');
+        const bulkUnitNamesContainer = document.getElementById('bulkUnitNamesContainer');
         const residentialCommercialFields = document.getElementById('residential_commercial_fields');
         const landFields = document.getElementById('land_fields');
 
@@ -194,6 +238,40 @@
             bathrooms: "{{ old('bathrooms') }}",
             area_sqm: "{{ old('area_sqm') }}",
         };
+
+        // Handle unit quantity change
+        unitQuantityInput.addEventListener('change', function() {
+            updateBulkUnitForm();
+        });
+        unitQuantityInput.addEventListener('keyup', function() {
+            updateBulkUnitForm();
+        });
+
+        function updateBulkUnitForm() {
+            const quantity = parseInt(unitQuantityInput.value) || 1;
+
+            if (quantity > 1) {
+                // Show bulk unit names section
+                bulkUnitNamesSection.classList.remove('hidden-section');
+                bulkUnitNamesContainer.innerHTML = '';
+
+                // Generate input fields for each unit
+                for (let i = 1; i <= quantity; i++) {
+                    const unitNameDiv = document.createElement('div');
+                    unitNameDiv.className = 'form-group';
+                    unitNameDiv.innerHTML = `
+                        <label for="bulk_unit_name_${i}">Unit ${i} Name/Number</label>
+                        <input type="text" name="bulk_unit_names[]" id="bulk_unit_name_${i}" 
+                            class="form-control" placeholder="e.g., Apt ${i}01" required>
+                    `;
+                    bulkUnitNamesContainer.appendChild(unitNameDiv);
+                }
+            } else {
+                // Hide bulk unit names section for single unit
+                bulkUnitNamesSection.classList.add('hidden-section');
+                bulkUnitNamesContainer.innerHTML = '';
+            }
+        }
 
         function toggleUnitTypeFields() {
             let selectedType = unitTypeSelect.value;
@@ -221,6 +299,9 @@
 
         // Initial call to set fields based on default selection or old input
         toggleUnitTypeFields();
+
+        // Initialize bulk unit form on page load
+        updateBulkUnitForm();
 
         // Initialize Select2 for property_id dropdown if it's visible
         const propertyIdSelect = document.getElementById('property_id');

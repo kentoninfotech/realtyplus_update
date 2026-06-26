@@ -3,11 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\BelongsToBusiness;
 use Illuminate\Database\Eloquent\Model;
 
 class UnitSale extends Model
 {
-    use HasFactory;
+    use HasFactory, BelongsToBusiness;
 
     protected $fillable = [
         'business_id',
@@ -70,6 +71,31 @@ class UnitSale extends Model
     public function transaction()
     {
         return $this->transactions()->first();
+    }
+
+    /**
+     * Get the payment plan for this sale
+     */
+    public function paymentPlan()
+    {
+        return $this->morphOne(PaymentPlan::class, 'payable');
+    }
+
+    /**
+     * Get all installments for this sale (through payment plan)
+     */
+    public function installments()
+    {
+        $plan = $this->paymentPlan;
+        return $plan ? $plan->installments() : collect();
+    }
+
+    /**
+     * Check if this sale has a payment plan
+     */
+    public function hasPaymentPlan()
+    {
+        return $this->paymentPlan !== null;
     }
 
     /**

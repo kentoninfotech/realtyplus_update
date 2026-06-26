@@ -91,12 +91,12 @@
                     <div class="form-group col-md-6">
                         <label for="status">Status</label>
                         <select name="status" id="status" class="form-control">
-                            <option disabled {{ old('status', $tenant->user->status ?? null) ? '' : 'selected' }}>Select Status</option>
-                            <option value="active" {{ old('status', $tenant->user->status) == 'active' ? 'selected' : '' }}>Active</option>
-                            <option value="inactive" {{ old('status', $tenant->user->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
-                            <option value="suspended" {{ old('status', $tenant->user->status) == 'suspended' ? 'selected' : '' }}>Suspended</option>
-                            <option value="terminated" {{ old('status', $tenant->user->status) == 'terminated' ? 'selected' : '' }}>Terminated</option>
-                            <option value="pending" {{ old('status', $tenant->user->status) == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option disabled {{ old('status', optional($tenant->user)->status ?? null) ? '' : 'selected' }}>Select Status</option>
+                            <option value="active" {{ old('status', optional($tenant->user)->status) == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ old('status', optional($tenant->user)->status) == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="suspended" {{ old('status', optional($tenant->user)->status) == 'suspended' ? 'selected' : '' }}>Suspended</option>
+                            <option value="terminated" {{ old('status', optional($tenant->user)->status) == 'terminated' ? 'selected' : '' }}>Terminated</option>
+                            <option value="pending" {{ old('status', optional($tenant->user)->status) == 'pending' ? 'selected' : '' }}>Pending</option>
                         </select>
                     </div>
                     <div class="form-group col-md-6">

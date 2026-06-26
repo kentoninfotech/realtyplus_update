@@ -415,6 +415,174 @@
 </section>
 @endif
 
+{{-- FEATURED UNITS FOR SALE --}}
+@if($featuredUnitsForSale->count())
+<section id="featured-units-sale" class="section-bg">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow">Prime Opportunities</span>
+            <h2 class="section-title">Featured Units for Purchase</h2>
+            <p class="section-sub">Explore our selection of premium individual units available for purchase.</p>
+        </div>
+        <div class="row g-4">
+            @foreach($featuredUnitsForSale as $unit)
+                @php
+                    $propertyImage = $unit->property->images->firstWhere('is_featured', 1);
+                    $displayImage = $propertyImage ? $propertyImage->image_path : ($unit->property->images->count() > 0 ? $unit->property->images->first()->image_path : asset('plugins/fontawesome-free/svgs/solid/image.svg'));
+                @endphp
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="property-card" style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all .3s; cursor: pointer; height: 100%; display: flex; flex-direction: column;"
+                         onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(15,23,42,.12)'"
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                         onclick="window.location.href='{{ route('guest.unit.detail', $unit->id) }}'">
+                        
+                        {{-- Unit Image --}}
+                        <div style="position: relative; overflow: hidden; height: 240px; background: #f1f5f9;">
+                            @if(file_exists(public_path($displayImage)))
+                                <img src="{{ asset($displayImage) }}" alt="{{ $unit->unit_number }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #e2e8f0;">
+                                    <i class="fas fa-image" style="font-size: 3rem; color: #cbd5e1;"></i>
+                                </div>
+                            @endif
+                            
+                            {{-- Badge for Unit Type --}}
+                            <div style="position: absolute; top: 12px; right: 12px;">
+                                <span style="background: #ef4444; color: white; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600;">FOR SALE</span>
+                            </div>
+                        </div>
+
+                        {{-- Unit Info --}}
+                        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                            {{-- Unit Name --}}
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0 0 4px; color: var(--rp-dark); text-decoration: none;">{{ $unit->unit_number }}</h3>
+                            
+                            {{-- Property Name --}}
+                            <p style="color: var(--rp-muted); font-size: .9rem; margin-bottom: 12px;">
+                                {{ $unit->property->name }}
+                            </p>
+
+                            {{-- Location --}}
+                            <div style="color: var(--rp-muted); font-size: .9rem; margin-bottom: 12px;">
+                                <i class="fas fa-map-marker-alt" style="margin-right: 6px;"></i>
+                                {{ $unit->property->state }}, {{ $unit->property->country }}
+                            </div>
+
+                            {{-- Price --}}
+                            @if($unit->sale_price)
+                                <div style="font-size: 1.4rem; font-weight: 800; color: var(--rp-primary); margin-bottom: 12px;">
+                                    ₦{{ number_format($unit->sale_price, 0) }}
+                                </div>
+                            @endif
+
+                            {{-- Unit Type & Details --}}
+                            <div style="display: flex; gap: 12px; font-size: .85rem; color: #64748b; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                                <span><i class="fas fa-door-open" style="margin-right: 4px;"></i>{{ ucfirst($unit->unit_type) }}</span>
+                                @if($unit->property->area_sqft)
+                                    <span><i class="fas fa-ruler" style="margin-right: 4px;"></i>{{ number_format($unit->property->area_sqft) }} sqft</span>
+                                @endif
+                            </div>
+
+                            {{-- Agent Info --}}
+                            @if($unit->property->agent)
+                                <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                                    <p style="font-size: .8rem; color: var(--rp-muted); margin-bottom: 4px;">Listed by</p>
+                                    <p style="font-weight: 600; color: var(--rp-dark); margin: 0;">{{ $unit->property->agent->name }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
+{{-- FEATURED UNITS FOR RENT --}}
+@if($featuredUnitsForRent->count())
+<section id="featured-units-rent">
+    <div class="container">
+        <div class="text-center mb-5">
+            <span class="section-eyebrow">Rental Opportunities</span>
+            <h2 class="section-title">Featured Units for Rent</h2>
+            <p class="section-sub">Browse our premium units available for lease or short-term rental.</p>
+        </div>
+        <div class="row g-4">
+            @foreach($featuredUnitsForRent as $unit)
+                @php
+                    $propertyImage = $unit->property->images->firstWhere('is_featured', 1);
+                    $displayImage = $propertyImage ? $propertyImage->image_path : ($unit->property->images->count() > 0 ? $unit->property->images->first()->image_path : asset('plugins/fontawesome-free/svgs/solid/image.svg'));
+                @endphp
+                <div class="col-md-6 col-lg-4 mb-3">
+                    <div class="property-card" style="border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all .3s; cursor: pointer; height: 100%; display: flex; flex-direction: column;"
+                         onmouseover="this.style.transform='translateY(-8px)'; this.style.boxShadow='0 20px 40px rgba(15,23,42,.12)'"
+                         onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'"
+                         onclick="window.location.href='{{ route('guest.unit.detail', $unit->id) }}'">
+                        
+                        {{-- Unit Image --}}
+                        <div style="position: relative; overflow: hidden; height: 240px; background: #f1f5f9;">
+                            @if(file_exists(public_path($displayImage)))
+                                <img src="{{ asset($displayImage) }}" alt="{{ $unit->unit_number }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            @else
+                                <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: #e2e8f0;">
+                                    <i class="fas fa-image" style="font-size: 3rem; color: #cbd5e1;"></i>
+                                </div>
+                            @endif
+                            
+                            {{-- Badge for Unit Type --}}
+                            <div style="position: absolute; top: 12px; right: 12px;">
+                                <span style="background: #3b82f6; color: white; padding: 6px 12px; border-radius: 6px; font-size: .8rem; font-weight: 600;">FOR RENT</span>
+                            </div>
+                        </div>
+
+                        {{-- Unit Info --}}
+                        <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column;">
+                            {{-- Unit Name --}}
+                            <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0 0 4px; color: var(--rp-dark); text-decoration: none;">{{ $unit->unit_number }}</h3>
+                            
+                            {{-- Property Name --}}
+                            <p style="color: var(--rp-muted); font-size: .9rem; margin-bottom: 12px;">
+                                {{ $unit->property->name }}
+                            </p>
+
+                            {{-- Location --}}
+                            <div style="color: var(--rp-muted); font-size: .9rem; margin-bottom: 12px;">
+                                <i class="fas fa-map-marker-alt" style="margin-right: 6px;"></i>
+                                {{ $unit->property->state }}, {{ $unit->property->country }}
+                            </div>
+
+                            {{-- Price --}}
+                            @if($unit->rent_price)
+                                <div style="font-size: 1.4rem; font-weight: 800; color: var(--rp-primary); margin-bottom: 12px;">
+                                    ₦{{ number_format($unit->rent_price, 0) }}<span style="font-size: 0.75rem; font-weight: 600;">/month</span>
+                                </div>
+                            @endif
+
+                            {{-- Unit Type & Details --}}
+                            <div style="display: flex; gap: 12px; font-size: .85rem; color: #64748b; margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0;">
+                                <span><i class="fas fa-door-open" style="margin-right: 4px;"></i>{{ ucfirst($unit->unit_type) }}</span>
+                                @if($unit->property->area_sqft)
+                                    <span><i class="fas fa-ruler" style="margin-right: 4px;"></i>{{ number_format($unit->property->area_sqft) }} sqft</span>
+                                @endif
+                            </div>
+
+                            {{-- Agent Info --}}
+                            @if($unit->property->agent)
+                                <div style="margin-top: auto; padding-top: 12px; border-top: 1px solid #e2e8f0;">
+                                    <p style="font-size: .8rem; color: var(--rp-muted); margin-bottom: 4px;">Listed by</p>
+                                    <p style="font-weight: 600; color: var(--rp-dark); margin: 0;">{{ $unit->property->agent->name }}</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+</section>
+@endif
+
 {{-- FEATURES --}}
 <section id="features">
     <div class="container">
@@ -454,7 +622,7 @@
                         @if($plan->is_featured)<span class="plan-badge">MOST POPULAR</span>@endif
                         <div class="plan-name">{{ $plan->name }}</div>
                         <div class="plan-price">
-                            {{ $plan->currency }} {{ number_format($plan->price, 0) }}
+                            {{ $plan->price > 0 ? $plan->currency . number_format($plan->price, 0) : '--' }}
                             <small>/ {{ $plan->billing_cycle }}</small>
                         </div>
                         <p class="text-muted">{{ $plan->description }}</p>

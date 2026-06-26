@@ -150,6 +150,13 @@ Route::post('/units/sale/process', [App\Http\Controllers\UnitSaleController::cla
 Route::get('/units/sale/{saleId}/payment', [App\Http\Controllers\UnitSaleController::class, 'showPaymentPage'])->name('unit.sale.payment');
 Route::post('/units/sale/{saleId}/complete', [App\Http\Controllers\UnitSaleController::class, 'completeSale'])->name('unit.sale.complete');
 Route::get('/units/{unitId}/sale-history', [App\Http\Controllers\UnitSaleController::class, 'viewUnitSaleHistory'])->name('unit.sale.history');
+
+// PAYMENT TRACKING & MANAGEMENT
+Route::get('/payments/tracking', [App\Http\Controllers\PaymentTrackingController::class, 'dashboard'])->name('payment.tracking');
+Route::get('/payments/plan/{paymentPlanId}', [App\Http\Controllers\PaymentTrackingController::class, 'showPaymentPlan'])->name('payment.plan.detail');
+Route::post('/payments/installment/{installmentId}/record', [App\Http\Controllers\PaymentTrackingController::class, 'recordInstallmentPayment'])->name('payment.installment.record');
+Route::get('/payments/installment/{installmentId}/overdue', [App\Http\Controllers\PaymentTrackingController::class, 'showOverdueInstallment'])->name('payment.overdue.detail');
+Route::get('/payments/debtors/export', [App\Http\Controllers\PaymentTrackingController::class, 'exportDebtorsReport'])->name('payment.debtors.export');
 // LEASES
 Route::get('/property/leases', [App\Http\Controllers\LeaseController::class, 'index'])->name('leases');
 Route::get('properties/leases/create', [App\Http\Controllers\LeaseController::class, 'newLease'])->name('new.lease');

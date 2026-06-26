@@ -41,6 +41,8 @@
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
     <link rel="stylesheet" href="{{ asset('plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="{{ asset('plugins/sweetalert2/sweetalert2.min.css') }}">
     <style>
         .card,
         .card-body,
@@ -846,6 +848,8 @@
     <script src="{{ asset('dist/js/demo.js') }}"></script>
 
     <script src="{{ asset('plugins/select2/js/select2.full.min.js') }}"></script>
+    <!-- SweetAlert2 -->
+    <script src="{{ asset('plugins/sweetalert2/sweetalert2.min.js') }}"></script>
     <script>
         // Initialize all features when DOM is ready
         $(document).ready(function() {

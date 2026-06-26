@@ -103,6 +103,11 @@ class Property extends Model
         return $this->morphMany(PropertyTask::class, 'taskable');
     }
 
+    public function transactions()
+    {
+        return $this->morphMany(PropertyTransaction::class, 'transactionable');
+    }
+
     /**
      * Scope to get featured properties
      */

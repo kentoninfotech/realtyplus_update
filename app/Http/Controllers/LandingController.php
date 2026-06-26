@@ -26,6 +26,19 @@ class LandingController extends Controller
             ->with(['propertyType', 'images', 'amenities', 'agent'])
             ->get();
 
+        // Fetch featured units for sale and rent
+        $featuredUnitsForSale = \App\Models\PropertyUnit::featured()
+            ->availableForSale()
+            ->with(['property', 'property.images', 'property.agent'])
+            ->take(6)
+            ->get();
+
+        $featuredUnitsForRent = \App\Models\PropertyUnit::featured()
+            ->availableForRent()
+            ->with(['property', 'property.images', 'property.agent'])
+            ->take(6)
+            ->get();
+
         $settings = [
             'site_title'    => LandingContent::setting('site_title', config('app.name')),
             'site_tagline'  => LandingContent::setting('site_tagline', 'Property management, simplified.'),
@@ -34,7 +47,8 @@ class LandingController extends Controller
         ];
 
         return view('landing.welcome', compact(
-            'heroSlides', 'features', 'testimonials', 'faqs', 'stats', 'plans', 'settings', 'featuredProperties'
+            'heroSlides', 'features', 'testimonials', 'faqs', 'stats', 'plans', 'settings', 
+            'featuredProperties', 'featuredUnitsForSale', 'featuredUnitsForRent'
         ));
     }
 

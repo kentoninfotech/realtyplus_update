@@ -41,16 +41,44 @@ class UnitController extends Controller
 
     /**
      * Store a newly created unit in storage.
-     *
+     * Supports bulk unit creation
      */
     public function createUnit(CreateUnitRequest $request)
     {
         // The validated data is available via $request->validated()
         $validatedData = $request->validated();
+        $bulkUnitNames = $request->input('bulk_unit_names', []);
 
-        $unit = PropertyUnit::create($validatedData);
-        $unit->property->increment('total_units');
-        return redirect()->route('show.property', $unit->property->id)->with('message', 'Unit created successfully!');
+        // Check if this is a bulk creation
+        if (!empty($bulkUnitNames) && count($bulkUnitNames) > 1) {
+            // Bulk creation: create multiple units with provided names
+            $property = Property::findOrFail($validatedData['property_id']);
+            $unitsCreated = 0;
+
+            foreach ($bulkUnitNames as $unitName) {
+                if (!empty(trim($unitName))) {
+                    // Create a copy of validated data with the specific unit name
+                    $unitData = $validatedData;
+                    $unitData['unit_number'] = trim($unitName);
+                    
+                    PropertyUnit::create($unitData);
+                    $unitsCreated++;
+                }
+            }
+
+            // Increment total units in property
+            $property->increment('total_units', $unitsCreated);
+
+            return redirect()->route('show.property', $property->id)
+                ->with('message', "Successfully created {$unitsCreated} units!");
+        } else {
+            // Single unit creation
+            $unit = PropertyUnit::create($validatedData);
+            $unit->property->increment('total_units');
+            
+            return redirect()->route('show.property', $unit->property->id)
+                ->with('message', 'Unit created successfully!');
+        }
     }
 
     /**

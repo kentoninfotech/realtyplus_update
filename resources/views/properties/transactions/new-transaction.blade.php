@@ -508,7 +508,7 @@
                 const amount = parseFloat(document.getElementById('amount').value);
                 if (isNaN(amount) || amount <= 0) {
                     e.preventDefault();
-                    alert('Please enter a valid amount greater than 0');
+                    Swal.fire('Validation Error', 'Please enter a valid amount greater than 0', 'error');
                 }
             });
 

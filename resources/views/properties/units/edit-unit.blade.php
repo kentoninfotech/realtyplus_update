@@ -229,7 +229,31 @@
                     </div>
                 </div>
 
-                {{-- Section 4: Unit Images --}}
+                {{-- Section 4: Featured Unit Settings --}}
+                <div class="card card-secondary card-outline mt-3">
+                    <div class="card-header">
+                        <h3 class="card-title">Featured Unit Settings</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group form-check">
+                            <input type="checkbox" name="featured" id="featured" value="1" class="form-check-input" {{ old('featured', $unit->featured) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="featured">
+                                Feature this unit on guest home page
+                            </label>
+                            <small class="form-text text-muted d-block mt-2">
+                                Check this box to display this unit in the "Featured Units" section on the landing page. Featured units must have either a sale price or rent price to be displayed.
+                            </small>
+                        </div>
+
+                        <div class="form-group" id="featured_order_group" style="display: {{ old('featured', $unit->featured) ? 'block' : 'none' }};">
+                            <label for="featured_order">Featured Order (Display Priority)</label>
+                            <input type="number" name="featured_order" id="featured_order" class="form-control" min="1" max="100" value="{{ old('featured_order', $unit->featured_order ?? 1) }}">
+                            <small class="form-text text-muted">Lower numbers appear first. Leave blank if not featured.</small>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Section 5: Unit Images --}}
                 <div class="card card-secondary card-outline mt-3">
                     <div class="card-header">
                         <h3 class="card-title">Unit Images</h3>
@@ -373,17 +397,31 @@
                                 imagePreview.remove();
                             }
                             // Show success message (optional)
-                            alert('Image deleted successfully!');
+                            Swal.fire('Success', 'Image deleted successfully!', 'success');
                         } else {
-                            alert('Error deleting image. Please try again.');
+                            Swal.fire('Error', 'Error deleting image. Please try again.', 'error');
                         }
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                        alert('Error deleting image. Please check the console.');
+                        Swal.fire('Error', 'Error deleting image. Please check the console.', 'error');
                     });
                 }
             });
         });
+
+        // Handle featured checkbox toggle
+        const featuredCheckbox = document.getElementById('featured');
+        const featuredOrderGroup = document.getElementById('featured_order_group');
+
+        if (featuredCheckbox) {
+            featuredCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    featuredOrderGroup.style.display = 'block';
+                } else {
+                    featuredOrderGroup.style.display = 'none';
+                }
+            });
+        }
     });
 </script>

@@ -26,6 +26,8 @@ class PropertyUnit extends Model
         'rent_price',
         'deposit_amount',
         'available_from',
+        'featured',
+        'featured_order',
     ];
 
     protected $casts = [
@@ -67,6 +69,30 @@ class PropertyUnit extends Model
     public function maintenanceRequests()
     {
         return $this->hasMany(MaintenanceRequest::class);
+    }
+
+    /**
+     * Scope: Get featured units
+     */
+    public function scopeFeatured($query)
+    {
+        return $query->where('featured', true)->orderBy('featured_order', 'asc');
+    }
+
+    /**
+     * Scope: Get units available for sale
+     */
+    public function scopeAvailableForSale($query)
+    {
+        return $query->whereNotNull('sale_price')->where('status', 'available');
+    }
+
+    /**
+     * Scope: Get units available for rent
+     */
+    public function scopeAvailableForRent($query)
+    {
+        return $query->whereNotNull('rent_price')->where('status', 'available');
     }
     
 

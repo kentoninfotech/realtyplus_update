@@ -487,7 +487,7 @@
                                                 <td>
                                                     @if ($unit->status == 'available')
                                                         <a href="{{ route('unit.lease.form', $unit->id) }}" class="btn btn-xs btn-primary" title="Lease/Rent this unit">
-                                                            <i class="fas fa-home"></i> Buy
+                                                            <i class="fas fa-home"></i> Lease
                                                         </a>
                                                         <a href="{{ route('unit.sale.form', $unit->id) }}" class="btn btn-xs btn-success" title="Sell this unit">
                                                             <i class="fas fa-cash-register"></i> Sell

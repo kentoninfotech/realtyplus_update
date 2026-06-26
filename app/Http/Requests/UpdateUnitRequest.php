@@ -43,6 +43,8 @@ class UpdateUnitRequest extends FormRequest
             'rent_price' => ['nullable', 'numeric', 'min:0'],
             'deposit_amount' => ['nullable', 'numeric', 'min:0'],
             'available_from' => ['nullable', 'date'],
+            'featured' => ['nullable', 'boolean'],
+            'featured_order' => ['nullable', 'integer', 'min:1', 'max:100'],
         ];
     }
 

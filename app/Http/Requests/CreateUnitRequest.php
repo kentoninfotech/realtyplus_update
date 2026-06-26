@@ -40,6 +40,11 @@ class CreateUnitRequest extends FormRequest
             'rent_price' => ['nullable', 'numeric', 'min:0'],
             'deposit_amount' => ['nullable', 'numeric', 'min:0'],
             'available_from' => ['nullable', 'date'],
+            'featured' => ['nullable', 'boolean'],
+            'featured_order' => ['nullable', 'integer', 'min:1', 'max:100'],
+            'unit_quantity' => ['nullable', 'integer', 'min:1', 'max:50'],
+            'bulk_unit_names' => ['nullable', 'array'],
+            'bulk_unit_names.*' => ['nullable', 'string', 'max:255'],
         ];
     }
 

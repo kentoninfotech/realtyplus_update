@@ -50,7 +50,7 @@
                         Section <span class="text-danger">*</span>
                         @if(!$item->exists) <span class="tip-label">REQUIRED</span> @endif
                     </label>
-                    <select class="form-select" name="section" required {{ $item->exists ? 'disabled' : '' }}>
+                    <select class="form-select" name="section" required>
                         <option value="">-- Select Section --</option>
                         @foreach(['hero_slide','feature','testimonial','faq','stat','setting'] as $s)
                             <option value="{{ $s }}" @selected(old('section',$item->section)===$s)>{{ str_replace('_',' ',ucfirst($s)) }}</option>

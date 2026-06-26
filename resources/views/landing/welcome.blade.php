@@ -139,7 +139,7 @@
             font-size: .75rem; font-weight: 700; letter-spacing: .5px;
         }
         .plan-name { font-size: 1.1rem; font-weight: 700; color: var(--rp-muted); }
-        .plan-price { font-size: 2.6rem; font-weight: 800; margin: 8px 0; }
+        .plan-price { font-size: 2rem; font-weight: 800; margin: 8px 0; }
         .plan-price small { font-size: 1rem; color: var(--rp-muted); font-weight: 500; }
         .plan-features { list-style: none; padding: 0; margin: 24px 0; }
         .plan-features li { padding: 8px 0; color: #334155; }
@@ -617,7 +617,7 @@
         </div>
         <div class="row g-4 justify-content-center">
             @forelse($plans as $plan)
-                <div class="col-md-6 col-lg-4">
+                <div class="col-md-6 col-lg-3">
                     <div class="plan-card {{ $plan->is_featured ? 'featured' : '' }}">
                         @if($plan->is_featured)<span class="plan-badge">MOST POPULAR</span>@endif
                         <div class="plan-name">{{ $plan->name }}</div>

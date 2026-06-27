@@ -218,6 +218,20 @@
                                     @endif
                                     <input type="file" name="invoice_logo" class="form-control-file" accept="image/*">
                                 </div>
+
+                                <div class="form-group">
+                                    <label>Authorized Signature (for invoices &amp; receipts)</label>
+                                    <small class="d-block text-muted mb-2">Upload a PNG image of an authorized signature (recommended: transparent background, max 200px width)</small>
+                                    @if ($u = $imgUrl('signature_image'))
+                                        <div class="mb-2"><img src="{{ $u }}" alt="signature" style="max-height:80px;border:1px solid #ddd;padding:4px;border-radius:4px;"></div>
+                                        <form method="POST" action="{{ route('settings.delete-image') }}" style="display:inline;">
+                                            @csrf
+                                            <input type="hidden" name="key" value="signature_image">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this signature?')">Delete</button>
+                                        </form>
+                                    @endif
+                                    <input type="file" name="signature_image" class="form-control-file" accept="image/*">
+                                </div>
                             </div>
 
                             <div class="col-md-6">

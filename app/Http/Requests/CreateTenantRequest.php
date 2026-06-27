@@ -29,13 +29,13 @@ class CreateTenantRequest extends FormRequest
             'first_name'               => 'required|string|max:100',
             'last_name'                => 'required|string|max:100',
             'email' => [
-                'required',
+                'nullable',
                 'string',
                 'email',
                 'max:255',
                 Rule::unique('users')->where(function ($query) use ($businessId) {
                     return $query->where('business_id', $businessId);
-                }),
+                })->whereNull('deleted_at'),
             ],
             'phone_number'             => 'nullable|string|max:150',
             'address'                  => 'nullable|string|max:200',

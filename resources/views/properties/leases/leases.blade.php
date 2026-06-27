@@ -32,6 +32,7 @@
                     <tr>
                         <th width="20">#</th>
                         <th>Tenant</th>
+                        <th>Property/Unit</th>
                         <th>Start/End</th>
                         <th>Frequency</th>
                         <th>Renewal Date</th>
@@ -45,6 +46,16 @@
                         <tr @if ($lease->status == 'active') style="background-color: azure !important;" @endif>
                             <td>{{ $lease->id }}</td>
                             <td>{{ $lease->tenant->full_name ?? '' }}</td>
+                            <td>
+                                <div>
+                                    <strong>{{ $lease->property->name ?? 'N/A' }}</strong>
+                                </div>
+                                @if ($lease->propertyUnit)
+                                    <small class="text-muted">Unit: {{ $lease->propertyUnit->unit_number }}</small>
+                                @else
+                                    <small class="text-muted">Entire Property</small>
+                                @endif
+                            </td>
                             <td>{{ $lease->start_date->format('M, Y') }} / {{ $lease->end_date->format('M, Y') }}</td>
                             <td>{{ $lease->payment_frequency }}</td>
                             <td>{{ optional($lease->renewal_date)->format('M, Y') ?? 'N/A' }}</td>

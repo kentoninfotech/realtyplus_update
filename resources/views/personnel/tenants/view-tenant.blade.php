@@ -106,7 +106,7 @@
                         <i class="fas fa-check-circle"></i>
                     </span>
                     <div class="info-box-content">
-                        <span class="info-box-text">Total Paid (12 months)</span>
+                        <span class="info-box-text">Total Paid</span>
                         <span class="info-box-number">₦{{ number_format($totalPaidRent, 2) }}</span>
                     </div>
                 </div>
@@ -231,7 +231,7 @@
         <div class="card card-success">
             <div class="card-header with-border">
                 <h3 class="card-title">
-                    <i class="fas fa-history"></i> Payment History (Last 12 Months)
+                    <i class="fas fa-history"></i> Payment History
                 </h3>
             </div>
             <div class="card-body">
@@ -241,40 +241,42 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>Property/Lease</th>
+                                    <th>Property/Unit</th>
                                     <th>Amount</th>
                                     <th>Method</th>
                                     <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($recentPayments->take(10) as $payment)
+                                @foreach($recentPayments->take(10) as $transaction)
                                     <tr>
                                         <td>
-                                            <strong>{{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') : 'N/A' }}</strong>
+                                            <strong>{{ $transaction->created_at ? $transaction->created_at->format('M d, Y') : 'N/A' }}</strong>
                                             <br>
-                                            <small class="text-muted">{{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('H:i A') : '' }}</small>
+                                            <small class="text-muted">{{ $transaction->created_at ? $transaction->created_at->format('H:i A') : '' }}</small>
                                         </td>
                                         <td>
-                                            @if($payment->lease && $payment->lease->property)
-                                                {{ $payment->lease->property->name }}
-                                                @if($payment->lease->propertyUnit)
-                                                    - {{ $payment->lease->propertyUnit->unit_name }}
+                                            @if($transaction->transactionable && $transaction->transactionable->property)
+                                                {{ $transaction->transactionable->property->name }}
+                                                @if($transaction->transactionable->propertyUnit)
+                                                    - {{ $transaction->transactionable->propertyUnit->unit_name ?? 'Unit #' . $transaction->transactionable->propertyUnit->unit_number }}
                                                 @endif
                                             @else
                                                 N/A
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="badge badge-success">₦{{ number_format($payment->amount, 2) }}</span>
+                                            <span class="badge badge-success">₦{{ number_format($transaction->amount, 2) }}</span>
                                         </td>
                                         <td>
-                                            <span class="badge badge-info">{{ Str::headline($payment->payment_method ?? 'Unknown') }}</span>
+                                            <span class="badge badge-info">{{ Str::headline($transaction->payment_method ?? 'Unknown') }}</span>
                                         </td>
                                         <td>
-                                            <span class="badge {{ $payment->status === 'paid' ? 'badge-success' : ($payment->status === 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                                                {{ Str::headline($payment->status) }}
-                                            </span>
+                                            @if ($transaction->is_partial_payment && $transaction->balance_due > 0)
+                                                <span class="badge badge-warning">Partial Payment</span>
+                                            @else
+                                                <span class="badge badge-success">Full Payment</span>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach
@@ -359,41 +361,49 @@
                 </h3>
             </div>
             <div class="card-body">
-                @if($payments->count() > 0)
+                @if(isset($allTransactions) && $allTransactions->count() > 0)
                     <div class="table-responsive">
                         <table class="table table-bordered table-hover">
                             <thead class="bg-light">
                                 <tr>
                                     <th>Date</th>
-                                    <th>Lease/Property</th>
+                                    <th>Property/Unit</th>
                                     <th>Amount</th>
                                     <th>Payment Method</th>
-                                    <th>Status</th>
-                                    <th>Notes</th>
+                                    <th>Payment Status</th>
+                                    <th>Balance Due</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($payments as $payment)
+                                @foreach($allTransactions as $transaction)
                                     <tr>
-                                        <td>{{ $payment->payment_date ? \Carbon\Carbon::parse($payment->payment_date)->format('M d, Y') : 'N/A' }}</td>
+                                        <td>{{ $transaction->created_at ? $transaction->created_at->format('M d, Y') : 'N/A' }}</td>
                                         <td>
-                                            @if($payment->lease && $payment->lease->property)
-                                                {{ $payment->lease->property->name }}
-                                                @if($payment->lease->propertyUnit)
-                                                    - {{ $payment->lease->propertyUnit->unit_name }}
+                                            @if($transaction->transactionable && $transaction->transactionable->property)
+                                                {{ $transaction->transactionable->property->name }}
+                                                @if($transaction->transactionable->propertyUnit)
+                                                    - {{ $transaction->transactionable->propertyUnit->unit_name ?? 'Unit #' . $transaction->transactionable->propertyUnit->unit_number }}
                                                 @endif
                                             @else
                                                 N/A
                                             @endif
                                         </td>
-                                        <td><span class="badge badge-success">₦{{ number_format($payment->amount, 2) }}</span></td>
-                                        <td>{{ Str::headline($payment->payment_method ?? 'Unknown') }}</td>
+                                        <td><span class="badge badge-success">₦{{ number_format($transaction->amount, 2) }}</span></td>
+                                        <td>{{ Str::headline($transaction->payment_method ?? 'Unknown') }}</td>
                                         <td>
-                                            <span class="badge {{ $payment->status === 'paid' ? 'badge-success' : ($payment->status === 'pending' ? 'badge-warning' : 'badge-danger') }}">
-                                                {{ Str::headline($payment->status) }}
-                                            </span>
+                                            @if ($transaction->is_partial_payment && $transaction->balance_due > 0)
+                                                <span class="badge badge-warning">Partial Payment</span>
+                                            @else
+                                                <span class="badge badge-success">Full Payment</span>
+                                            @endif
                                         </td>
-                                        <td>{{ $payment->notes ?? '-' }}</td>
+                                        <td>
+                                            @if ($transaction->balance_due > 0)
+                                                <span class="badge badge-danger">₦{{ number_format($transaction->balance_due, 2) }}</span>
+                                            @else
+                                                <span class="badge badge-success">Paid</span>
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -402,7 +412,7 @@
 
                     <!-- Pagination -->
                     <div class="mt-3">
-                        {{ $payments->links('pagination::bootstrap-4') }}
+                        {{ $allTransactions->links('pagination::bootstrap-4') }}
                     </div>
                 @else
                     <div class="alert alert-info">

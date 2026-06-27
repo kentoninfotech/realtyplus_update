@@ -330,4 +330,7 @@ Route::get('/property/{id}', [App\Http\Controllers\Guest\GuestPropertyController
 Route::post('/property/{id}/interest', [App\Http\Controllers\Guest\GuestPropertyController::class, 'submitInterest'])->name('guest.property.interest');
 Route::post('/property/{id}/contact-agent', [App\Http\Controllers\Guest\GuestPropertyController::class, 'contactAgent'])->name('guest.property.contact-agent');
 
+// GUEST UNIT VIEWING (Public routes) - browse units
+Route::get('/unit/{id}', [App\Http\Controllers\Guest\GuestUnitController::class, 'show'])->name('guest.unit.detail');
+
 Auth::routes(['register' => false, 'verify' => true]);

@@ -49,6 +49,9 @@ class TransactionService
         $data = $this->prepareAndValidate($data);
 
         return DB::transaction(function () use ($data, $files) {
+            // Calculate expected amount and balance due based on transactionable type
+            $data = $this->calculateBalance($data);
+
             /** @var PropertyTransaction $transaction */
             $transaction = new PropertyTransaction();
             $transaction->fill(Arr::only($data, [
@@ -56,6 +59,7 @@ class TransactionService
                 'payer_type', 'payer_id',
                 'type', 'purpose', 'amount', 'transaction_date',
                 'payment_method', 'reference_number', 'status', 'description',
+                'expected_amount', 'balance_due', 'is_partial_payment',
             ]));
             $transaction->save();
 
@@ -202,5 +206,60 @@ class TransactionService
                 $label => "The selected {$label} (ID: {$id}) does not exist.",
             ]);
         }
+    }
+
+    /**
+     * Calculate expected amount and balance due based on transactionable type
+     * 
+     * @param array $data
+     * @return array
+     */
+    protected function calculateBalance(array $data): array
+    {
+        $transactionableType = Relation::getMorphedModel($data['transactionable_type'] ?? '') ?? ($data['transactionable_type'] ?? null);
+        $transactionableId = $data['transactionable_id'] ?? null;
+        $amount = $data['amount'] ?? 0;
+
+        if (!$transactionableType || !$transactionableId) {
+            return $data;
+        }
+
+        $expectedAmount = null;
+        
+        try {
+            // Get the transactionable model
+            if ($transactionableType === \App\Models\Lease::class || class_basename($transactionableType) === 'Lease') {
+                $lease = \App\Models\Lease::find($transactionableId);
+                $expectedAmount = $lease ? $lease->rent_price : null;
+            } elseif ($transactionableType === \App\Models\PropertyUnit::class || class_basename($transactionableType) === 'PropertyUnit') {
+                $unit = \App\Models\PropertyUnit::find($transactionableId);
+                $expectedAmount = $unit ? $unit->sale_price : null;
+            } elseif ($transactionableType === \App\Models\UnitSale::class || class_basename($transactionableType) === 'UnitSale') {
+                $sale = \App\Models\UnitSale::find($transactionableId);
+                $expectedAmount = $sale ? $sale->sale_price : null;
+            } elseif ($transactionableType === \App\Models\Property::class || class_basename($transactionableType) === 'Property') {
+                $property = \App\Models\Property::find($transactionableId);
+                $expectedAmount = $property ? $property->sale_price : null;
+            }
+
+            // Calculate balance and determine if partial payment
+            if ($expectedAmount && $amount > 0) {
+                $data['expected_amount'] = (float) $expectedAmount;
+                
+                // If amount is less than expected, it's a partial payment
+                if ($amount < $expectedAmount) {
+                    $data['is_partial_payment'] = true;
+                    $data['balance_due'] = (float) ($expectedAmount - $amount);
+                } else {
+                    $data['is_partial_payment'] = false;
+                    $data['balance_due'] = 0;
+                }
+            }
+        } catch (\Exception $e) {
+            // If model lookup fails, continue without balance calculation
+            logger()->error('Balance calculation error: ' . $e->getMessage());
+        }
+
+        return $data;
     }
 }

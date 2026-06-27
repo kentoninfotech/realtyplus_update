@@ -30,7 +30,7 @@ class UpdateTenantRequest extends FormRequest
             'first_name'               => 'required|string|max:100',
             'last_name'                => 'required|string|max:100',
             'email' => [
-                'required',
+                'nullable',
                 'string',
                 'email',
                 'max:255',

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CreateTenantRequest;
 use App\Http\Requests\UpdateTenantRequest;
+use Illuminate\Validation\Rule;
 
 class TenantController extends Controller
 {
@@ -58,14 +59,31 @@ class TenantController extends Controller
                 $activeLeases++;
                 $totalRent += $lease->rent_amount;
                 
-                // Get payments for this lease
-                $payments = $lease->payments()->where('status', 'paid')->sum('amount');
-                $totalPaidRent += $payments;
+                // Get PropertyTransaction records for this lease (which have accurate payment tracking)
+                $transactions = \App\Models\PropertyTransaction::where('transactionable_type', 'App\Models\Lease')
+                    ->where('transactionable_id', $lease->id)
+                    ->where('type', 'credit')
+                    ->get();
                 
-                // Calculate outstanding amount
-                $expectedPayments = $lease->rent_amount;
-                $outstanding = $expectedPayments - $payments;
-                $totalOutstanding += max(0, $outstanding);
+                // Calculate total paid from successful PropertyTransaction records
+                $transactionPaid = $transactions->sum('amount');
+                $totalPaidRent += $transactionPaid;
+                
+                // Calculate outstanding amount based on PropertyTransaction balance tracking
+                // If any transaction has is_partial_payment = true or balance_due > 0, sum those balances
+                $leaseOutstanding = 0;
+                foreach ($transactions as $transaction) {
+                    if ($transaction->is_partial_payment && $transaction->balance_due > 0) {
+                        $leaseOutstanding += $transaction->balance_due;
+                    }
+                }
+                
+                // If no transactions or all are fully paid, check if there's unpaid rent
+                if ($leaseOutstanding === 0) {
+                    $leaseOutstanding = $lease->rent_amount - $transactionPaid;
+                }
+                
+                $totalOutstanding += max(0, $leaseOutstanding);
                 
                 // Get next payment date (renewal date or based on payment frequency)
                 if (!$nextPaymentDate || $lease->renewal_date < $nextPaymentDate) {
@@ -74,18 +92,33 @@ class TenantController extends Controller
             }
         }
         
-        // Get all payments with pagination
+        // Get all PropertyTransaction records for this tenant's leases
+        $allTransactions = \App\Models\PropertyTransaction::whereIn(
+            'transactionable_id',
+            $leases->pluck('id')
+        )
+            ->where('transactionable_type', 'App\Models\Lease')
+            ->where('type', 'credit')
+            ->with(['transactionable.property', 'transactionable.propertyUnit'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        
+        // Get payment history (past 12 months) from PropertyTransaction
+        $recentPayments = \App\Models\PropertyTransaction::whereIn(
+            'transactionable_id',
+            $leases->pluck('id')
+        )
+            ->where('transactionable_type', 'App\Models\Lease')
+            ->where('type', 'credit')
+            ->where('created_at', '>=', now()->subMonths(12))
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        // Get old Payment model records for display compatibility
         $payments = \App\Models\Payment::whereIn('lease_id', $leases->pluck('id'))
             ->with('lease')
             ->orderBy('payment_date', 'desc')
             ->paginate(10);
-        
-        // Get payment history (past 12 months)
-        $recentPayments = \App\Models\Payment::whereIn('lease_id', $leases->pluck('id'))
-            ->where('status', 'paid')
-            ->where('payment_date', '>=', now()->subMonths(12))
-            ->orderBy('payment_date', 'desc')
-            ->get();
         
         return view('personnel.tenants.view-tenant', compact(
             'tenant', 
@@ -96,7 +129,8 @@ class TenantController extends Controller
             'totalOutstanding',
             'activeLeases',
             'nextPaymentDate',
-            'recentPayments'
+            'recentPayments',
+            'allTransactions'
         ));
     }
     /**
@@ -106,26 +140,34 @@ class TenantController extends Controller
     public function createTenant(CreateTenantRequest $request)
     {
         DB::transaction(function () use ($request){
-            //create user
-            $user = User::create([
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'phone_number' => $request->phone_number ?? null,
-                'password' => bcrypt($request->password),
-                'user_type' => 'tenant',
-                'status' => $request->status ?? 'active',
-                'business_id' => auth()->user()->business_id,
-            ]);
+            $userId = null;
+            
+            // Only create user account if email is provided
+            if (!empty($request->email)) {
+                //create user
+                $user = User::create([
+                    'name' => $request->first_name . ' ' . $request->last_name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number ?? null,
+                    'password' => bcrypt($request->password ?? str()->random(12)),
+                    'user_type' => 'tenant',
+                    'status' => $request->status ?? 'active',
+                    'business_id' => auth()->user()->business_id,
+                ]);
 
-            // Assign tenant role
-            $user->assignRole('Tenant');
+                // Assign tenant role
+                $user->assignRole('Tenant');
+                
+                $userId = $user->id;
+            }
 
             //set user & business ID
-            $request['user_id'] = $user->id;
-            $request['business_id'] = auth()->user()->business_id;
+            $tenantData = $request->except(['password', 'user_type', 'status']);
+            $tenantData['user_id'] = $userId;
+            $tenantData['business_id'] = auth()->user()->business_id;
 
-            //create tenant's record linked to user
-            Tenant::create($request->except(['password', 'user_type', 'status']));
+            //create tenant's record linked to user (or without user if no email)
+            Tenant::create($tenantData);
 
         });
 
@@ -148,25 +190,29 @@ class TenantController extends Controller
     public function updateTenant(UpdateTenantRequest $request, $id)
     {
         $tenant = Tenant::findOrFail($id);
-        $user = User::findOrFail($tenant->user_id);
+        
+        DB::transaction(function () use ($request, $tenant) {
+            // If tenant has an associated user, update it
+            if ($tenant->user_id) {
+                $user = User::findOrFail($tenant->user_id);
+                
+                // Check If password is provided, hash it; otherwise, keep the existing password
+                if (isset($request->password) && !empty($request->password)) {
+                    $request->merge(['password' => bcrypt($request->password)]);
+                } else {
+                    $request->merge(['password' => $user->password]); // Keep the existing password if not provided 
+                }
 
-        DB::transaction(function () use ($request, $tenant, $user) {
-            // Check If password is provided, hash it; otherwise, keep the existing password
-            if (isset($request->password) && !empty($request->password)) {
-                $request->merge(['password' => bcrypt($request->password)]);
-            } else {
-                $request->merge(['password' => $user->password]); // Keep the existing password if not provided 
+                // Update user
+                $user->update([
+                    'name' => $request->first_name . ' ' . $request->last_name,
+                    'email' => $request->email,
+                    'phone_number' => $request->phone_number ?? null,
+                    'password' => $request->password,
+                    'user_type' => 'tenant',
+                    'status' => $request->status ?? 'active',
+                ]);
             }
-
-            // Update user
-            $user->update([
-                'name' => $request->first_name . ' ' . $request->last_name,
-                'email' => $request->email,
-                'phone_number' => $request->phone_number ?? null,
-                'password' => $request->password,
-                'user_type' => 'tenant',
-                'status' => $request->status ?? 'active',
-            ]);
 
             // Update tenant
             $tenant->update($request->except(['password', 'user_type', 'status']));
@@ -181,9 +227,16 @@ class TenantController extends Controller
     public function deleteTenant($id)
     {
         $tenant = Tenant::findOrFail($id);
-        $user = User::findOrFail($tenant->user_id);
+        
+        // Delete associated user if exists
+        if ($tenant->user_id) {
+            $user = User::find($tenant->user_id);
+            if ($user) {
+                $user->delete();
+            }
+        }
+        
         $tenant->delete();
-        $user->delete();
         return redirect()->route('tenants')->with('message', 'Tenant deleted successfully.');
     }
 
@@ -194,18 +247,18 @@ class TenantController extends Controller
     public function createTenantAjax(Request $request)
     {
         try {
-            // Validate input
+            // Validate input - email is now optional
             $validated = $request->validate([
                 'first_name' => 'required|string|max:100',
                 'last_name' => 'required|string|max:100',
                 'email' => [
-                    'required',
+                    'nullable',
                     'string',
                     'email',
                     'max:255',
                     Rule::unique('users')->where(function ($query) {
                         return $query->where('business_id', auth()->user()->business_id);
-                    }),
+                    })->whereNull('deleted_at'),
                 ],
                 'phone_number' => 'nullable|string|max:150',
                 'address' => 'nullable|string|max:200',
@@ -216,30 +269,37 @@ class TenantController extends Controller
             $tenant = null;
             
             DB::transaction(function () use ($validated, &$tenant) {
-                // Generate a temporary password
-                $tempPassword = str()->random(12);
+                $userId = null;
+                
+                // Only create user account if email is provided
+                if (!empty($validated['email'])) {
+                    // Generate a temporary password
+                    $tempPassword = str()->random(12);
 
-                // Create user
-                $user = User::create([
-                    'name' => $validated['first_name'] . ' ' . $validated['last_name'],
-                    'email' => $validated['email'],
-                    'phone_number' => $validated['phone_number'] ?? null,
-                    'password' => bcrypt($tempPassword),
-                    'user_type' => 'tenant',
-                    'status' => 'active',
-                    'business_id' => auth()->user()->business_id,
-                ]);
+                    // Create user
+                    $user = User::create([
+                        'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+                        'email' => $validated['email'],
+                        'phone_number' => $validated['phone_number'] ?? null,
+                        'password' => bcrypt($tempPassword),
+                        'user_type' => 'tenant',
+                        'status' => 'active',
+                        'business_id' => auth()->user()->business_id,
+                    ]);
 
-                // Assign tenant role
-                $user->assignRole('Tenant');
+                    // Assign tenant role
+                    $user->assignRole('Tenant');
+                    
+                    $userId = $user->id;
+                }
 
-                // Create tenant record
+                // Create tenant record (with or without user account)
                 $tenant = Tenant::create([
-                    'user_id' => $user->id,
+                    'user_id' => $userId,
                     'business_id' => auth()->user()->business_id,
                     'first_name' => $validated['first_name'],
                     'last_name' => $validated['last_name'],
-                    'email' => $validated['email'],
+                    'email' => $validated['email'] ?? null,
                     'phone_number' => $validated['phone_number'] ?? null,
                     'address' => $validated['address'] ?? null,
                     'emergency_contact_name' => $validated['emergency_contact_name'] ?? null,

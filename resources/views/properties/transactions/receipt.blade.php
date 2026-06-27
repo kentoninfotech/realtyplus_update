@@ -33,6 +33,7 @@
     
     // Logo and styling settings
     $companyLogo = $bsImg('company_logo');
+    $signatureImage = $bsImg('signature_image');
     $primaryColor = $bsGet('primary_color', '#007bff');
     $headerPosition = $bsGet('header_position', 'center');
     $logoPosition = $bsGet('logo_position', $headerPosition); // Falls back to headerPosition
@@ -214,7 +215,7 @@
         display: inline-block;
         padding: 6px 12px;
         border-radius: 4px;
-        font-size: 11px;
+        font-size: 12px;
         font-weight: bold;
         text-transform: uppercase;
     }
@@ -228,6 +229,11 @@
     .status-badge.pending {
         background: #fff3cd;
         color: #856404;
+    }
+    
+    .status-badge.partial {
+        background: #cfe2ff;
+        color: #084298;
     }
     
     .status-badge.failed {
@@ -246,7 +252,7 @@
     }
     
     .section-title {
-        font-size: 11px;
+        font-size: 12px;
         font-weight: bold;
         color: {{ $primaryColor }};
         text-transform: uppercase;
@@ -259,7 +265,7 @@
         display: grid;
         grid-template-columns: repeat(2, 1fr);
         gap: 8px;
-        font-size: 11px;
+        font-size: 12px;
     }
     
     .detail-item {
@@ -305,6 +311,36 @@
         margin-top: 3px;
         font-size: 8px;
         color: #ccc;
+    }
+    
+    /* Signature Section */
+    .signature-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin: 15px 0;
+        padding-top: 15px;
+        border-top: 1px solid #e9ecef;
+    }
+    
+    .signature-block {
+        text-align: center;
+    }
+    
+    .signature-image {
+        max-height: 80px;
+        max-width: 150px;
+        object-fit: contain;
+        display: block;
+        margin: 0 auto 8px;
+    }
+    
+    .signature-block div {
+        font-size: 11px;
+        color: #333;
+        font-weight: 500;
+        padding-top: 8px;
+        border-top: 1px solid #333;
     }
     
     /* Action Buttons */
@@ -431,11 +467,17 @@
         <div class="amount-box {{ $transactionType }}">
             <div class="label">Transaction Amount</div>
             <div class="amount">{{ $currencySymbol }}{{ number_format($transaction->amount, 2) }}</div>
-            <div class="status-badge status-{{ $transaction->status }}">{{ ucfirst($transaction->status) }}</div>
+            <div class="status-badge status-{{ $transaction->is_partial_payment && $transaction->balance_due > 0 ? 'partial' : 'completed' }}">
+                @if ($transaction->is_partial_payment && $transaction->balance_due > 0)
+                    Partial Payment
+                @else
+                    Full Payment
+                @endif
+            </div>
         </div>
 
         {{-- Payer Information --}}
-        <div class="details-section">
+        <!-- <div class="details-section">
             <div class="section-title">Payer Information</div>
             @if($transaction->payer)
                 <div style="font-size: 16px; padding: 6px; background: #f8f9fa; border-left: 2px solid {{ $primaryColor }};">
@@ -458,7 +500,7 @@
             @else
                 <div style="font-size: 11px; padding: 6px; background: #f8f9fa; border-left: 2px solid {{ $primaryColor }};">Unknown</div>
             @endif
-        </div>
+        </div> -->
 
         {{-- Transaction Details --}}
         <div class="details-section">
@@ -557,6 +599,22 @@
             </div>
         @endif
 
+
+        {{-- Signature Section --}}
+        <div class="signature-section">
+            <div class="signature-block">
+                @if ($signatureImage)
+                    <img src="{{ $signatureImage }}" alt="Authorized Signature" class="signature-image">
+                @else
+                    <div style="height: 60px;"></div>
+                @endif
+                <div>Authorized Signature</div>
+            </div>
+            <div class="signature-block">
+                <div style="height: 60px;"></div>
+                <div>Received By</div>
+            </div>
+        </div>
 
         {{-- Footer --}}
         <div class="receipt-footer">

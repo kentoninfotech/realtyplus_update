@@ -147,7 +147,7 @@
         grid-template-columns: 1fr 1fr;
         gap: 15px;
         margin-bottom: 12px;
-        font-size: 14px;
+        font-size: 13px;
     }
     
     .bill-block h4 {
@@ -169,7 +169,7 @@
     /* Transaction Details */
     .transaction-details {
         margin-bottom: 10px;
-        font-size: 11px;
+        font-size: 12px;
     }
     
     .details-grid {
@@ -206,7 +206,7 @@
     .items-table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 11px;
+        font-size: 13px;
         margin-bottom: 10px;
     }
     
@@ -216,16 +216,17 @@
     }
     
     .items-table th {
-        padding: 6px 5px;
+        padding: 8px 5px;
         text-align: left;
         font-weight: bold;
         border: 1px solid {{ $primaryColor }};
-        font-size: 10px;
+        font-size: 12px;
     }
     
     .items-table td {
-        padding: 5px 5px;
+        padding: 8px 5px;
         border-bottom: 1px solid #e9ecef;
+        font-size: 12px;
     }
     
     .items-table tbody tr:last-child td {
@@ -249,8 +250,8 @@
     .summary-row {
         display: flex;
         justify-content: space-between;
-        padding: 4px 0;
-        font-size: 11px;
+        padding: 5px 0;
+        font-size: 12px;
         border-bottom: 1px solid #e9ecef;
     }
     
@@ -279,7 +280,7 @@
         padding: 8px;
         background: #f8f9fa;
         border-left: 2px solid {{ $primaryColor }};
-        font-size: 10px;
+        font-size: 11px;
     }
     
     .notes-section h5 {
@@ -302,7 +303,7 @@
         padding: 8px;
         border: 1px dashed {{ $primaryColor }};
         border-radius: 3px;
-        font-size: 10px;
+        font-size: 12px;
     }
     
     .payment-info h5 {
@@ -321,10 +322,10 @@
     /* Signature Section */
     .signature-section {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-columns: 1fr 1fr;
         gap: 15px;
-        margin-top: 15px;
-        font-size: 9px;
+        margin-top: 8px;
+        font-size: 11px;
         text-align: center;
     }
     
@@ -456,10 +457,10 @@
     {{-- Invoice Title --}}
     <div class="invoice-title-section">
         <div class="invoice-title">INVOICE</div>
-        <div class="invoice-number">
+        <!-- <div class="invoice-number">
             <strong>#{{ $invoicePrefix }}-{{ str_pad($transaction->id, 6, '0', STR_PAD_LEFT) }}</strong>
             | {{ $transaction->transaction_date->format('M d, Y') }}
-        </div>
+        </div> -->
     </div>
 
     {{-- Main Content --}}
@@ -475,7 +476,7 @@
                         <p>{{ $addr }}</p>
                     @endif
                     @if ($phone = $bsGet('company_phone'))
-                        <p>{{ $phone }}</p>
+                        <p>📞 {{ $phone }}</p>
                     @endif
                     @if ($email = $bsGet('company_email'))
                         <p>{{ $email }}</p>
@@ -547,6 +548,27 @@
                         <td>
                             <strong>{{ ucwords(str_replace('_', ' ', $transaction->purpose)) }}</strong><br>
                             <small style="color: #999;">{{ $transaction->description }}</small>
+                            @if ($transaction->transactionable)
+                                <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid #e9ecef; color: #666;">
+                                    <strong style="color: #333;">Property/Unit:</strong>
+                                    @if ($transaction->transactionable_type === 'App\Models\Lease')
+                                        {{ $transaction->transactionable->property->name ?? 'N/A' }}
+                                        @if ($transaction->transactionable->propertyUnit)
+                                            (Unit: {{ $transaction->transactionable->propertyUnit->unit_number }})
+                                        @endif
+                                    @elseif ($transaction->transactionable_type === 'App\Models\Property')
+                                        {{ $transaction->transactionable->name ?? 'N/A' }}
+                                    @elseif ($transaction->transactionable_type === 'App\Models\PropertyUnit')
+                                        {{ $transaction->transactionable->property->name ?? 'N/A' }}
+                                        (Unit: {{ $transaction->transactionable->unit_number }})
+                                    @elseif ($transaction->transactionable_type === 'App\Models\UnitSale')
+                                        {{ $transaction->transactionable->propertyUnit->property->name ?? 'N/A' }}
+                                        (Unit: {{ $transaction->transactionable->propertyUnit->unit_number }})
+                                    @else
+                                        {{ class_basename($transaction->transactionable_type) }}
+                                    @endif
+                                </div>
+                            @endif
                         </td>
                         <td class="text-right">1</td>
                         <td class="text-right">{{ $currencySymbol }}{{ number_format($transaction->amount, 2) }}</td>
@@ -567,6 +589,12 @@
                     <span class="summary-label">Total Due:</span>
                     <span class="summary-value">{{ $currencySymbol }}{{ number_format($transaction->amount, 2) }}</span>
                 </div>
+                @if ($transaction->is_partial_payment && $transaction->balance_due)
+                    <div class="summary-row" style="color: #d9534f; font-weight: bold;">
+                        <span class="summary-label">Balance Due:</span>
+                        <span class="summary-value">{{ $currencySymbol }}{{ number_format($transaction->balance_due, 2) }}</span>
+                    </div>
+                @endif
             </div>
         </div>
 
@@ -575,7 +603,13 @@
             <div class="payment-info">
                 <h5>Payment Information</h5>
                 <p><strong>Payment Method:</strong> {{ $transaction->payment_method }}</p>
-                <p><strong>Payment Status:</strong> {{ ucfirst($transaction->status) }}</p>
+                <p><strong>Payment Status:</strong> 
+                    @if ($transaction->is_partial_payment && $transaction->balance_due > 0)
+                        <span style="color: #d9534f; font-weight: bold;">Partial Payment</span>
+                    @else
+                        <span style="color: #5cb85c; font-weight: bold;">Full Payment</span>
+                    @endif
+                </p>
                 @if ($paymentTerms)
                     <p><strong>Terms:</strong> {{ $paymentTerms }}</p>
                 @endif
@@ -609,10 +643,6 @@
             <div class="signature-block">
                 <div style="height: 60px;"></div>
                 <div><strong>Received By</strong></div>
-            </div>
-            <div class="signature-block">
-                <div style="height: 60px;"></div>
-                <div><strong>Date</strong></div>
             </div>
         </div>
     </div>

@@ -19,6 +19,9 @@ class PropertyTransaction extends Model
         'type', // credit or debit
         'purpose', // full_payment, partial_payment, deposit, maintenance_expense, refund
         'amount',
+        'expected_amount',
+        'balance_due',
+        'is_partial_payment',
         'transaction_date',
         'payment_method',
         'reference_number',
@@ -28,6 +31,7 @@ class PropertyTransaction extends Model
 
     protected $casts = [
         'transaction_date' => 'date',
+        'is_partial_payment' => 'boolean',
     ];
 
     public function transactionable()

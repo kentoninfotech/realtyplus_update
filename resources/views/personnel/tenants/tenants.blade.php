@@ -59,16 +59,23 @@
                                     $totalOutstanding = 0;
                                     
                                     foreach ($activeLeases as $lease) {
-                                        $payments = $lease->payments()->where('status', 'paid')->sum('amount');
-                                        $outstanding = $lease->rent_amount - $payments;
+                                        // Get total amount paid via PropertyTransaction
+                                        $totalPaid = $lease->transactions()
+                                            ->where('type', 'credit')
+                                            ->where('status', 'completed')
+                                            ->sum('amount');
+                                        $outstanding = $lease->rent_amount - $totalPaid;
                                         $totalOutstanding += max(0, $outstanding);
                                     }
+                                    
+                                    // Determine tenant status based on active leases
+                                    $tenantStatus = $activeLeases->count() > 0 ? 'active' : 'inactive';
                                 @endphp
-                                <tr @if ($tenant->user && $tenant->user->status == 'active') style="background-color: #e8f5e9;" @endif>
+                                <tr @if ($tenantStatus === 'active') style="background-color: #e8f5e9;" @endif>
                                     <td><strong>{{ $tenant->id }}</strong></td>
                                     <td>
                                         <strong>{{ $tenant->full_name }}</strong>
-                                        @if($tenant->user && $tenant->user->status === 'active')
+                                        @if($tenantStatus === 'active')
                                             <br><span class="badge badge-success">Active</span>
                                         @else
                                             <br><span class="badge badge-danger">Inactive</span>
@@ -102,8 +109,8 @@
                                         @endif
                                     </td>
                                     <td>
-                                        <span class="badge {{ ($tenant->user && $tenant->user->status === 'active') ? 'bg-success' : 'bg-danger' }}">
-                                            {{ ($tenant->user && $tenant->user->status) ? Str::headline($tenant->user->status) : 'Inactive' }}
+                                        <span class="badge {{ $tenantStatus === 'active' ? 'bg-success' : 'bg-danger' }}">
+                                            {{ $tenantStatus === 'active' ? 'Active' : 'Inactive' }}
                                         </span>
                                     </td>
                                     <td>

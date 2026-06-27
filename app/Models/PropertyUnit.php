@@ -13,6 +13,7 @@ class PropertyUnit extends Model
     protected $fillable = [
         'property_id',
         'unit_number',
+        'unit_name',
         'unit_type',
         'description',
         'square_footage',

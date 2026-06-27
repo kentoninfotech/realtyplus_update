@@ -421,7 +421,7 @@
     <div class="container">
         <div class="text-center mb-5">
             <span class="section-eyebrow">Prime Opportunities</span>
-            <h2 class="section-title">Featured Units for Purchase</h2>
+            <h2 class="section-title">Properties for Sale</h2>
             <p class="section-sub">Explore our selection of premium individual units available for purchase.</p>
         </div>
         <div class="row g-4">
@@ -505,7 +505,7 @@
     <div class="container">
         <div class="text-center mb-5">
             <span class="section-eyebrow">Rental Opportunities</span>
-            <h2 class="section-title">Featured Units for Rent</h2>
+            <h2 class="section-title">Properties for Rent</h2>
             <p class="section-sub">Browse our premium units available for lease or short-term rental.</p>
         </div>
         <div class="row g-4">

@@ -200,9 +200,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="modalEmail">Email Address *</label>
-                            <input type="email" class="form-control" id="modalEmail" name="email" required>
-                            <small class="form-text text-muted">Must be unique in your account</small>
+                            <label for="modalEmail">Email Address</label>
+                            <input type="email" class="form-control" id="modalEmail" name="email">
+                            <small class="form-text text-muted">Optional - must be unique if provided</small>
                             <small class="form-text text-danger d-none" id="error-email"></small>
                         </div>
 
@@ -234,7 +234,7 @@
 
                         <div class="alert alert-info">
                             <i class="fas fa-info-circle"></i> 
-                            <strong>Note:</strong> A temporary password will be generated. The tenant can reset it after login.
+                            <strong>Note:</strong> If an email is provided, a user account will be created with a temporary password. Without an email, only a tenant record will be created.
                         </div>
                     </form>
                 </div>
@@ -391,34 +391,10 @@
                     },
                     body: formData
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Add new tenant to dropdown
-                        const option = document.createElement('option');
-                        option.value = data.tenant.id;
-                        option.textContent = data.tenant.full_name + ' (' + data.tenant.email + ')';
-                        option.selected = true;
-                        tenantIdSelect.appendChild(option);
-                        
-                        // Update Select2
-                        $(tenantIdSelect).val(data.tenant.id).trigger('change');
-
-                        // Show success message
-                        Swal.fire({
-                            title: 'Success!',
-                            text: data.message,
-                            icon: 'success',
-                            confirmButtonText: 'OK'
-                        });
-
-                        // Close modal
-                        $(tenantModal).modal('hide');
-
-                        // Reset form
-                        createTenantForm.reset();
-                    } else {
-                        // Handle validation errors
+                .then(response => response.json().then(data => ({ status: response.status, ok: response.ok, data: data })))
+                .then(({ status, ok, data }) => {
+                    if (!ok || !data.success) {
+                        // Handle error response
                         if (data.errors) {
                             let errorHtml = '<strong>Please fix the following errors:</strong><ul>';
                             for (const field in data.errors) {
@@ -439,11 +415,41 @@
                             errorContainer.innerHTML = '<strong>Error:</strong> ' + data.message;
                         }
                         errorContainer.classList.remove('d-none');
+                        return;
                     }
-                })
+                    
+                    // Success - tenant created
+                    // Add new tenant to dropdown
+                    const option = document.createElement('option');
+                    option.value = data.tenant.id;
+                    const tenantLabel = data.tenant.email 
+                        ? data.tenant.full_name + ' (' + data.tenant.email + ')' 
+                        : data.tenant.full_name;
+                    option.textContent = tenantLabel;
+                        option.selected = true;
+                        tenantIdSelect.appendChild(option);
+                        
+                        // Update Select2
+                        $(tenantIdSelect).val(data.tenant.id).trigger('change');
+
+                        // Show success message
+                        Swal.fire({
+                            title: 'Success!',
+                            text: data.message,
+                            icon: 'success',
+                            confirmButtonText: 'OK'
+                        });
+
+                        // Close modal
+                        $(tenantModal).modal('hide');
+
+                        // Reset form
+                        createTenantForm.reset();
+                    }
+                }))
                 .catch(error => {
                     console.error('Error:', error);
-                    errorContainer.innerHTML = '<strong>Error:</strong> An unexpected error occurred. Please try again.';
+                    errorContainer.innerHTML = '<strong>Error:</strong> ' + (error.message || 'An unexpected error occurred. Please try again.');
                     errorContainer.classList.remove('d-none');
                     Swal.fire({
                         title: 'Error!',

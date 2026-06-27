@@ -81,15 +81,18 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="owner_id">Owner</label>
-                                <select name="owner_id" id="owner_id" class="form-control select2" required>
-                                    <option value="">Select Owner</option>
+                                <label for="owner_id">Owner (Optional)</label>
+                                <select name="owner_id" id="owner_id" class="form-control select2">
+                                    <option value="">-- No Owner --</option>
                                     @foreach($owners as $owner)
-                                        <option value="{{ $owner->id }}" {{ old('owner_id') == $owner->id ? 'selected' : '' }}>
-                                            {{ $owner->first_name }} {{ $owner->last_name }}{{ $owner->company_name ? ' ('.$owner->company_name.')' : '' }}
-                                        </option>
+                                        @if($owner->user && $owner->user->exists)
+                                            <option value="{{ $owner->user_id }}" {{ old('owner_id') == $owner->user_id ? 'selected' : '' }}>
+                                                {{ $owner->first_name }} {{ $owner->last_name }}{{ $owner->company_name ? ' ('.$owner->company_name.')' : '' }}
+                                            </option>
+                                        @endif
                                     @endforeach
                                 </select>
+                                <small class="form-text text-muted">Select a valid owner or leave blank</small>
                             </div>
                             <div class="form-group col-md-6">
                                 <label for="agent_id">Agent</label>
@@ -590,6 +593,30 @@
 
         // Initial call to set fields based on default selection (if any) or old input
         toggleFields();
+    });
+
+    // Initialize SummerNote WYSIWYG Editor
+    $(document).ready(function() {
+        $('.wyswygeditor').summernote({
+            height: 300,
+            minHeight: 200,
+            toolbar: [
+                ['style', ['style']],
+                ['font', ['bold', 'underline', 'italic', 'clear']],
+                ['fontname', ['fontname']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['fullscreen', 'codeview', 'help']]
+            ],
+            codemirror: {
+                mode: 'htmlmixed',
+                lineNumbers: true,
+                lineWrapping: true,
+            }
+        });
     });
 </script>
 

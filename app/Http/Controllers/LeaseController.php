@@ -120,6 +120,7 @@ class LeaseController extends Controller
         }
         
         $property = $unit->property;
+        $units = $property->units; // Get all units for the property
         $tenants = Tenant::where('business_id', auth()->user()->business_id)->get();
         $paymentFrequencies = ['monthly', 'quarterly', 'annually', 'bi-annually'];
         $leaseStatuses = ['active', 'pending', 'terminated', 'renewed', 'expired'];
@@ -127,6 +128,7 @@ class LeaseController extends Controller
         return view('properties.leases.new-property-lease', compact(
             'property',
             'unit',
+            'units',
             'tenants',
             'paymentFrequencies',
             'leaseStatuses'

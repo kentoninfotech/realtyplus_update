@@ -49,7 +49,7 @@
                 @endif
 
                 {{-- Section 1: Basic Property Information --}}
-                <input type="hidden" name="owner_id" value="{{ $owner->id }}">
+                <input type="hidden" name="owner_id" value="{{ $owner->user_id }}">
                 <div class="card card-secondary card-outline">
                     <div class="card-header">
                         <h3 class="card-title">Basic Property Information</h3>

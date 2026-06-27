@@ -44,7 +44,7 @@ class CreatePropertyRequest extends FormRequest
             'name' => ['required', 'string', 'max:255'],
             'zoning_type' => ['nullable', 'string', 'max:100'],
             'cadastral_id' => ['nullable', 'string', 'max:255'],
-            'owner_id' => ['required', 'exists:owners,id'],
+            'owner_id' => ['nullable', 'exists:users,id'],
             'agent_id' => ['nullable', 'exists:agents,id'],
             'description' => ['nullable', 'string'],
             'address' => ['required', 'string', 'max:255'],

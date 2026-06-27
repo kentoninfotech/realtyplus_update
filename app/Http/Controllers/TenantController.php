@@ -187,4 +187,89 @@ class TenantController extends Controller
         return redirect()->route('tenants')->with('message', 'Tenant deleted successfully.');
     }
 
+    /**
+     * Create tenant via AJAX for inline tenant creation.
+     * Returns JSON response with new tenant data.
+     */
+    public function createTenantAjax(Request $request)
+    {
+        try {
+            // Validate input
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:100',
+                'last_name' => 'required|string|max:100',
+                'email' => [
+                    'required',
+                    'string',
+                    'email',
+                    'max:255',
+                    Rule::unique('users')->where(function ($query) {
+                        return $query->where('business_id', auth()->user()->business_id);
+                    }),
+                ],
+                'phone_number' => 'nullable|string|max:150',
+                'address' => 'nullable|string|max:200',
+                'emergency_contact_name' => 'nullable|string|max:150',
+                'emergency_contact_phone' => 'nullable|string|max:150',
+            ]);
+
+            $tenant = null;
+            
+            DB::transaction(function () use ($validated, &$tenant) {
+                // Generate a temporary password
+                $tempPassword = str()->random(12);
+
+                // Create user
+                $user = User::create([
+                    'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+                    'email' => $validated['email'],
+                    'phone_number' => $validated['phone_number'] ?? null,
+                    'password' => bcrypt($tempPassword),
+                    'user_type' => 'tenant',
+                    'status' => 'active',
+                    'business_id' => auth()->user()->business_id,
+                ]);
+
+                // Assign tenant role
+                $user->assignRole('Tenant');
+
+                // Create tenant record
+                $tenant = Tenant::create([
+                    'user_id' => $user->id,
+                    'business_id' => auth()->user()->business_id,
+                    'first_name' => $validated['first_name'],
+                    'last_name' => $validated['last_name'],
+                    'email' => $validated['email'],
+                    'phone_number' => $validated['phone_number'] ?? null,
+                    'address' => $validated['address'] ?? null,
+                    'emergency_contact_name' => $validated['emergency_contact_name'] ?? null,
+                    'emergency_contact_phone' => $validated['emergency_contact_phone'] ?? null,
+                ]);
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tenant created successfully!',
+                'tenant' => [
+                    'id' => $tenant->id,
+                    'first_name' => $tenant->first_name,
+                    'last_name' => $tenant->last_name,
+                    'email' => $tenant->email,
+                    'full_name' => "{$tenant->first_name} {$tenant->last_name}",
+                ]
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating tenant: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

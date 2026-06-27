@@ -215,6 +215,11 @@
                     </div>
                 </div>
 
+                {{-- Section 5: Unit Images (Info) --}}
+                <div class="alert alert-info mt-3">
+                    <i class="fas fa-camera"></i> <strong>Images:</strong> After creating the unit, you'll be able to upload images from the unit's edit page. You can upload multiple images, set captions, and mark one as featured.
+                </div>
+
                 <button type="submit" class="btn btn-primary mt-3">Create Unit</button>
             </form>
         </div>

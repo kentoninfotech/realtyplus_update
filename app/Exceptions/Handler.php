@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Database\QueryException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -36,6 +37,16 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        // Handle database integrity constraint violations
+        $this->renderable(function (QueryException $e) {
+            // Check for integrity constraint violation
+            if (strpos($e->getMessage(), 'Integrity constraint violation') !== false || 
+                strpos($e->getMessage(), 'FOREIGN KEY') !== false ||
+                $e->errorInfo[0] == '23000') {
+                return response()->view('errors.constraint-violation', ['exception' => $e], 422);
+            }
         });
     }
 }

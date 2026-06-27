@@ -95,6 +95,7 @@ Route::middleware(['auth', 'tenant'])->group(function () {
     Route::get('tenants', [App\Http\Controllers\TenantController::class, 'index'])->name('tenants');
     Route::get('new-tenant', [App\Http\Controllers\TenantController::class, 'newTenant'])->name('new.tenant');
     Route::post('create-tenant', [App\Http\Controllers\TenantController::class, 'createTenant'])->name('create.tenant');
+    Route::post('create-tenant-ajax', [App\Http\Controllers\TenantController::class, 'createTenantAjax'])->name('create.tenant.ajax');
     Route::get('edit-tenant/{id}', [App\Http\Controllers\TenantController::class, 'editTenant'])->name('edit.tenant');
     Route::put('update-tenant/{id}', [App\Http\Controllers\TenantController::class, 'updateTenant'])->name('update.tenant');
     Route::get('tenant/{id}', [App\Http\Controllers\TenantController::class, 'showTenant'])->name('show.tenant');

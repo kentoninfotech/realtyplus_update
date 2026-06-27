@@ -77,7 +77,7 @@ class PropertyTransactionController extends Controller
     {
         $payerType = ['App\Models\Tenant', 'App\Models\Owner', 'App\Models\Agent', 'App\Models\Client'];
         $transactionable = ['App\Models\Lease', 'App\Models\Property', 'App\Models\PropertyUnit', 'App\Models\UnitSale', 'App\Models\MaintenanceRequest'];
-        $status = ['pending', 'processing', 'completed', 'failed', 'reversed', 'cancelled', 'refunded'];
+        $status = ['pending', 'processing', 'completed', 'confirmed', 'failed', 'reversed', 'cancelled', 'refunded'];
         $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
         $purposes = $this->transactionService::PURPOSES;
 
@@ -99,7 +99,7 @@ class PropertyTransactionController extends Controller
 
         $payerType = 'App\Models\Tenant';
         $payerId = $lease->tenant->id;
-        $status = ['pending', 'processing', 'completed', 'failed', 'reversed', 'cancelled', 'refunded'];
+        $status = ['pending', 'processing', 'completed', 'confirmed', 'failed', 'reversed', 'cancelled', 'refunded'];
         $method = ['Bank Transfer', 'Cash', 'Credit Card', 'Cheque'];
         $purposes = TransactionService::PURPOSES;
 
